@@ -13,8 +13,10 @@ namespace EIRLSSAssignment1.Models
         public string VRM { get; set; }
         [Display(Name = "Vehicle Identification Number")]
         public string VIN { get; set; }
+        public int VehicleTypeId { get; set; }
         [Display(Name = "Vehicle Type")]
         public VehicleType VehicleType { get; set; }
+        public int FuelTypeId { get; set; }
         [Display(Name = "Fuel Type")]
         public FuelType FuelType { get; set; }
         public string Make { get; set; }

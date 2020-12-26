@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -19,7 +20,14 @@ namespace EIRLSSAssignment1.Models
 
         //Additional fields
 
-
+        public string Name { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public  bool IsBlackListed { get; set; }
+        public bool IsTrustedCustomer { get; set; }
+        public int DrivingLicenseId { get; set; }
+        public DrivingLicense DrivingLicense { get; set; }
+        public int SupportingDocumentId { get; set; }
+        public SupportingDocument SupportingDocument { get; set; }
 
     }
 

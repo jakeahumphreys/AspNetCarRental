@@ -16,6 +16,7 @@ namespace EIRLSSAssignment1.Models
         public DateTime BookingFinish { get; set; }
         [Display(Name = "Late return arranged?")]
         public bool IsLateReturn { get; set; }
+        public int VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
         public IList<OptionalExtra> OptionalExtras { get; set; }
         public string Remarks { get; set; }

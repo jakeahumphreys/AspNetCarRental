@@ -172,15 +172,22 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="DAL\BookingContext.cs" />
     <Compile Include="DAL\BookingRepository.cs" />
+    <Compile Include="DAL\DrivingLicenseContext.cs" />
+    <Compile Include="DAL\DrivingLicenseRepository.cs" />
     <Compile Include="DAL\FuelTypeContext.cs" />
     <Compile Include="DAL\FuelTypeRepository.cs" />
     <Compile Include="DAL\IBookingRepository.cs" />
+    <Compile Include="DAL\IDrivingLicensceRepository.cs" />
     <Compile Include="DAL\IFuelTypeRepository.cs" />
     <Compile Include="DAL\IOptionalExtraRepository.cs" />
+    <Compile Include="DAL\ISupportingDocumentRepository.cs" />
     <Compile Include="DAL\IVehicleRepository.cs" />
     <Compile Include="DAL\IVehicleTypeRepository.cs" />
+    <Compile Include="DAL\MigrationContext.cs" />
     <Compile Include="DAL\OptionalExtraContext.cs" />
     <Compile Include="DAL\OptionalExtraRepository.cs" />
+    <Compile Include="DAL\SupportingDocumentContext.cs" />
+    <Compile Include="DAL\SupportingDocumentRepository.cs" />
     <Compile Include="DAL\VehicleContext.cs" />
     <Compile Include="DAL\VehicleRepository.cs" />
     <Compile Include="DAL\VehicleTypeContext.cs" />
@@ -188,12 +195,19 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\MigrationContext\202012262140521_InitialCreate.cs" />
+    <Compile Include="Migrations\MigrationContext\202012262140521_InitialCreate.Designer.cs">
+      <DependentUpon>202012262140521_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\DrivingLicense.cs" />
     <Compile Include="Models\FuelType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OptionalExtra.cs" />
+    <Compile Include="Models\SupportingDocument.cs" />
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\VehicleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -271,6 +285,11 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\MigrationContext\202012262140521_InitialCreate.resx">
+      <DependentUpon>202012262140521_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
