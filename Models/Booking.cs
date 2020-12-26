@@ -17,7 +17,7 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "Late return arranged?")]
         public bool IsLateReturn { get; set; }
         public Vehicle Vehicle { get; set; }
-        public IList<OptionalEquipment> OptionalExtras { get; set; }
+        public IList<OptionalExtra> OptionalExtras { get; set; }
         public string Remarks { get; set; }
     }
 }

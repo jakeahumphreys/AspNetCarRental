@@ -172,10 +172,19 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="DAL\BookingContext.cs" />
     <Compile Include="DAL\BookingRepository.cs" />
+    <Compile Include="DAL\FuelTypeContext.cs" />
+    <Compile Include="DAL\FuelTypeRepository.cs" />
     <Compile Include="DAL\IBookingRepository.cs" />
+    <Compile Include="DAL\IFuelTypeRepository.cs" />
+    <Compile Include="DAL\IOptionalExtraRepository.cs" />
     <Compile Include="DAL\IVehicleRepository.cs" />
+    <Compile Include="DAL\IVehicleTypeRepository.cs" />
+    <Compile Include="DAL\OptionalExtraContext.cs" />
+    <Compile Include="DAL\OptionalExtraRepository.cs" />
     <Compile Include="DAL\VehicleContext.cs" />
     <Compile Include="DAL\VehicleRepository.cs" />
+    <Compile Include="DAL\VehicleTypeContext.cs" />
+    <Compile Include="DAL\VehicleTypeRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -184,7 +193,7 @@
     <Compile Include="Models\FuelType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\OptionalEquipment.cs" />
+    <Compile Include="Models\OptionalExtra.cs" />
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\VehicleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

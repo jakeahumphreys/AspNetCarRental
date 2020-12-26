@@ -6,7 +6,7 @@ using System.Web;
 
 namespace EIRLSSAssignment1.Models
 {
-    public class OptionalEquipment
+    public class OptionalExtra
     {
         public int Id { get; set; }
         [Display(Name ="Equipment Name")]
