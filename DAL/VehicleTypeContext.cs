@@ -1,17 +1,14 @@
 ﻿
 using EIRLSSAssignment1.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Web;
+
 
 namespace EIRLSSAssignment1.DAL
 {
     public class VehicleTypeContext : IdentityDbContext<ApplicationUser>
     {
-        public VehicleTypeContext() : base("DefaultConnection") { }
+        public VehicleTypeContext() : base("DefaultConnection", throwIfV1Schema: false) { }
 
         public DbSet<VehicleType> VehicleTypes { get; set; }
 
@@ -19,5 +16,6 @@ namespace EIRLSSAssignment1.DAL
         {
             base.OnModelCreating(modelBuilder);
         }
+
     }
 }

@@ -18,5 +18,7 @@ namespace EIRLSSAssignment1.DAL
         {
             base.OnModelCreating(modelBuilder);
         }
+
+        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.VehicleType> VehicleTypes { get; set; }
     }
 }
