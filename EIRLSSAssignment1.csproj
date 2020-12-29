@@ -168,8 +168,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DrivingLicenseController.cs" />
+    <Compile Include="Controllers\FuelTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\VehicleController.cs" />
     <Compile Include="Controllers\VehicleTypeController.cs" />
     <Compile Include="DAL\BookingContext.cs" />
     <Compile Include="DAL\BookingRepository.cs" />
@@ -200,10 +203,23 @@
     <Compile Include="Migrations\MigrationContext\202012262140521_InitialCreate.Designer.cs">
       <DependentUpon>202012262140521_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\MigrationContext\202012291303556_AllowNullDocuments.cs" />
+    <Compile Include="Migrations\MigrationContext\202012291303556_AllowNullDocuments.Designer.cs">
+      <DependentUpon>202012291303556_AllowNullDocuments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\202012291343118_ConvertEngineSizeToDouble.cs" />
+    <Compile Include="Migrations\MigrationContext\202012291343118_ConvertEngineSizeToDouble.Designer.cs">
+      <DependentUpon>202012291343118_ConvertEngineSizeToDouble.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\202012291432567_AddIsRented.cs" />
+    <Compile Include="Migrations\MigrationContext\202012291432567_AddIsRented.Designer.cs">
+      <DependentUpon>202012291432567_AddIsRented.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationContext\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
+    <Compile Include="Models\DrivingLicenseViewModel.cs" />
     <Compile Include="Models\FuelType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -236,6 +252,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -275,6 +292,21 @@
     <Content Include="Views\VehicleType\Details.cshtml" />
     <Content Include="Views\VehicleType\Edit.cshtml" />
     <Content Include="Views\VehicleType\Index.cshtml" />
+    <Content Include="Views\FuelType\Create.cshtml" />
+    <Content Include="Views\FuelType\Delete.cshtml" />
+    <Content Include="Views\FuelType\Details.cshtml" />
+    <Content Include="Views\FuelType\Edit.cshtml" />
+    <Content Include="Views\FuelType\Index.cshtml" />
+    <Content Include="Views\Vehicle\Create.cshtml" />
+    <Content Include="Views\Vehicle\Delete.cshtml" />
+    <Content Include="Views\Vehicle\Details.cshtml" />
+    <Content Include="Views\Vehicle\Edit.cshtml" />
+    <Content Include="Views\Vehicle\Index.cshtml" />
+    <Content Include="Views\DrivingLicense\Create.cshtml" />
+    <Content Include="Views\DrivingLicense\Delete.cshtml" />
+    <Content Include="Views\DrivingLicense\Details.cshtml" />
+    <Content Include="Views\DrivingLicense\Edit.cshtml" />
+    <Content Include="Views\DrivingLicense\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -296,6 +328,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\MigrationContext\202012262140521_InitialCreate.resx">
       <DependentUpon>202012262140521_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202012291303556_AllowNullDocuments.resx">
+      <DependentUpon>202012291303556_AllowNullDocuments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202012291343118_ConvertEngineSizeToDouble.resx">
+      <DependentUpon>202012291343118_ConvertEngineSizeToDouble.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202012291432567_AddIsRented.resx">
+      <DependentUpon>202012291432567_AddIsRented.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

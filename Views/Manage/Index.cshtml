@@ -7,6 +7,25 @@
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
+    @if (!Model.HasDrivingLicense || !Model.HasSupportingDocument)
+    {
+    <div class="alert alert-danger" role="alert">
+        <h4>Some services are currently disabled.</h4>
+        <p>You are currently unable to rent a vehicle as you have not provided the following documentation:</p>
+        <ul>
+            @if (!Model.HasDrivingLicense)
+            {
+                <li>Driving License</li>
+            }
+            @if (!Model.HasSupportingDocument)
+            {
+                <li>Supporting Documentation</li>
+            }
+        </ul>
+            
+    </div>
+     }
+
     <h4>Change your account settings</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -23,65 +42,28 @@
             }
             ]
         </dd>
-        <dt>External Logins:</dt>
+
+        <dt>Drivers License:</dt>
         <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Manage", "ManageLogins") ]
+            [
+            @if (Model.HasDrivingLicense)
+            {
+                @Html.ActionLink("Update License", "Edit", "DrivingLicense", new {id = ViewBag.licenseId }, null)
+            }
+            else
+            {
+                @Html.ActionLink("Add License", "Create", "DrivingLicense", new { userId = ViewBag.userId }, null)
+            }
+            ]
         </dd>
-        @*
-            Phone Numbers can used as a second factor of verification in a two-factor authentication system.
-             
-             See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-                for details on setting up this ASP.NET application to support two-factor authentication using SMS.
-             
-             Uncomment the following block after you have set up two-factor authentication
-        *@
-        @*  
-            <dt>Phone Number:</dt>
+
+
+
+
+        @*<dt>External Logins:</dt>
             <dd>
-                @(Model.PhoneNumber ?? "None")
-                @if (Model.PhoneNumber != null)
-                {
-                    <br />
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                    using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
-                    }
-                }
-                else
-                {
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-                }
-            </dd>
-        *@
-        <dt>Two-Factor Authentication:</dt>
-        <dd>
-            <p>
-                There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-                for details on setting up this ASP.NET application to support two-factor authentication.
-            </p>
-            @*@if (Model.TwoFactor)
-                {
-                    using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>Enabled
-                        <input type="submit" value="Disable" class="btn btn-link" />
-                        </text>
-                    }
-                }
-                else
-                {
-                    using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>Disabled
-                        <input type="submit" value="Enable" class="btn btn-link" />
-                        </text>
-                    }
-                }*@
-        </dd>
+                @Model.Logins.Count [
+                @Html.ActionLink("Manage", "ManageLogins") ]
+            </dd>*@
     </dl>
 </div>

@@ -15,9 +15,11 @@ namespace EIRLSSAssignment1.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _applicationDbContext;
 
         public ManageController()
         {
+            _applicationDbContext = new ApplicationDbContext();
         }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -64,14 +66,27 @@ namespace EIRLSSAssignment1.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
+            var user = _applicationDbContext.Users.Find(userId);
+
+            if(user.DrivingLicenseId != 0)
+            {
+                ViewBag.licenseId = user.DrivingLicenseId;
+            }
+
+
+            ViewBag.userId = userId;
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
+                HasDrivingLicense = HasDrivingLicense(),
+                HasSupportingDocument = HasSupportingDocument()
+                
             };
+
             return View(model);
         }
 
@@ -359,6 +374,26 @@ namespace EIRLSSAssignment1.Controllers
             if (user != null)
             {
                 return user.PasswordHash != null;
+            }
+            return false;
+        }
+
+        private bool HasDrivingLicense()
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            if(user != null)
+            {
+                return user.DrivingLicenseId != null;
+            }
+            return false;
+        }
+
+        private bool HasSupportingDocument()
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            if (user != null)
+            {
+                return user.SupportingDocumentId != null;
             }
             return false;
         }

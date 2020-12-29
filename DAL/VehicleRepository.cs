@@ -18,12 +18,13 @@ namespace EIRLSSAssignment1.DAL
 
         public IList<Vehicle> GetVehicles()
         {
-            return _context.Vehicles.ToList();
+            var vehicles = _context.Vehicles.Include(v => v.FuelType).Include(v => v.VehicleType).ToList();
+            return vehicles;
         }
 
         public Vehicle GetVehicleById(int id)
         {
-            return _context.Vehicles.Where(x => x.Id == id).SingleOrDefault();
+            return _context.Vehicles.Where(x => x.Id == id).Include(v => v.FuelType).Include(v => v.VehicleType).SingleOrDefault();
         }
 
         public void Insert(Vehicle vehicle)

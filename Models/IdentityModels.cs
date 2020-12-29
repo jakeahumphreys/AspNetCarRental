@@ -24,9 +24,9 @@ namespace EIRLSSAssignment1.Models
         public DateTime DateOfBirth { get; set; }
         public  bool IsBlackListed { get; set; }
         public bool IsTrustedCustomer { get; set; }
-        public int DrivingLicenseId { get; set; }
+        public int? DrivingLicenseId { get; set; }
         public DrivingLicense DrivingLicense { get; set; }
-        public int SupportingDocumentId { get; set; }
+        public int? SupportingDocumentId { get; set; }
         public SupportingDocument SupportingDocument { get; set; }
 
     }
@@ -42,5 +42,13 @@ namespace EIRLSSAssignment1.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.FuelType> FuelTypes { get; set; }
+
+        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.Vehicle> Vehicles { get; set; }
+
+        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.VehicleType> VehicleTypes { get; set; }
+
+        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.DrivingLicense> DrivingLicenses { get; set; }
     }
 }

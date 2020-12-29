@@ -10,8 +10,12 @@ namespace EIRLSSAssignment1.Models
     {
         [Display(Name = "Booking ID")]
         public int Id { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         [Display(Name = "Booking Starts")]
         public DateTime BookingStart { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         [Display(Name = "Booking Ends")]
         public DateTime BookingFinish { get; set; }
         [Display(Name = "Late return arranged?")]
