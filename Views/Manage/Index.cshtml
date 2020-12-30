@@ -48,7 +48,7 @@
             [
             @if (Model.HasDrivingLicense)
             {
-                @Html.ActionLink("Update License", "Edit", "DrivingLicense", new {id = ViewBag.licenseId }, null)
+                @Html.ActionLink("Update License", "Edit", "DrivingLicense", new { id = ViewBag.licenseId }, null)
             }
             else
             {
@@ -57,13 +57,27 @@
             ]
         </dd>
 
+        <dt>Supporting Document:</dt>
+        <dd>
+            [
+            @if (Model.HasSupportingDocument)
+            {
+                @Html.ActionLink("Update Supporting Document", "Edit", "SupportingDocument", new { id = ViewBag.supportingDocumentId }, null)
+            }
+            else
+            {
+                @Html.ActionLink("Add Supporting Document", "Create", "SupportingDocument", new { userId = ViewBag.userId }, null)
+            }
+            ]
+        </dd>
+
 
 
 
         @*<dt>External Logins:</dt>
-            <dd>
-                @Model.Logins.Count [
-                @Html.ActionLink("Manage", "ManageLogins") ]
-            </dd>*@
+        <dd>
+            @Model.Logins.Count [
+            @Html.ActionLink("Manage", "ManageLogins") ]
+        </dd>*@
     </dl>
 </div>

@@ -73,6 +73,11 @@ namespace EIRLSSAssignment1.Controllers
                 ViewBag.licenseId = user.DrivingLicenseId;
             }
 
+            if(user.SupportingDocumentId != 0)
+            {
+                ViewBag.supportingDocumentId = user.SupportingDocumentId;
+            }
+
 
             ViewBag.userId = userId;
             var model = new IndexViewModel

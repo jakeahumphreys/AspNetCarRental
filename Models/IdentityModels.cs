@@ -42,13 +42,5 @@ namespace EIRLSSAssignment1.Models
         {
             return new ApplicationDbContext();
         }
-
-        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.FuelType> FuelTypes { get; set; }
-
-        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.Vehicle> Vehicles { get; set; }
-
-        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.VehicleType> VehicleTypes { get; set; }
-
-        public System.Data.Entity.DbSet<EIRLSSAssignment1.Models.DrivingLicense> DrivingLicenses { get; set; }
     }
 }

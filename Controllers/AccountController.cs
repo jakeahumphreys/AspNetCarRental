@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using EIRLSSAssignment1.Models;
+using System.Net;
+using System.Data.Entity;
 
 namespace EIRLSSAssignment1.Controllers
 {
@@ -17,9 +19,11 @@ namespace EIRLSSAssignment1.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _applicationDbContext;
 
         public AccountController()
         {
+            _applicationDbContext = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -50,6 +54,75 @@ namespace EIRLSSAssignment1.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        public ActionResult Index()
+        {
+            return View(_applicationDbContext.Users.ToList());
+        }
+
+        public ActionResult Details(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            ApplicationUser applicationUser = _applicationDbContext.Users.Find(id);
+
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+            return View(applicationUser);
+        }
+
+        // GET: DrivingLicense/Edit/5
+        public ActionResult Edit(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = _applicationDbContext.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(user);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ApplicationUser user)
+        {
+
+            ApplicationUser existingUser = _applicationDbContext.Users.Find(user.Id);
+
+            //Set new properties from model
+            existingUser.Name = user.Name;
+            existingUser.DateOfBirth = user.DateOfBirth;
+            existingUser.IsBlackListed = user.IsBlackListed;
+            existingUser.IsTrustedCustomer = user.IsTrustedCustomer;
+            existingUser.Email = user.Email;
+
+            if (existingUser.UserName != existingUser.Email)
+            {
+                existingUser.UserName = existingUser.Email;
+            }
+            existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.LockoutEnabled = user.LockoutEnabled;
+            existingUser.LockoutEndDateUtc = user.LockoutEndDateUtc;
+
+            if (ModelState.IsValid)
+            {
+                _applicationDbContext.Entry(existingUser).State = EntityState.Modified;
+                _applicationDbContext.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(user);
         }
 
         //

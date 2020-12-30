@@ -20,6 +20,7 @@ namespace EIRLSSAssignment1.DAL
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<DrivingLicense> DrivingLicenses { get; set; }
         public DbSet<SupportingDocument> SupportingDocuments { get; set; }
+        public DbSet<Configuration> Configurations { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

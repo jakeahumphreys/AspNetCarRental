@@ -13,40 +13,39 @@ using Microsoft.AspNet.Identity;
 
 namespace EIRLSSAssignment1.Controllers
 {
-    public class DrivingLicenseController : Controller
+    public class SupportingDocumentController : Controller
     {
-        private DrivingLicenseRepository _drivingLicenseRepository;
+        private SupportingDocumentRepository _supportingDocumentRepository;
         private ApplicationDbContext _applicationDbContext;
 
-        public DrivingLicenseController()
+        public SupportingDocumentController()
         {
-            _drivingLicenseRepository = new DrivingLicenseRepository(new DrivingLicenseContext());
+            _supportingDocumentRepository = new SupportingDocumentRepository(new SupportingDocumentContext());
             _applicationDbContext = new ApplicationDbContext();
         }
 
-        // GET: DrivingLicense
+        // GET: SupportingDocument
         public ActionResult Index()
         {
-            return View(_drivingLicenseRepository.GetDrivingLicenses());
+            return View(_supportingDocumentRepository.GetSupportingDocuments());
         }
 
-        // GET: DrivingLicense/Details/5
+        // GET: SupportingDocument/Details/5
         public ActionResult Details(int id)
         {
             if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-            if (drivingLicense == null)
+            SupportingDocument supportingDocument = _supportingDocumentRepository.GetSupportingDocumentById(id);
+            if (supportingDocument == null)
             {
                 return HttpNotFound();
             }
-
-            return View(drivingLicense);
+            return View(supportingDocument);
         }
 
-        // GET: DrivingLicense/Create
+        // GET: SupportingDocument/Create
         public ActionResult Create(string userId)
         {
             if(userId == "")
@@ -61,35 +60,33 @@ namespace EIRLSSAssignment1.Controllers
                 ViewBag.Name = user.Name;
                 return View();
             }
-            
         }
 
-        // POST: DrivingLicense/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(DrivingLicenseViewModel drivingLicenseVM)
+        public ActionResult Create(SupportingDocumentViewModel supportingDocumentVM)
         {
 
-            if (drivingLicenseVM.ImageToUpload != null)
+
+            if (supportingDocumentVM.ImageToUpload != null)
             {
-                drivingLicenseVM.License.Image = convertImageToByteArray(drivingLicenseVM.ImageToUpload);
+                supportingDocumentVM.SupportingDocument.Image = convertImageToByteArray(supportingDocumentVM.ImageToUpload);
             }
 
             if (ModelState.IsValid)
             {
-                _drivingLicenseRepository.Insert(drivingLicenseVM.License);
-                _drivingLicenseRepository.Save();
+                _supportingDocumentRepository.Insert(supportingDocumentVM.SupportingDocument);
+                _supportingDocumentRepository.Save();
 
-                if (drivingLicenseVM.License != null)
+                if(supportingDocumentVM.SupportingDocument != null)
                 {
                     var user = _applicationDbContext.Users.Find(User.Identity.GetUserId());
-                    if(user != null)
+                    if (user != null)
                     {
-                        if(user.DrivingLicenseId != 0)
+                        if (user.SupportingDocumentId != 0)
                         {
-                            user.DrivingLicenseId = drivingLicenseVM.License.Id;
+                            user.SupportingDocumentId = supportingDocumentVM.SupportingDocument.Id; 
                             _applicationDbContext.SaveChanges();
                         }
                     }
@@ -98,83 +95,76 @@ namespace EIRLSSAssignment1.Controllers
                 return RedirectToAction("Index");
             }
 
-            return View(drivingLicenseVM);
+            return View(supportingDocumentVM);
         }
 
-        // GET: DrivingLicense/Edit/5
+        // GET: SupportingDocument/Edit/5
         public ActionResult Edit(int id)
         {
             if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-            if (drivingLicense == null)
+            SupportingDocument supportingDocument = _supportingDocumentRepository.GetSupportingDocumentById(id);
+            if (supportingDocument == null)
             {
                 return HttpNotFound();
             }
 
-            var drivingLicenseVM = new DrivingLicenseViewModel { License = drivingLicense, ImageToUpload = null};
+            var supportingDocumentVM = new SupportingDocumentViewModel { SupportingDocument = supportingDocument };
 
-            return View(drivingLicenseVM);
+            return View(supportingDocumentVM);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit( DrivingLicenseViewModel drivingLicenseVM)
+        public ActionResult Edit(SupportingDocumentViewModel supportingDocumentVM)
         {
-
-
-            if (drivingLicenseVM.ImageToUpload != null)
+            if (supportingDocumentVM.ImageToUpload != null)
             {
-                drivingLicenseVM.License.Image = convertImageToByteArray(drivingLicenseVM.ImageToUpload);
+                supportingDocumentVM.SupportingDocument.Image = convertImageToByteArray(supportingDocumentVM.ImageToUpload);
             }
-
 
             if (ModelState.IsValid)
             {
-                _drivingLicenseRepository.Update(drivingLicenseVM.License);
-                _drivingLicenseRepository.Save();
-;
+                _supportingDocumentRepository.Update(supportingDocumentVM.SupportingDocument);
+                _supportingDocumentRepository.Save();
                 return RedirectToAction("Index");
             }
-            return View(drivingLicenseVM);
+            return View(supportingDocumentVM);
         }
 
-        // GET: DrivingLicense/Delete/5
         public ActionResult Delete(int id)
         {
             if (id == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-            if (drivingLicense == null)
+            SupportingDocument supportingDocument = _supportingDocumentRepository.GetSupportingDocumentById(id);
+            if (supportingDocument == null)
             {
                 return HttpNotFound();
             }
-            return View(drivingLicense);
+            return View(supportingDocument);
         }
 
-        // POST: DrivingLicense/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+
             ApplicationUser user = _applicationDbContext.Users.Find(User.Identity.GetUserId());
+            SupportingDocument supportingDocument = _supportingDocumentRepository.GetSupportingDocumentById(id);
 
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-
-
-            if (user.DrivingLicenseId == id)
+            if (user.SupportingDocumentId == id)
             {
-                user.DrivingLicenseId = null;
+                user.SupportingDocumentId = null;
                 _applicationDbContext.SaveChanges();
             }
 
-            _drivingLicenseRepository.Delete(drivingLicense);
-            _drivingLicenseRepository.Save();
+            _supportingDocumentRepository.Delete(supportingDocument);
+            _supportingDocumentRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -182,7 +172,7 @@ namespace EIRLSSAssignment1.Controllers
         {
             if (disposing)
             {
-                _drivingLicenseRepository.Save();
+                _supportingDocumentRepository.Dispose();
             }
             base.Dispose(disposing);
         }

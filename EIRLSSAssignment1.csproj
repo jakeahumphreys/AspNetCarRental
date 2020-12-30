@@ -168,19 +168,24 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\DrivingLicenseController.cs" />
     <Compile Include="Controllers\FuelTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\SupportingDocumentController.cs" />
     <Compile Include="Controllers\VehicleController.cs" />
     <Compile Include="Controllers\VehicleTypeController.cs" />
     <Compile Include="DAL\BookingContext.cs" />
     <Compile Include="DAL\BookingRepository.cs" />
+    <Compile Include="DAL\ConfigurationContext.cs" />
+    <Compile Include="DAL\ConfigurationRepository.cs" />
     <Compile Include="DAL\DrivingLicenseContext.cs" />
     <Compile Include="DAL\DrivingLicenseRepository.cs" />
     <Compile Include="DAL\FuelTypeContext.cs" />
     <Compile Include="DAL\FuelTypeRepository.cs" />
     <Compile Include="DAL\IBookingRepository.cs" />
+    <Compile Include="DAL\IConfigurationRepository.cs" />
     <Compile Include="DAL\IDrivingLicensceRepository.cs" />
     <Compile Include="DAL\IFuelTypeRepository.cs" />
     <Compile Include="DAL\IOptionalExtraRepository.cs" />
@@ -215,9 +220,14 @@
     <Compile Include="Migrations\MigrationContext\202012291432567_AddIsRented.Designer.cs">
       <DependentUpon>202012291432567_AddIsRented.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\MigrationContext\202012301519562_AddConfigurations.cs" />
+    <Compile Include="Migrations\MigrationContext\202012301519562_AddConfigurations.Designer.cs">
+      <DependentUpon>202012301519562_AddConfigurations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationContext\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
     <Compile Include="Models\DrivingLicenseViewModel.cs" />
     <Compile Include="Models\FuelType.cs" />
@@ -225,6 +235,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OptionalExtra.cs" />
     <Compile Include="Models\SupportingDocument.cs" />
+    <Compile Include="Models\SupportingDocumentViewModel.cs" />
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\VehicleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -252,6 +263,14 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Views\Configuration\Create.cshtml" />
+    <Content Include="Views\Configuration\Delete.cshtml" />
+    <Content Include="Views\Configuration\Details.cshtml" />
+    <Content Include="Views\Configuration\Edit.cshtml" />
+    <Content Include="Views\Configuration\Index.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Details.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
     <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -307,6 +326,11 @@
     <Content Include="Views\DrivingLicense\Details.cshtml" />
     <Content Include="Views\DrivingLicense\Edit.cshtml" />
     <Content Include="Views\DrivingLicense\Index.cshtml" />
+    <Content Include="Views\SupportingDocument\Create.cshtml" />
+    <Content Include="Views\SupportingDocument\Delete.cshtml" />
+    <Content Include="Views\SupportingDocument\Details.cshtml" />
+    <Content Include="Views\SupportingDocument\Edit.cshtml" />
+    <Content Include="Views\SupportingDocument\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -337,6 +361,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\MigrationContext\202012291432567_AddIsRented.resx">
       <DependentUpon>202012291432567_AddIsRented.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202012301519562_AddConfigurations.resx">
+      <DependentUpon>202012301519562_AddConfigurations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

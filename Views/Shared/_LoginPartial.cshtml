@@ -15,11 +15,17 @@
                 <ul class="dropdown-menu">
                     <asp:LoginView runat="server" ViewStateMode="Disabled">
                         <LoggedInTemplate>
+                            <li>------Users------</li>
+                            <li>@Html.ActionLink("Manage Users", "Index", "Account", routeValues: null, htmlAttributes: new { id = "accountLink" })</li>
+                            <li>-----Rentals-----</li>
                             <li>@Html.ActionLink("Manage Fuel Types", "Index", "FuelType", routeValues: null, htmlAttributes: new { id = "fuelTypeLink" })</li>
                             <li>@Html.ActionLink("Manage Vehicle Types", "Index", "VehicleType", routeValues: null, htmlAttributes: new { id = "vehicleTypeLink" })</li>
                             <li>@Html.ActionLink("Manage Fleet", "Index", "Vehicle", routeValues: null, htmlAttributes: new { id = "vehicleLink" })</li>
-                            <li>---------</li>
+                            <li>----Documents----</li>
                             <li>@Html.ActionLink("Licenses", "Index", "DrivingLicense", routeValues: null, htmlAttributes: new { id = "drivingLicenseLink" })</li>
+                            <li>@Html.ActionLink("Supporting Documents", "Index", "SupportingDocument", routeValues: null, htmlAttributes: new { id = "supportingDocumentLink" })</li>
+                            <li>-----System-----</li>
+                            <li>@Html.ActionLink("Configuration", "Index", "Configuration", routeValues: null, htmlAttributes: new { id = "conigurationLink" })</li>
                         </LoggedInTemplate>
                     </asp:LoginView>
                 </ul>

@@ -1,0 +1,66 @@
+﻿@model EIRLSSAssignment1.Models.Configuration
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Configuration</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OpeningTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OpeningTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClosingTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClosingTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsOpenForRentals)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsOpenForRentals)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LateReturnEligibility)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LateReturnEligibility)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsConfigurationActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsConfigurationActive)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
