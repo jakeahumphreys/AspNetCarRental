@@ -31,5 +31,14 @@ namespace EIRLSSAssignment1.Models
         public string Remarks { get; set; }
         [Display(Name = "Currently Rented?")]
         public bool IsRented { get; set; }
+
+        public string DisplayString
+        {
+            get
+            {
+                return Make + " " + Model + "(" + VRM + ")";
+            }
+        }
+
     }
 }

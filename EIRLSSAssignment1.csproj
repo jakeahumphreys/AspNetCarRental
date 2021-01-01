@@ -168,11 +168,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BookingController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\DrivingLicenseController.cs" />
     <Compile Include="Controllers\FuelTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\OptionalExtraController.cs" />
     <Compile Include="Controllers\SupportingDocumentController.cs" />
     <Compile Include="Controllers\VehicleController.cs" />
     <Compile Include="Controllers\VehicleTypeController.cs" />
@@ -224,9 +226,30 @@
     <Compile Include="Migrations\MigrationContext\202012301519562_AddConfigurations.Designer.cs">
       <DependentUpon>202012301519562_AddConfigurations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\MigrationContext\202101011435500_AddReferenceToBooking.cs" />
+    <Compile Include="Migrations\MigrationContext\202101011435500_AddReferenceToBooking.Designer.cs">
+      <DependentUpon>202101011435500_AddReferenceToBooking.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\202101011452210_UpdateOptionalExtras.cs" />
+    <Compile Include="Migrations\MigrationContext\202101011452210_UpdateOptionalExtras.Designer.cs">
+      <DependentUpon>202101011452210_UpdateOptionalExtras.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\202101011454108_UpdateOptionalExtraFields.cs" />
+    <Compile Include="Migrations\MigrationContext\202101011454108_UpdateOptionalExtraFields.Designer.cs">
+      <DependentUpon>202101011454108_UpdateOptionalExtraFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\202101011742088_AddOpenBookingField.cs" />
+    <Compile Include="Migrations\MigrationContext\202101011742088_AddOpenBookingField.Designer.cs">
+      <DependentUpon>202101011742088_AddOpenBookingField.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\202101011743205_UpdateOpenBookingToIsReturned.cs" />
+    <Compile Include="Migrations\MigrationContext\202101011743205_UpdateOpenBookingToIsReturned.Designer.cs">
+      <DependentUpon>202101011743205_UpdateOpenBookingToIsReturned.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationContext\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\BookingViewModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
     <Compile Include="Models\DrivingLicenseViewModel.cs" />
@@ -239,6 +262,7 @@
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\VehicleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepeatLogic\Library.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +295,16 @@
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\Details.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\OptionalExtra\Create.cshtml" />
+    <Content Include="Views\OptionalExtra\Delete.cshtml" />
+    <Content Include="Views\OptionalExtra\Details.cshtml" />
+    <Content Include="Views\OptionalExtra\Edit.cshtml" />
+    <Content Include="Views\OptionalExtra\Index.cshtml" />
+    <Content Include="Views\Booking\Create.cshtml" />
+    <Content Include="Views\Booking\Delete.cshtml" />
+    <Content Include="Views\Booking\Details.cshtml" />
+    <Content Include="Views\Booking\Edit.cshtml" />
+    <Content Include="Views\Booking\Index.cshtml" />
     <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -334,7 +368,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -364,6 +397,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\MigrationContext\202012301519562_AddConfigurations.resx">
       <DependentUpon>202012301519562_AddConfigurations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101011435500_AddReferenceToBooking.resx">
+      <DependentUpon>202101011435500_AddReferenceToBooking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101011452210_UpdateOptionalExtras.resx">
+      <DependentUpon>202101011452210_UpdateOptionalExtras.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101011454108_UpdateOptionalExtraFields.resx">
+      <DependentUpon>202101011454108_UpdateOptionalExtraFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101011742088_AddOpenBookingField.resx">
+      <DependentUpon>202101011742088_AddOpenBookingField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101011743205_UpdateOpenBookingToIsReturned.resx">
+      <DependentUpon>202101011743205_UpdateOpenBookingToIsReturned.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

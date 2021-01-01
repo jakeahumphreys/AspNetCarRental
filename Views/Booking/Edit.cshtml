@@ -1,0 +1,112 @@
+﻿@model EIRLSSAssignment1.Models.BookingViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    <h4>Booking</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.booking.Id)
+    @Html.HiddenFor(model => model.booking.VehicleId)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.booking.BookingStart, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.booking.BookingStart, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.booking.BookingStart, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.booking.BookingFinish, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.booking.BookingFinish, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.booking.BookingFinish, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.booking.Vehicle.DisplayString)
+        </div>
+    </div>
+
+    @*<div class="form-group">
+        @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.VehicleId, htmlAttributes: new { @class = "form-control", })
+            @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
+        </div>
+    </div>*@
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SelectedExtraIds, "Add More Extras", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @if (ViewBag.AvailableExtraCount == 0)
+            {
+                <b>There are no available extras at this time.</b>
+            }
+            else
+            {
+                @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple"})
+                @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SelectedExtraToRemoveIds, "Remove Booked Extras", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @if (ViewBag.BookedExtraCount == 0)
+            {
+                <b>You haven't booked any extras.</b>
+            }
+            else
+            {
+                @Html.DropDownListFor(model => model.SelectedExtraToRemoveIds, (MultiSelectList)ViewBag.BookedOptionalExtras, new { @class = "multi-select", multiple = "multiple" })
+                @Html.ValidationMessageFor(model => model.SelectedExtraToRemoveIds, "", new { @class = "text-danger" })
+            }
+        </div>
+    </div>
+
+
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+
+
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

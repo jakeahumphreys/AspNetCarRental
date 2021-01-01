@@ -12,17 +12,21 @@ namespace EIRLSSAssignment1.Models
         public int Id { get; set; }
         [Required]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Booking Starts")]
         public DateTime BookingStart { get; set; }
         [Required]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Booking Ends")]
         public DateTime BookingFinish { get; set; }
         [Display(Name = "Late return arranged?")]
         public bool IsLateReturn { get; set; }
         public int VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
+        [Display(Name = "Optional Extras")]
         public IList<OptionalExtra> OptionalExtras { get; set; }
         public string Remarks { get; set; }
+        public bool IsReturned { get; set; }
     }
 }

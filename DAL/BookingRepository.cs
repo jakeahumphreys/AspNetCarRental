@@ -18,12 +18,13 @@ namespace EIRLSSAssignment1.DAL
 
         public IList<Booking> GetBookings()
         {
-            return _context.Bookings.ToList();
+            var bookings = _context.Bookings.Include(b => b.OptionalExtras).Include(b => b.Vehicle).ToList();
+            return bookings;
         }
 
         public Booking GetBookingById(int id)
         {
-            return _context.Bookings.Where(x => x.Id == id).SingleOrDefault();
+            return _context.Bookings.Where(x => x.Id == id).Include(x => x.Vehicle).SingleOrDefault();
         }
 
         public void Insert(Booking Booking)

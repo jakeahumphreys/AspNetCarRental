@@ -1,0 +1,82 @@
+﻿@model EIRLSSAssignment1.Models.BookingViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Booking</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.Vehicle.VRM)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.booking.Vehicle.VRM)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.BookingStart)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.booking.BookingStart)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.BookingFinish)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.booking.BookingFinish)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.IsLateReturn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.booking.IsLateReturn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.IsReturned)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.booking.IsReturned)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.OptionalExtras)
+        </dt>
+
+        <dd>
+            <ul>
+                @foreach (var extra in Model.BookedOptionalExtras)
+                {
+                    <li>@extra.Name</li>
+                }
+            </ul>
+        </dd>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.booking.Remarks)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.booking.Remarks)
+            </dd>
+        }
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.booking.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
