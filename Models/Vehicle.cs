@@ -32,11 +32,12 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "Currently Rented?")]
         public bool IsRented { get; set; }
 
+        [Display(Name ="Vehicle")]
         public string DisplayString
         {
             get
             {
-                return Make + " " + Model + "(" + VRM + ")";
+                return Make + " " + Model + " (" + VRM + ")";
             }
         }
 

@@ -59,7 +59,7 @@ namespace EIRLSSAssignment1.Controllers
                 _configurationRepository.Insert(configuration);
                 _configurationRepository.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
 
             return View(configuration);

@@ -1,4 +1,5 @@
-﻿using EIRLSSAssignment1.Models;
+﻿using EIRLSSAssignment1.DAL;
+using EIRLSSAssignment1.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,30 @@ namespace EIRLSSAssignment1.Controllers
     {
 
         private ApplicationDbContext _appDbContext;
+        private BookingRepository _bookingRepository;
 
         public HomeController()
         {
             _appDbContext = new ApplicationDbContext();
+            _bookingRepository = new BookingRepository(new ApplicationDbContext());
         }
 
         public ActionResult Index()
         {
-            ApplicationUser user = _appDbContext.Users.Find(User.Identity.GetUserId());
-            ViewBag.User = user;
-            ViewBag.FirstName = user.Name.Substring(0, user.Name.IndexOf(" "));
-            return View();
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user = _appDbContext.Users.Find(userId);
+            if(user != null)
+            {
+
+                ViewBag.User = user;
+                ViewBag.FirstName = user.Name.Substring(0, user.Name.IndexOf(" "));
+
+            }
+
+            List<Booking> userBookings = _bookingRepository.GetBookings().Where(b => b.UserId == userId).ToList();
+
+
+            return View(userBookings);
         }
 
         public ActionResult About()

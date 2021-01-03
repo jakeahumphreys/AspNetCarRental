@@ -14,12 +14,12 @@ namespace EIRLSSAssignment1.Models
         public ApplicationUser User { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd H:mm:ss}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy H:mm:ss}", ApplyFormatInEditMode = true)]
         [Display(Name = "Booking Starts")]
         public DateTime BookingStart { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd H:mm:ss}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy H:mm:ss}", ApplyFormatInEditMode = true)]
         [Display(Name = "Booking Ends")]
         public DateTime BookingFinish { get; set; }
         [Display(Name = "Late return arranged?")]
