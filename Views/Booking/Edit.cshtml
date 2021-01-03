@@ -19,18 +19,34 @@
     @Html.HiddenFor(model => model.booking.VehicleId)
 
     <div class="form-group">
-        @Html.LabelFor(model => model.booking.BookingStart, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.booking.BookingStart, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.booking.BookingStart, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.booking.BookingFinish, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.booking.BookingFinish, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.booking.BookingFinish, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -41,13 +57,15 @@
         </div>
     </div>
 
+    <button class="btn btn-primary" onclick="location.href='@Url.Action("ExtendBooking",new { id = Model.booking.Id })';return false;">Extend Booking</button>
+
     @*<div class="form-group">
-        @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.VehicleId, htmlAttributes: new { @class = "form-control", })
-            @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
-        </div>
-    </div>*@
+            @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.VehicleId, htmlAttributes: new { @class = "form-control", })
+                @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
 
     <div class="form-group">
         @Html.LabelFor(model => model.SelectedExtraIds, "Add More Extras", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -58,7 +76,7 @@
             }
             else
             {
-                @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple"})
+                @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
                 @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
             }
         </div>

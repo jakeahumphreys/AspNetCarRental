@@ -99,6 +99,8 @@ namespace EIRLSSAssignment1.Controllers
                 configToUpdate.IsOpenForRentals = configuration.IsOpenForRentals;
                 configToUpdate.OpeningTime = configuration.OpeningTime;
                 configToUpdate.ClosingTime = configuration.ClosingTime;
+                configToUpdate.MinRentalHours = configuration.MinRentalHours;
+                configToUpdate.MaxRentalHours = configuration.MaxRentalHours;
 
                 _configurationRepository.Update(configToUpdate);
                 _configurationRepository.Save();

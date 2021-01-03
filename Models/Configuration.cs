@@ -13,14 +13,24 @@ namespace EIRLSSAssignment1.Models
         public string Name { get; set; }
         [Required]
         [DataType(DataType.Time)]
-        public string OpeningTime { get; set; }
+        [Display(Name="Opening Time")]
+        public DateTime OpeningTime { get; set; }
         [Required]
         [DataType(DataType.Time)]
-        public string ClosingTime { get; set; }
+        [Display(Name = "Closing Time")]
+        public DateTime ClosingTime { get; set; }
         [Required]
+        [Display(Name = "Open for Rentals?")]
         public bool IsOpenForRentals { get; set; }
         [Required]
+        [Display(Name = "Auto LR Eligibility")]
         public int LateReturnEligibility { get; set; }
+        [Required]
+        [Display(Name = "Minimum Rental Period (Hours)")]
+        public int MinRentalHours { get; set; }
+        [Required]
+        [Display(Name = "Maximum Rental Period (Hours)")]
+        public int MaxRentalHours { get; set; }
         public bool IsConfigurationActive { get; set; }
     }
 }

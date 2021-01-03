@@ -1,0 +1,102 @@
+﻿@model EIRLSSAssignment1.Models.BookingViewModel
+
+@{
+    ViewBag.Title = "Ammend Booking Times";
+}
+
+<h2>Ammend Booking Times</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.booking.Id)
+        @Html.HiddenFor(model => model.booking.VehicleId)
+        @Html.HiddenFor(model => model.booking.UserId)
+        @Html.HiddenFor(model => model.booking.IsLateReturn)
+
+        @if (ViewBag.ErrorObj != null)
+        {
+            <div class="alert alert-danger">
+                <h4>Unfortunately we are unable to ammend your booking for the following reason(s).</h4>
+                <hr />
+                @if (ViewBag.ErrorObj.isBookedNextDay)
+                {
+                    <p>Your rented vehicle is booked the following day and therefore this booking cannot be extended beyond 4pm.</p>
+                }
+                @if (ViewBag.ErrorObj.isBeyondClose == true)
+                {
+                    <p>A late return has not been agreed for this booking.</p>
+                }
+                @if(ViewBag.ErrorObj.isBeforeOpen ==  true)
+                {
+                    <p>You are unable to to collect or return before the garage is open.</p>
+                }
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (User.IsInRole("Admin"))
+                {
+                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                }
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (User.IsInRole("Admin"))
+                {
+                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                }
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

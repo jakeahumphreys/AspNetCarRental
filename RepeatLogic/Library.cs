@@ -87,10 +87,111 @@ namespace EIRLSSAssignment1.RepeatLogic
             }
         }
 
-        //public bool isWithinOpeningHours()
-        //{
-        //    Configuration config = GetActiveConfiguration();
-            
-        //}
+        public bool isBookedNextDay(DateTime date, int vehicleId)
+        {
+            if(date != null)
+            {
+                var dateToCheck = date.AddDays(1);
+                List<Booking> bookings = _bookingRepository.GetBookings().Where(x => x.VehicleId == vehicleId).Where(x => x.BookingStart.Day == dateToCheck.Day).ToList();
+                if(bookings.Count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isMinRental(DateTime startTime, DateTime endTime)
+        {
+            if(startTime != null && endTime != null)
+            {
+                Configuration config = GetActiveConfiguration();
+                TimeSpan timeSpan = endTime.Subtract(startTime);
+
+                if (timeSpan.TotalHours > config.MinRentalHours)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isMaxRental(DateTime startTime, DateTime endTime)
+        {
+            if (startTime != null && endTime != null)
+            {
+                Configuration config = GetActiveConfiguration();
+                TimeSpan timeSpan = endTime.Subtract(startTime);
+
+                if (timeSpan.TotalHours > config.MaxRentalHours)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isBeyondClosing(int hour)
+        {
+            Configuration config = GetActiveConfiguration();
+
+            if (hour > config.ClosingTime.Hour)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isBeforeOpening(int hour)
+        {
+            Configuration config = GetActiveConfiguration();
+
+            if (hour < config.OpeningTime.Hour)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isWithinOpeningHours(int hour)
+        {
+            Configuration config = GetActiveConfiguration();
+
+            if (hour > config.OpeningTime.Hour && hour < config.ClosingTime.Hour)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

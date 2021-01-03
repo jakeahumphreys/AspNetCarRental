@@ -1,10 +1,19 @@
 ﻿@model IEnumerable<EIRLSSAssignment1.Models.Booking>
 
-@{
-    ViewBag.Title = "Index";
+
+
+@if (User.IsInRole("Admin"))
+{
+    ViewBag.Title = "All Bookings";
+
+    <h2>All Bookings</h2>
+}
+else
+{
+    ViewBag.Title = "My Bookings";
+    <h2>My Bookings</h2>
 }
 
-<h2>Index</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -29,29 +38,30 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Vehicle.VRM)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BookingStart)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BookingFinish)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsLateReturn)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Remarks)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vehicle.VRM)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookingStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookingFinish)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsLateReturn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Remarks)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>
