@@ -111,6 +111,13 @@ namespace EIRLSSAssignment1.Controllers
 
             if (ModelState.IsValid)
             {
+
+                DateTime StartTime = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
+                DateTime EndTime = new DateTime(bookingVM.EndDate.Year, bookingVM.EndDate.Month, bookingVM.EndDate.Day, bookingVM.EndDateTime.Hour, bookingVM.EndDateTime.Minute, bookingVM.EndDateTime.Second);
+
+                bookingVM.booking.BookingStart = StartTime;
+                bookingVM.booking.BookingFinish = EndTime;
+
                 List<Booking> conflictingBookings = CheckConflictingBookings(bookingVM.booking);
 
                 if (conflictingBookings != null && conflictingBookings.Count > 0)
@@ -143,8 +150,6 @@ namespace EIRLSSAssignment1.Controllers
                             bookingVM.booking.UserId = User.Identity.GetUserId();
                             bookingVM.booking.OptionalExtras = bookedOptionalExtras;
 
-                            //appDbContext.Bookings.Add(bookingVM.booking);
-                            //appDbContext.SaveChanges();
 
                             _bookingRepository.Insert(bookingVM.booking);
                             _bookingRepository.Save();
@@ -163,8 +168,6 @@ namespace EIRLSSAssignment1.Controllers
             }
             else
             {
-                
-
                 return View(bookingVM);
             }
 
@@ -185,6 +188,18 @@ namespace EIRLSSAssignment1.Controllers
             return View(bookingVM);
         }
 
+        //public bool IsBookingValid(Booking booking)
+        //{
+        //    if(booking != null)
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
         // GET: Bookings/Edit/5
         public ActionResult Edit(int id)
         {
@@ -200,16 +215,29 @@ namespace EIRLSSAssignment1.Controllers
             }
 
             var userId = User.Identity.GetUserId();
-            var UserAge = _library.CalculateUserAge(userId);
+            var userAge = _library.CalculateUserAge(userId); //Calculate users age from their dob for minimum rental age
 
-            var availableVehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= UserAge), "Id", "DisplayString");
-            var availableExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras(), "Id", "DisplayString");
-            var bookedExtras = new MultiSelectList(_bookingRepository.GetBookingById(id).OptionalExtras);
-            ViewBag.AvailableExtraCount = availableExtras.Count();
-            ViewBag.BookedExtraCount = bookedExtras.Count();
-            ViewBag.VehicleId = availableVehicles;
-            ViewBag.OptionalExtras = availableExtras;
-            ViewBag.BookedOptionalExtras = bookedExtras;
+            //If user is trusted show the late return box
+            if(_library.CanUserReturnLate(userId))
+            {
+                ViewBag.IsTrustedUser = true;
+            }
+
+            var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge), "Id", "DisplayString");
+            var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.Bookings.Contains(booking) == false), "Id", "DisplayString");
+            var bookedOptionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.Bookings.Contains(booking)).ToList(), "Id", "DisplayString");
+            //var bookedOptionalExtras = new MultiSelectList(booking.OptionalExtras, "Id", "DisplayString");
+
+            //Set Viewbag Vehicle Data
+            ViewBag.Vehicles = vehicles;
+            ViewBag.VehicleCount = vehicles.Count();
+
+            //Set Viewbag Optional Extra Data
+            ViewBag.OptionalExtras = optionalExtras;
+            ViewBag.OptionalExtraCount = optionalExtras.Count();
+
+            ViewBag.BookedOptionalExtras = bookedOptionalExtras;
+            ViewBag.BookedOptionalExtracount = bookedOptionalExtras.Count();
 
             var bookingVM = new BookingViewModel { booking = booking};
 
@@ -224,16 +252,23 @@ namespace EIRLSSAssignment1.Controllers
         {
             if (ModelState.IsValid)
             {
+                Booking existingBooking = _bookingRepository.GetBookingById(bookingVM.booking.Id);
 
                 if (bookingVM.SelectedExtraIds != null)
                 {
-                    foreach (var id in bookingVM.SelectedExtraIds)
-                    {
-                        OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
+                    List<ConflictingExtraItem> conflictingOptionalExtras = CheckConflictingOptionalExtras(bookingVM);
 
-                        if (optionalExtra != null)
+                    if (conflictingOptionalExtras != null && conflictingOptionalExtras.Count > 0)
+                    {
+                        //There are conflicting optional extras
+                        ViewBag.ConflictingOptionalExtras = conflictingOptionalExtras;
+                    }
+                    else
+                    {
+                        foreach(var extraId in bookingVM.SelectedExtraIds)
                         {
-                            bookingVM.booking.OptionalExtras.Add(optionalExtra);
+                            OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(extraId);
+                            existingBooking.OptionalExtras.Add(optionalExtra);
                         }
                     }
                 }
@@ -247,18 +282,42 @@ namespace EIRLSSAssignment1.Controllers
 
                         if (optionalExtra != null)
                         {
-                            bookingVM.booking.OptionalExtras.Remove(optionalExtra);
+                            existingBooking.OptionalExtras.Remove(optionalExtra);
                         }
                     }
                 }
 
-                _bookingRepository.Update(bookingVM.booking);
-                _bookingRepository.Save();
+                existingBooking.BookingStart = bookingVM.booking.BookingStart;
+                existingBooking.BookingFinish = bookingVM.booking.BookingFinish;
+                existingBooking.IsLateReturn = bookingVM.booking.IsLateReturn;
+                existingBooking.Remarks = bookingVM.booking.Remarks;
 
+                _bookingRepository.Update(existingBooking);
+                _bookingRepository.Save();
                 return RedirectToAction("Index");
+
             }
-            ViewBag.VehicleId = new SelectList(_vehicleRepository.GetVehicles(), "Id", "DisplayString");
-            ViewBag.OptionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras(), "Id", "DisplayString");
+
+            var userId = User.Identity.GetUserId();
+
+            var userAge = _library.CalculateUserAge(userId); //Calculate users age from their dob for minimum rental age
+
+            var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge), "Id", "DisplayString");
+
+            var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras(), "Id", "DisplayString");
+
+            var bookedOptionalExtras = new MultiSelectList(bookingVM.booking.OptionalExtras.ToList(), "Id", "DisplayString");
+
+            //Set Viewbag Vehicle Data
+            ViewBag.Vehicles = vehicles;
+            ViewBag.VehicleCount = vehicles.Count();
+
+            //Set Viewbag Optional Extra Data
+            ViewBag.OptionalExtras = optionalExtras;
+            ViewBag.OptionalExtraCount = optionalExtras.Count();
+
+            ViewBag.BookedOptionalExtras = bookedOptionalExtras;
+            ViewBag.BookedOptionalExtracount = bookedOptionalExtras.Count();
             return View(bookingVM);
         }
 
@@ -301,18 +360,13 @@ namespace EIRLSSAssignment1.Controllers
         {
             if(booking != null)
             {
-                DateRange bookingDateRange = new DateRange(booking.BookingStart, booking.BookingFinish);
                 List<Booking> conflictingBookings = new List<Booking>();
-                //List<DateStatus> dateStatuses = new List<DateStatus>();
 
                 foreach (var existingBooking in _bookingRepository.GetBookings().Where(x => x.VehicleId == booking.VehicleId).ToList())
                 {
                     if (existingBooking != null)
-                    {
-                        bool startDateOk = bookingDateRange.Includes(existingBooking.BookingStart);
-                        bool endDateOk = bookingDateRange.Includes(existingBooking.BookingFinish);
-
-                        if (startDateOk == false || endDateOk == false)
+                    { 
+                        if(booking.BookingStart <= existingBooking.BookingFinish && existingBooking.BookingStart <= booking.BookingFinish)
                         {
                             conflictingBookings.Add(existingBooking);
                         }
@@ -333,7 +387,6 @@ namespace EIRLSSAssignment1.Controllers
         {
             if(bookingVM != null)
             {
-                DateRange bookingDateRange = new DateRange(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish);
                 List<Booking> conlictingBookingsWithExtra = new List<Booking>();
                 List<ConflictingExtraItem> conflictingExtras = new List<ConflictingExtraItem>();
 
@@ -344,16 +397,15 @@ namespace EIRLSSAssignment1.Controllers
 
                     foreach(var bookingWithSelectedExtra in bookingsWithSelectedExtra)
                     {
-                        bool startDateOk = bookingDateRange.Includes(bookingWithSelectedExtra.BookingStart);
-                        bool endDateOk = bookingDateRange.Includes(bookingWithSelectedExtra.BookingFinish);
-
-                        if (startDateOk == false || endDateOk == false)
+                        if (bookingVM.booking.BookingStart <= bookingWithSelectedExtra.BookingFinish && bookingWithSelectedExtra.BookingStart <= bookingVM.booking.BookingFinish)
                         {
-                            conflictingExtras.Add(new ConflictingExtraItem {
+                            conflictingExtras.Add(new ConflictingExtraItem
+                            {
                                 StartDate = bookingWithSelectedExtra.BookingStart,
                                 EndDate = bookingWithSelectedExtra.BookingFinish,
                                 OptionalExtra = optionalExtra
                             });
+
                         }
                     }
                 }

@@ -52,7 +52,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.SelectedExtraIds, "Add More Extras", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @if (ViewBag.AvailableExtraCount == 0)
+            @if (ViewBag.OptionalExtraCount == 0)
             {
                 <b>There are no available extras at this time.</b>
             }
@@ -67,7 +67,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.SelectedExtraToRemoveIds, "Remove Booked Extras", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @if (ViewBag.BookedExtraCount == 0)
+            @if (ViewBag.BookedOptionalExtraCount == 0)
             {
                 <b>You haven't booked any extras.</b>
             }

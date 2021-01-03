@@ -18,7 +18,7 @@ namespace EIRLSSAssignment1.DAL
 
         public IList<OptionalExtra> GetOptionalExtras()
         {
-            return _context.OptionalExtras.ToList();
+            return _context.OptionalExtras.Include(x => x.Bookings).ToList();
         }
 
         public OptionalExtra GetOptionalExtraById(int id)

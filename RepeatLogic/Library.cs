@@ -73,22 +73,13 @@ namespace EIRLSSAssignment1.RepeatLogic
             }
         }
 
-        public bool CanBeReturnedLate(string id)
+        public bool CanUserReturnLate(string id)
         {
             ApplicationUser user = _applicationDbContext.Users.Find(id);
 
             if (user != null)
             {
-                List<Booking> ClosedBookings = _bookingRepository.GetBookings().Where(x => x.UserId == id).Where(x => x.IsReturned == true).ToList();
-                Configuration config = GetActiveConfiguration();
-                if(ClosedBookings.Count >= config.LateReturnEligibility)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return user.IsTrustedCustomer;
             }
             else
             {
