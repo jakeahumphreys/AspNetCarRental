@@ -35,7 +35,17 @@ namespace EIRLSSAssignment1.Controllers
         // GET: Bookings
         public ActionResult Index()
         {
-            return View(_bookingRepository.GetBookings());
+            var role = appDbContext.Roles.SingleOrDefault(r => r.Name == "Admin");
+            ApplicationUser user = appDbContext.Users.Find(User.Identity.GetUserId());
+
+            if(user.Roles.FirstOrDefault().RoleId == role.Id)
+            {
+                return View(_bookingRepository.GetBookings());
+            }
+            else
+            {
+                return View(_bookingRepository.GetBookings().Where(x => x.UserId == user.Id));
+            }
         }
 
         // GET: Bookings/Details/5

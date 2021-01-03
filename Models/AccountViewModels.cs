@@ -68,11 +68,17 @@ namespace EIRLSSAssignment1.Models
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [Required]
         [Display(Name = "Name")]
         public string Name { get; set; }
+
+        [Required]
+        [Display(Name = "Contact Number")]
+        [DataType(DataType.PhoneNumber)]
+        public string PhoneNumber { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
@@ -85,6 +91,7 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "Password")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]

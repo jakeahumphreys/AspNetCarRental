@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -20,7 +21,10 @@ namespace EIRLSSAssignment1.Models
 
         //Additional fields
 
+        [Required]
         public string Name { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
         public  bool IsBlackListed { get; set; }
         public bool IsTrustedCustomer { get; set; }

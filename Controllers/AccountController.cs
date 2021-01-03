@@ -217,7 +217,7 @@ namespace EIRLSSAssignment1.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, DateOfBirth = model.DateOfBirth};
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, DateOfBirth = model.DateOfBirth, PhoneNumber = model.PhoneNumber};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
