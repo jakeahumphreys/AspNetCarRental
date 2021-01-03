@@ -17,7 +17,7 @@ namespace EIRLSSAssignment1.Controllers
 
         public VehicleTypeController()
         {
-            _vehicleTypeRepository = new VehicleTypeRepository(new VehicleTypeContext());
+            _vehicleTypeRepository = new VehicleTypeRepository(new ApplicationDbContext());
         }
 
         // GET: VehicleTypes

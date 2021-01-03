@@ -9,9 +9,9 @@ namespace EIRLSSAssignment1.DAL
 {
     public class BookingRepository : IBookingRepository
     {
-        private readonly BookingContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public BookingRepository(BookingContext context)
+        public BookingRepository(ApplicationDbContext context)
         {
             _context = context;
         }

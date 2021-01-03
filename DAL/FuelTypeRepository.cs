@@ -9,9 +9,9 @@ namespace EIRLSSAssignment1.DAL
 {
     public class FuelTypeRepository : IFuelTypeRepository
     {
-        private readonly FuelTypeContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public FuelTypeRepository(FuelTypeContext context)
+        public FuelTypeRepository(ApplicationDbContext context)
         {
             _context = context;
         }

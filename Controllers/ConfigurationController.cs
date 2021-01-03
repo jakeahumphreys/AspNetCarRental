@@ -17,7 +17,7 @@ namespace EIRLSSAssignment1.Controllers
 
         public ConfigurationController()
         {
-            _configurationRepository = new ConfigurationRepository(new ConfigurationContext());
+            _configurationRepository = new ConfigurationRepository(new ApplicationDbContext());
         }
 
         public ActionResult Index()

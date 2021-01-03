@@ -9,9 +9,9 @@ namespace EIRLSSAssignment1.DAL
 {
     public class OptionalExtraRepository : IOptionalExtraRepository
     {
-        private readonly OptionalExtraContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public OptionalExtraRepository(OptionalExtraContext context)
+        public OptionalExtraRepository(ApplicationDbContext context)
         {
             _context = context;
         }

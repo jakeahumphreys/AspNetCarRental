@@ -15,9 +15,10 @@ namespace EIRLSSAssignment1.RepeatLogic
 
         public Library()
         {
-            _configurationRepository = new ConfigurationRepository(new ConfigurationContext());
+            ApplicationDbContext context = new ApplicationDbContext();
+            _configurationRepository = new ConfigurationRepository(context);
             _applicationDbContext = new ApplicationDbContext();
-            _bookingRepository = new BookingRepository(new BookingContext());
+            _bookingRepository = new BookingRepository(context);
         }
         public Configuration GetActiveConfiguration()
         {

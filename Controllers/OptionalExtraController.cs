@@ -17,7 +17,7 @@ namespace EIRLSSAssignment1.Controllers
 
         public OptionalExtraController()
         {
-            _optionalExtraRepository = new OptionalExtraRepository(new OptionalExtraContext());
+            _optionalExtraRepository = new OptionalExtraRepository(new ApplicationDbContext());
         }
 
         // GET: OptionalExtras

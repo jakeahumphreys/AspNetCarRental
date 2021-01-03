@@ -9,9 +9,9 @@ namespace EIRLSSAssignment1.DAL
 {
     public class VehicleRepository : IVehicleRepository
     {
-        private readonly VehicleContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public VehicleRepository(VehicleContext context)
+        public VehicleRepository(ApplicationDbContext context)
         {
             _context = context;
         }

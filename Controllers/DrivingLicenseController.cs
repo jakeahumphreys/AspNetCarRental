@@ -20,7 +20,7 @@ namespace EIRLSSAssignment1.Controllers
 
         public DrivingLicenseController()
         {
-            _drivingLicenseRepository = new DrivingLicenseRepository(new DrivingLicenseContext());
+            _drivingLicenseRepository = new DrivingLicenseRepository(new ApplicationDbContext());
             _applicationDbContext = new ApplicationDbContext();
         }
 

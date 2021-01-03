@@ -19,9 +19,10 @@ namespace EIRLSSAssignment1.Controllers
 
         public VehicleController()
         {
-            _vehicleRepository = new VehicleRepository(new VehicleContext());
-            _fuelTypeRepository = new FuelTypeRepository(new FuelTypeContext());
-            _vehicleTypeRepository = new VehicleTypeRepository(new VehicleTypeContext());
+            ApplicationDbContext context = new ApplicationDbContext();
+            _vehicleRepository = new VehicleRepository(context);
+            _fuelTypeRepository = new FuelTypeRepository(context);
+            _vehicleTypeRepository = new VehicleTypeRepository(context);
         }
 
         public ActionResult Index()

@@ -20,7 +20,7 @@ namespace EIRLSSAssignment1.Controllers
 
         public SupportingDocumentController()
         {
-            _supportingDocumentRepository = new SupportingDocumentRepository(new SupportingDocumentContext());
+            _supportingDocumentRepository = new SupportingDocumentRepository(new ApplicationDbContext());
             _applicationDbContext = new ApplicationDbContext();
         }
 

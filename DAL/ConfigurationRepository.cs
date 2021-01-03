@@ -9,9 +9,9 @@ namespace EIRLSSAssignment1.DAL
 {
     public class ConfigurationRepository : IConfigurationRepository
     {
-        private readonly ConfigurationContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ConfigurationRepository(ConfigurationContext context)
+        public ConfigurationRepository(ApplicationDbContext context)
         {
             _context = context;
         }

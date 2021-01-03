@@ -24,9 +24,10 @@ namespace EIRLSSAssignment1.Controllers
 
         public BookingController()
         {
-            _bookingRepository = new BookingRepository(new BookingContext());
-            _vehicleRepository = new VehicleRepository(new VehicleContext());
-            _optionalExtraRepository = new OptionalExtraRepository(new OptionalExtraContext());
+            ApplicationDbContext context = new ApplicationDbContext();
+            _bookingRepository = new BookingRepository(context);
+            _vehicleRepository = new VehicleRepository(context);
+            _optionalExtraRepository = new OptionalExtraRepository(context);
             
             _library = new Library();
         }

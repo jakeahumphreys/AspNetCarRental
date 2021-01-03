@@ -17,7 +17,7 @@ namespace EIRLSSAssignment1.Controllers
 
         public FuelTypeController()
         {
-            _fuelTypeRepository = new FuelTypeRepository(new FuelTypeContext());
+            _fuelTypeRepository = new FuelTypeRepository(new ApplicationDbContext());
         }
 
         // GET: FuelType

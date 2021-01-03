@@ -43,8 +43,14 @@ namespace EIRLSSAssignment1.Models
             return new ApplicationDbContext();
         }
 
+        public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<VehicleType> VehicleTypes { get; set; }
         public DbSet<OptionalExtra> OptionalExtras { get; set; }
+        public DbSet<FuelType> FuelTypes { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<DrivingLicense> DrivingLicenses { get; set; }
+        public DbSet<SupportingDocument> SupportingDocuments { get; set; }
+        public DbSet<Configuration> Configurations { get; set; }
 
     }
 }

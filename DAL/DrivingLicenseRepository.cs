@@ -9,9 +9,9 @@ namespace EIRLSSAssignment1.DAL
 {
     public class DrivingLicenseRepository : IDrivingLicenseRepository
     {
-        private readonly DrivingLicenseContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DrivingLicenseRepository(DrivingLicenseContext context)
+        public DrivingLicenseRepository(ApplicationDbContext context)
         {
             _context = context;
         }

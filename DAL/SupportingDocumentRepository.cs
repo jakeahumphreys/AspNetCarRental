@@ -9,9 +9,9 @@ namespace EIRLSSAssignment1.DAL
 {
     public class SupportingDocumentRepository : ISupportingDocumentRepository
     {
-        private readonly SupportingDocumentContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public SupportingDocumentRepository(SupportingDocumentContext context)
+        public SupportingDocumentRepository(ApplicationDbContext context)
         {
             _context = context;
         }
