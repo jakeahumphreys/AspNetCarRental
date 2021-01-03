@@ -18,8 +18,7 @@ namespace EIRLSSAssignment1.DAL
 
         public IList<OptionalExtra> GetOptionalExtras()
         {
-            var optionalExtras = _context.OptionalExtras.Include(o => o.booking);
-            return optionalExtras.ToList();
+            return _context.OptionalExtras.ToList();
         }
 
         public OptionalExtra GetOptionalExtraById(int id)
@@ -45,6 +44,11 @@ namespace EIRLSSAssignment1.DAL
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public void Attach(OptionalExtra optionalExtra)
+        {
+            _context.OptionalExtras.Attach(optionalExtra);
         }
 
         private bool disposed = false;

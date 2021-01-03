@@ -10,6 +10,8 @@ namespace EIRLSSAssignment1.Models
     {
         [Display(Name = "Booking ID")]
         public int Id { get; set; }
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -25,7 +27,7 @@ namespace EIRLSSAssignment1.Models
         public int VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
         [Display(Name = "Optional Extras")]
-        public IList<OptionalExtra> OptionalExtras { get; set; }
+        public ICollection<OptionalExtra> OptionalExtras { get; set; }
         public string Remarks { get; set; }
         public bool IsReturned { get; set; }
     }

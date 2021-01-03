@@ -4,80 +4,119 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+<h2>Book a vehicle</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>Booking</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.booking.BookingStart, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.booking.BookingStart, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.booking.BookingStart, "", new { @class = "text-danger" })
-        </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.booking.BookingFinish, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.booking.BookingFinish, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.booking.BookingFinish, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @if (ViewBag.AvailableVehicles == 0)
-            {
-                <b>There are currently no vehicles available to rent.</b>
-            }
-            else
-            {
-                @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.VehicleId, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
-            }
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.booking.OptionalExtras, "Add Extras", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @if (ViewBag.AvailableExtraCount == 0)
-            {
-                <b>There are no available extras at this time.</b>
-            }
-            else
-            {
-                @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
-                @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
-            }
-        </div>
-    </div>
-
-    @if (User.IsInRole("Admin"))
+    if (ViewBag.VehicleCount == 0)
     {
-        <div class="form-group">
-            @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+        <div class="alert alert-info">
+            <h4>Sorry,</h4>
+            <p>Unfortunately there are currently no vehicles available to rent.</p>
+        </div> 
+    }
+    else
+    {
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @if (ViewBag.ConflictingBookings != null || ViewBag.ConflictingOptionalExtras != null)
+            {
+        <div class="alert alert-danger">
+            <h4>Unfortunately we are unable to complete that booking for the following reason(s).</h4>
+            <hr />
+            @if (ViewBag.ConflictingBookings != null)
+            {
+                <p>Your chosen period intersects with the following booking period(s):</p>
+                <ul>
+                    @foreach (var booking in ViewBag.ConflictingBookings)
+                    {
+                        <li>@booking.BookingStart.ToString("d") to @booking.BookingFinish.ToString("d")</li>
+                    }
+                </ul>
+                <br />
+                <p>Please try another vehicle or select a different date range.</p>
+            }
+            @if (ViewBag.ConflictingBookings == null && ViewBag.ConflictingOptionalExtras == null)
+            {
+                <hr />
+            }
+            @if (ViewBag.ConflictingOptionalExtras == null)
+            {
+                <p>Your chosen optional extras are booked in the following intersecting period(s):</p>
+                <ul>
+                    @foreach (var conflictingExtra in ViewBag.ConflictingOptionalExtras)
+                    {
+                        <li>Extra: @conflictingExtra.OptionalExtra.Name is booked from @conflictingExtra.StartDate.ToString("d") to @conflictingExtra.EndDate.ToString("d") </li>
+                    }
+                </ul>
+                <br />
+                <p>Please try another extra or select a different date range.</p>
+            }
+
+        </div>
+            }
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.BookingStart, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.booking.BookingStart, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.booking.BookingStart, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.BookingFinish, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.booking.BookingFinish, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.booking.BookingFinish, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.Vehicles, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.OptionalExtras, "Add Extras", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @if (ViewBag.OptionalExtraCount == 0)
+                    {
+                        <b style="color: red; background-color:beige;">Unfortunately there are no available extras at this time.</b>
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
+                        @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
+                    }
+                </div>
+            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
             </div>
         </div>
     }
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
-        </div>
-    </div>
-</div>
 }
 
 <div>

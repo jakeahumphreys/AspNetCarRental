@@ -14,9 +14,10 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "Serial Number")]
         public string serialNumber { get; set; }
         public string Remarks { get; set; }
+
         //EF6 References
-        public int? bookingId { get; set; }
-        public Booking booking { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
+
         public string DisplayString
         {
             get

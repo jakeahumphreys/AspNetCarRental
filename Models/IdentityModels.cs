@@ -42,5 +42,9 @@ namespace EIRLSSAssignment1.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<OptionalExtra> OptionalExtras { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+
     }
 }

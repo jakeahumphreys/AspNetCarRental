@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.RepeatLogic;
+using EIRLSSAssignment1.RepeatLogic.Objects;
 using Microsoft.AspNet.Identity;
 
 namespace EIRLSSAssignment1.Controllers
@@ -18,6 +19,7 @@ namespace EIRLSSAssignment1.Controllers
         private BookingRepository _bookingRepository;
         private VehicleRepository _vehicleRepository;
         private OptionalExtraRepository _optionalExtraRepository;
+        private ApplicationDbContext appDbContext = new ApplicationDbContext();
         private Library _library;
 
         public BookingController()
@@ -25,6 +27,7 @@ namespace EIRLSSAssignment1.Controllers
             _bookingRepository = new BookingRepository(new BookingContext());
             _vehicleRepository = new VehicleRepository(new VehicleContext());
             _optionalExtraRepository = new OptionalExtraRepository(new OptionalExtraContext());
+            
             _library = new Library();
         }
 
@@ -49,13 +52,13 @@ namespace EIRLSSAssignment1.Controllers
 
             var bookingVM = new BookingViewModel { booking = booking };
 
-            List<OptionalExtra> bookedOptionalExtras = _optionalExtraRepository.GetOptionalExtras().Where(o => o.bookingId == id).ToList();
+            List<OptionalExtra> bookedOptionalExtras = booking.OptionalExtras.ToList();
 
-            if(bookedOptionalExtras != null)
+            if (bookedOptionalExtras != null)
             {
                 bookingVM.BookedOptionalExtras = bookedOptionalExtras;
             }
-            
+
             return View(bookingVM);
         }
 
@@ -63,82 +66,120 @@ namespace EIRLSSAssignment1.Controllers
         public ActionResult Create()
         {
             //Handle preventing users from creating bookings based on conditions
-            var userId = User.Identity.GetUserId();
-            //Check if garage is allowing orders
             if (_library.IsGarageAllowingOrders())
             {
-                //Check if user is blacklisted
-                if(!_library.IsUserBlacklisted(userId))
-                {
-                    //Record user age for retrieving the correct vehicles
-                    var UserAge = _library.CalculateUserAge(userId);
+                var userId = User.Identity.GetUserId();
 
-                    var availableVehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.IsRented == false).Where(x => x.MinimumAgeToRent <= UserAge), "Id", "DisplayString");
-                    var availableExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.bookingId == null), "Id", "DisplayString");
-                    ViewBag.VehicleId = availableVehicles;
-                    ViewBag.OptionalExtras = availableExtras;
-                    ViewBag.AvailableExtraCount = availableExtras.Count();
-                    ViewBag.AvailableVehicles = availableVehicles.Count();
+                if (!_library.IsUserBlacklisted(userId))
+                {
+                    var userAge = _library.CalculateUserAge(userId); //Calculate users age from their dob for minimum rental age
+
+                    var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge), "Id", "DisplayString");
+
+                    var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras(), "Id", "DisplayString");
+
+                    //Set Viewbag Vehicle Data
+                    ViewBag.Vehicles = vehicles;
+                    ViewBag.VehicleCount = vehicles.Count();
+
+                    //Set Viewbag Optional Extra Data
+                    ViewBag.OptionalExtras = optionalExtras;
+                    ViewBag.OptionalExtraCount = optionalExtras.Count();
+
                     return View();
                 }
                 else
                 {
+                    //user is blacklisted
                     return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
                 }
                
             }
             else
             {
+                //Garage is not open for orders
                 return new HttpStatusCodeResult(HttpStatusCode.ServiceUnavailable);
             }
-
-          
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(BookingViewModel bookingVM)
         {
-            //Logic to prevent bookings based on conditions of garage
+            var userId = User.Identity.GetUserId();
 
             if (ModelState.IsValid)
             {
-                _bookingRepository.Insert(bookingVM.booking);
-                _bookingRepository.Save();
+                List<Booking> conflictingBookings = CheckConflictingBookings(bookingVM.booking);
 
-                if (bookingVM.SelectedExtraIds != null)
+                if (conflictingBookings != null && conflictingBookings.Count > 0)
                 {
-                    foreach (var id in bookingVM.SelectedExtraIds)
+                    //There are conflicting bookings
+                    ViewBag.ConflictingBookings = conflictingBookings;
+                }
+                else
+                {
+                    if (bookingVM.SelectedExtraIds != null)
                     {
-                        OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
+                        List<ConflictingExtraItem> conflictingOptionalExtras = CheckConflictingOptionalExtras(bookingVM);
 
-                        if (optionalExtra != null)
+                        if (conflictingOptionalExtras != null && conflictingOptionalExtras.Count > 0)
                         {
-                            optionalExtra.bookingId = bookingVM.booking.Id;
-                            _optionalExtraRepository.Update(optionalExtra);
-                            _optionalExtraRepository.Save();
+                            //There are conflicting optional extras
+                            ViewBag.ConflictingOptionalExtras = conflictingOptionalExtras;
+                        }
+                        else
+                        {
+
+                            var bookedOptionalExtras = new List<OptionalExtra>();
+
+                            foreach(var id in bookingVM.SelectedExtraIds)
+                            {
+                                //HERE
+                                bookedOptionalExtras.Add(_optionalExtraRepository.GetOptionalExtraById(id));
+                            }
+                           
+                            bookingVM.booking.UserId = User.Identity.GetUserId();
+                            bookingVM.booking.OptionalExtras = bookedOptionalExtras;
+
+                            //appDbContext.Bookings.Add(bookingVM.booking);
+                            //appDbContext.SaveChanges();
+
+                            _bookingRepository.Insert(bookingVM.booking);
+                            _bookingRepository.Save();
+                            return RedirectToAction("Index");
                         }
                     }
-                }
+                    else
+                    {
+                        //User has not selected optional extras
+                        bookingVM.booking.UserId = User.Identity.GetUserId(); //Attribute booking to user
+                        _bookingRepository.Insert(bookingVM.booking);
+                        _bookingRepository.Save();
+                        return RedirectToAction("Index");
+                    }
+                } 
+            }
+            else
+            {
+                
 
-                var vehicleToUpdate = _vehicleRepository.GetVehicleById(bookingVM.booking.VehicleId);
-
-                if(vehicleToUpdate != null)
-                {
-                    vehicleToUpdate.IsRented = true;
-                    _vehicleRepository.Update(vehicleToUpdate);
-                    _vehicleRepository.Save();
-                }
-
-                return RedirectToAction("Index");
+                return View(bookingVM);
             }
 
-            var availableVehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.IsRented == false), "Id", "DisplayString");
-            var availableExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.bookingId == null), "Id", "DisplayString");
-            ViewBag.VehicleId = availableVehicles;
-            ViewBag.OptionalExtras = availableExtras;
-            ViewBag.AvailableExtraCount = availableExtras.Count();
-            ViewBag.BookedExtraCount = availableExtras.Count();
+            var userAge = _library.CalculateUserAge(userId); //Calculate users age from their dob for minimum rental age
+
+            var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge), "Id", "DisplayString");
+
+            var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras(), "Id", "DisplayString");
+
+            //Set Viewbag Vehicle Data
+            ViewBag.Vehicles = vehicles;
+            ViewBag.VehicleCount = vehicles.Count();
+
+            //Set Viewbag Optional Extra Data
+            ViewBag.OptionalExtras = optionalExtras;
+            ViewBag.OptionalExtraCount = optionalExtras.Count();
 
             return View(bookingVM);
         }
@@ -157,9 +198,12 @@ namespace EIRLSSAssignment1.Controllers
                 return HttpNotFound();
             }
 
-            var availableVehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.IsRented == false), "Id", "DisplayString");
-            var availableExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.bookingId == null), "Id", "DisplayString");
-            var bookedExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.bookingId == id), "Id", "DisplayString");
+            var userId = User.Identity.GetUserId();
+            var UserAge = _library.CalculateUserAge(userId);
+
+            var availableVehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= UserAge), "Id", "DisplayString");
+            var availableExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras(), "Id", "DisplayString");
+            var bookedExtras = new MultiSelectList(_bookingRepository.GetBookingById(id).OptionalExtras);
             ViewBag.AvailableExtraCount = availableExtras.Count();
             ViewBag.BookedExtraCount = bookedExtras.Count();
             ViewBag.VehicleId = availableVehicles;
@@ -179,8 +223,6 @@ namespace EIRLSSAssignment1.Controllers
         {
             if (ModelState.IsValid)
             {
-                _bookingRepository.Update(bookingVM.booking);
-                _bookingRepository.Save();
 
                 if (bookingVM.SelectedExtraIds != null)
                 {
@@ -190,9 +232,7 @@ namespace EIRLSSAssignment1.Controllers
 
                         if (optionalExtra != null)
                         {
-                            optionalExtra.bookingId = bookingVM.booking.Id;
-                            _optionalExtraRepository.Update(optionalExtra);
-                            _optionalExtraRepository.Save();
+                            bookingVM.booking.OptionalExtras.Add(optionalExtra);
                         }
                     }
                 }
@@ -206,17 +246,18 @@ namespace EIRLSSAssignment1.Controllers
 
                         if (optionalExtra != null)
                         {
-                            optionalExtra.bookingId = null;
-                            _optionalExtraRepository.Update(optionalExtra);
-                            _optionalExtraRepository.Save();
+                            bookingVM.booking.OptionalExtras.Remove(optionalExtra);
                         }
                     }
                 }
 
+                _bookingRepository.Update(bookingVM.booking);
+                _bookingRepository.Save();
+
                 return RedirectToAction("Index");
             }
             ViewBag.VehicleId = new SelectList(_vehicleRepository.GetVehicles(), "Id", "DisplayString");
-            ViewBag.OptionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.bookingId == null), "Id", "DisplayString");
+            ViewBag.OptionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras(), "Id", "DisplayString");
             return View(bookingVM);
         }
 
@@ -253,6 +294,75 @@ namespace EIRLSSAssignment1.Controllers
                 _bookingRepository.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private List<Booking> CheckConflictingBookings(Booking booking)
+        {
+            if(booking != null)
+            {
+                DateRange bookingDateRange = new DateRange(booking.BookingStart, booking.BookingFinish);
+                List<Booking> conflictingBookings = new List<Booking>();
+                //List<DateStatus> dateStatuses = new List<DateStatus>();
+
+                foreach (var existingBooking in _bookingRepository.GetBookings().Where(x => x.VehicleId == booking.VehicleId).ToList())
+                {
+                    if (existingBooking != null)
+                    {
+                        bool startDateOk = bookingDateRange.Includes(existingBooking.BookingStart);
+                        bool endDateOk = bookingDateRange.Includes(existingBooking.BookingFinish);
+
+                        if (startDateOk == false || endDateOk == false)
+                        {
+                            conflictingBookings.Add(existingBooking);
+                        }
+                    }
+                }
+
+                return conflictingBookings;
+            }
+            else
+            {
+                return null;
+            }
+            
+            
+        }
+
+        private List<ConflictingExtraItem> CheckConflictingOptionalExtras(BookingViewModel bookingVM)
+        {
+            if(bookingVM != null)
+            {
+                DateRange bookingDateRange = new DateRange(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish);
+                List<Booking> conlictingBookingsWithExtra = new List<Booking>();
+                List<ConflictingExtraItem> conflictingExtras = new List<ConflictingExtraItem>();
+
+                foreach (var extraId in bookingVM.SelectedExtraIds)
+                {
+                    OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(extraId);
+                    List<Booking> bookingsWithSelectedExtra = _bookingRepository.GetBookings().Where(x => x.OptionalExtras.Contains(optionalExtra)).ToList();
+
+                    foreach(var bookingWithSelectedExtra in bookingsWithSelectedExtra)
+                    {
+                        bool startDateOk = bookingDateRange.Includes(bookingWithSelectedExtra.BookingStart);
+                        bool endDateOk = bookingDateRange.Includes(bookingWithSelectedExtra.BookingFinish);
+
+                        if (startDateOk == false || endDateOk == false)
+                        {
+                            conflictingExtras.Add(new ConflictingExtraItem {
+                                StartDate = bookingWithSelectedExtra.BookingStart,
+                                EndDate = bookingWithSelectedExtra.BookingFinish,
+                                OptionalExtra = optionalExtra
+                            });
+                        }
+                    }
+                }
+
+                return conflictingExtras;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -24,7 +24,7 @@ namespace EIRLSSAssignment1.DAL
 
         public Booking GetBookingById(int id)
         {
-            return _context.Bookings.Where(x => x.Id == id).Include(x => x.Vehicle).SingleOrDefault();
+            return _context.Bookings.Where(x => x.Id == id).Include(x => x.OptionalExtras).Include(x => x.Vehicle).SingleOrDefault();
         }
 
         public void Insert(Booking Booking)
@@ -45,6 +45,11 @@ namespace EIRLSSAssignment1.DAL
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public void Attach(Booking booking)
+        {
+            _context.Bookings.Attach(booking);
         }
 
         private bool disposed = false;

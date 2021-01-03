@@ -11,11 +11,13 @@ namespace EIRLSSAssignment1.RepeatLogic
     {
         private ConfigurationRepository _configurationRepository;
         private ApplicationDbContext _applicationDbContext;
+        private BookingRepository _bookingRepository;
 
         public Library()
         {
             _configurationRepository = new ConfigurationRepository(new ConfigurationContext());
             _applicationDbContext = new ApplicationDbContext();
+            _bookingRepository = new BookingRepository(new BookingContext());
         }
         public Configuration GetActiveConfiguration()
         {
@@ -69,5 +71,34 @@ namespace EIRLSSAssignment1.RepeatLogic
                 return false;
             }
         }
+
+        public bool CanBeReturnedLate(string id)
+        {
+            ApplicationUser user = _applicationDbContext.Users.Find(id);
+
+            if (user != null)
+            {
+                List<Booking> ClosedBookings = _bookingRepository.GetBookings().Where(x => x.UserId == id).Where(x => x.IsReturned == true).ToList();
+                Configuration config = GetActiveConfiguration();
+                if(ClosedBookings.Count >= config.LateReturnEligibility)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        //public bool isWithinOpeningHours()
+        //{
+        //    Configuration config = GetActiveConfiguration();
+            
+        //}
     }
 }
