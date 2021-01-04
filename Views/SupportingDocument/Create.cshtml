@@ -1,18 +1,20 @@
 ﻿@model EIRLSSAssignment1.Models.SupportingDocumentViewModel
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Upload Supporting Document";
 }
 
-<h2>Create</h2>
-
+<div>
+    <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Home", new { })';return false;"></button>
+</div>
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" })) 
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.userId)
     <div class="form-horizontal">
-        <h4>SupportingDocument</h4>
+        <hr/>
+        <h2>Supporting Document</h2>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -41,15 +43,12 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-success" />
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

@@ -1,13 +1,18 @@
 ﻿@model EIRLSSAssignment1.Models.SupportingDocument
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Details (" + Model.DocumentType + ")";
 }
 
-<h2>Details</h2>
+<div>
+    <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Home", new { })';return false;"></button>
+    <button class="btn btn-warning fa fa-pen" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Edit","SupportingDocument", new {id = Model.Id})';return false;"></button>
+    <hr />
+</div>
+
+<h2>Details (@Model.DocumentType)</h2>
 
 <div>
-    <h4>SupportingDocument</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -36,7 +41,3 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

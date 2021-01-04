@@ -114,13 +114,18 @@ namespace EIRLSSAssignment1.Controllers
             }
             existingUser.PhoneNumber = user.PhoneNumber;
             existingUser.LockoutEnabled = user.LockoutEnabled;
-            existingUser.LockoutEndDateUtc = user.LockoutEndDateUtc;
+
+            if(user.LockoutEndDateUtc == DateTime.MinValue)
+            {
+                existingUser.LockoutEndDateUtc = null;
+
+            }
 
             if (ModelState.IsValid)
             {
                 _applicationDbContext.Entry(existingUser).State = EntityState.Modified;
                 _applicationDbContext.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Account", new { id = existingUser.Id });
             }
             return View(user);
         }

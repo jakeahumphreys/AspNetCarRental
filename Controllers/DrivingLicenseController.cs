@@ -47,18 +47,19 @@ namespace EIRLSSAssignment1.Controllers
         }
 
         // GET: DrivingLicense/Create
-        public ActionResult Create(string userId)
+        public ActionResult Create()
         {
-            if(userId == "")
+            if (User.IsInRole("Admin"))
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                ViewBag.userId = new SelectList(_applicationDbContext.Users.ToList(), "Id", "Name");
+                return View();
             }
             else
             {
-                ViewBag.UserId = userId;
-
+                var userId = User.Identity.GetUserId();
                 var user = _applicationDbContext.Users.Find(userId);
                 ViewBag.Name = user.Name;
+                ViewBag.UserId = userId;
                 return View();
             }
             
@@ -95,7 +96,7 @@ namespace EIRLSSAssignment1.Controllers
                     }
                 }
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home", null);
             }
 
             return View(drivingLicenseVM);
@@ -137,7 +138,7 @@ namespace EIRLSSAssignment1.Controllers
                 _drivingLicenseRepository.Update(drivingLicenseVM.License);
                 _drivingLicenseRepository.Save();
 ;
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home", null);
             }
             return View(drivingLicenseVM);
         }
@@ -175,7 +176,7 @@ namespace EIRLSSAssignment1.Controllers
 
             _drivingLicenseRepository.Delete(drivingLicense);
             _drivingLicenseRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Admin", null);
         }
 
         protected override void Dispose(bool disposing)

@@ -21,6 +21,50 @@
                     <div class="card-body">
                         @if (ViewBag.UserBookingsCount > 0)
                         {
+                            <p>
+                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+                                    Search Filters
+                                </button>
+                            </p>
+                            <div class="collapse mb-3" id="collapseFilters">
+                                @using (Html.BeginForm())
+                                {
+                                    <div class="card-deck">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Date Range</h5>
+                                                <hr />
+                                                <label for="startDate">Date Range Start</label>
+                                                <input type="date" class="form-control" placeholder="01/01/2001" aria-label="Date Range Start" aria-describedby="basic-addon1" id="startDate" name="searchParamDateStart">
+                                                <label for="endDate">Date Range End</label>
+                                                <input type="date" class="form-control" placeholder="01/01/2010" aria-label="Date Range End" aria-describedby="basic-addon1" id="endDate" name="searchParamDateEnd">
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Vehicle</h5>
+                                                <hr />
+                                                <label for="vehicle">Vehicle</label>
+                                                @Html.DropDownList("searchParamVehicle", (SelectList)ViewBag.vehicles, "", htmlAttributes: new { @class = "form-control", id = "vehicle" })
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Late Return</h5>
+                                                <hr />
+                                                <label for="lateReturn">Late return arranged?</label>
+                                                <select name="searchParamLateReturn" id="lateReturn">
+                                                    <option value="" disabled selected></option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="Yes">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class=" btn btn-primary mt-3"> Search</button>
+                                    <button class="btn btn-info mt-3" onclick="window.location.href=window.location.href">Clear Filters</button>
+                                }
+                            </div>
                             <table class="table table-striped">
                                 <tr>
                                     <th>
@@ -81,6 +125,11 @@
                             {
                                 <button class="btn btn-danger disabled" onclick="location.href='';return false;">Booking disabled</button>
                             }
+                            else
+                            {
+                                <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "Booking",new {})';return false;">New Booking</button>
+
+                            }
                         }
                         else
                         {
@@ -89,52 +138,71 @@
 
                     </div>
                 </div>
-                <div class="card-deck pt-3">
-                    <div class="card" style="width: 18rem;">
-                        @*<img class="card-img-top" src="..." alt="Card image cap">*@
-                        <div class="card-body">
-                            <h5 class="card-title">Your Supporting Document</h5>
-                            <hr/>
-                            @if(ViewBag.hasStoredLicense == false)
-                            {
-                                <div class="alert alert-warning">
-                                    <strong>Documentation Required</strong>
-                                    <p>You are unable to rent until you have submitted this document</p>
-                                </div>
-                            }
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                @if (!User.IsInRole("Admin"))
+                {
+                    <div class="card-deck pt-3">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <row>
+                                    <h5 class="card-title">Your Supporting Document</h5>
+
+                                    @if (ViewBag.hasStoredDocument == false)
+                                    {
+                                        <span class="badge badge-warning">Upload required</span>
+                                    }
+                                    <hr />
+                                </row>
+                                <p class="card-text">Upload / Manage your supporting document.</p>
+                                @if (ViewBag.hasStoredDocument == false)
+                                {
+                                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "SupportingDocument",new {})';return false;">Upload Document</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Manage", "SupportingDocument",new {})';return false;">Manage Document</button>
+                                }
+                            </div>
+                        </div>
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <row>
+                                    <h5 class="card-title">Your License</h5>
+                                    @if (ViewBag.hasStoredLicense == false)
+                                    {
+                                        <span class="badge badge-warning">Upload required</span>
+                                    }
+                                    <hr />
+                                </row>
+                                <p class="card-text">Upload / Manage your drivers license.</p>
+                                @if (ViewBag.hasStoredLicense == false)
+                                {
+                                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "DrivingLicense",new {})';return false;">Upload License</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Manage", "DrivingLicense",new {})';return false;">Manage License</button>
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div class="card" style="width: 18rem;">
-                        @*<img class="card-img-top" src="..." alt="Card image cap">*@
-                        <div class="card-body">
-                            <h5 class="card-title">Your License</h5>
-                            <hr />
-                            @if(ViewBag.hasStoredDocument == false)
-                            {
-                                <div class="alert alert-warning">
-                                    <strong>Documentation Required</strong>
-                                    <p>You are unable to rent until you have submitted this document</p>
-                                </div>
-                            }
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-               
+                }
             </div>
         </div>
-
     }
     else
     {
-        <div class="col-md-4 table-bordered">
-            <h2>Web Hosting</h2>
-            <hr />
-            <p></p>
-            <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        <div class="container-fluid">
+            <div class="card-deck">
+                <div class="card">
+                    <h5 class="card-header">Login / Register</h5>
+                    <div class="card-body">
+                        <h5 class="card-title">Register or Login to access the system</h5>
+                        <p class="card-text">Banger and Co is a family run car rental service with a wide variety of vehicles to choose from. </p>
+                        <button class="btn btn-primary" onclick="location.href='@Url.Action("Register", "Account",new {})';return false;">Register</button>
+                        <button class="btn btn-primary" onclick="location.href='@Url.Action("Login", "Account",new {})';return false;">Login</button>
+                    </div>
+                </div>
+            </div>
         </div>
     }
 
