@@ -62,7 +62,7 @@ namespace EIRLSSAssignment1.Controllers
                 _vehicleRepository.Insert(vehicle);
                 _vehicleRepository.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
 
             ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes(), "Id", "Value", vehicle.FuelTypeId);
@@ -125,7 +125,7 @@ namespace EIRLSSAssignment1.Controllers
             Vehicle vehicle = _vehicleRepository.GetVehicleById(id);
             _vehicleRepository.Delete(vehicle);
             _vehicleRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Admin", null);
         }
 
         protected override void Dispose(bool disposing)

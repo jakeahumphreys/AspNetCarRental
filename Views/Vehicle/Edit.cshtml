@@ -1,18 +1,22 @@
 ﻿@model EIRLSSAssignment1.Models.Vehicle
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit (" + Model.VRM + ")";
 }
 
-<h2>Edit</h2>
+<div>
+    <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Details","Vehicle", new {Id = Model.Id})';return false;"></button>
+    <hr />
+</div>
+
+<h2>Edit (@Model.VRM)</h2>
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>Vehicle</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
@@ -107,15 +111,11 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

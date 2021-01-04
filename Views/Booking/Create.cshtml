@@ -1,10 +1,23 @@
 ﻿@model EIRLSSAssignment1.Models.BookingViewModel
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "New Booking";
 }
 
-<h2>Book a vehicle</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    <div>
+        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin", new { })';return false;"></button>
+    </div>
+}
+else
+{
+    <div>
+        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Home", new { })';return false;"></button>
+    </div>
+}
+
 
 
 @using (Html.BeginForm())
@@ -13,171 +26,183 @@
 
     if (ViewBag.VehicleCount == 0)
     {
-        <div class="alert alert-info">
-            <h4>Sorry,</h4>
-            <p>Unfortunately there are currently no vehicles available to rent.</p>
-        </div> 
+        <div class="alert alert-danger">
+            <div class="row">
+                <span class="fa fa-sad-cry" style="color:red; font-size:40px; margin-right:10px;"></span>
+                <h3>There are no vehicles currently available.</h3>
+            </div>
+
+            <hr />
+            <h5>Normal service will resume as soon as possible.</h5>
+        </div>
     }
     else
     {
-<div class="form-horizontal">
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @if (ViewBag.ErrorObj != null)
-    {
-        <div class="alert alert-danger">
-            <h4>Unfortunately we are unable to complete that booking for the following reason(s).</h4>
+        <div class="form-horizontal">
             <hr />
-            @if (ViewBag.ErrorObj.conflictingBookings != null)
+            <h2>New Booking</h2>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @if (ViewBag.ErrorObj != null)
             {
-                <p>Your chosen period intersects with the following booking period(s):</p>
-                <ul>
-                    @foreach (var booking in ViewBag.ErrorObj.conflictingBookings)
+                <div class="alert alert-danger">
+                    <h4>Unable to create booking:</h4>
+                    <hr />
+                    @if (ViewBag.ErrorObj.conflictingBookings != null)
                     {
-                        <li>@booking.BookingStart.ToString("d") to @booking.BookingFinish.ToString("d")</li>
+                        <p>Your chosen period intersects with the following booking period(s):</p>
+                        <ul>
+                            @foreach (var booking in ViewBag.ErrorObj.conflictingBookings)
+                            {
+                                <li>@booking.BookingStart.ToString("d") to @booking.BookingFinish.ToString("d")</li>
+                            }
+                        </ul>
+                        <br />
+                        <p>Please try another vehicle or select a different date range.</p>
                     }
-                </ul>
-                <br />
-                <p>Please try another vehicle or select a different date range.</p>
-            }
-            @if (ViewBag.ErrorObj.conflictingOptionalExtras != null)
-            {
-                <p>Your chosen optional extras are booked in the following intersecting period(s):</p>
-                <ul>
-                    @foreach (var conflictingExtra in ViewBag.ErrorObj.conflictingOptionalExtras)
+                    @if (ViewBag.ErrorObj.conflictingOptionalExtras != null)
                     {
-                        <li>Extra: @conflictingExtra.OptionalExtra.Name is booked from @conflictingExtra.StartDate.ToString("d") to @conflictingExtra.EndDate.ToString("d") </li>
+                        <p>Your chosen optional extras are booked in the following intersecting period(s):</p>
+                        <ul>
+                            @foreach (var conflictingExtra in ViewBag.ErrorObj.conflictingOptionalExtras)
+                            {
+                                <li>Extra: @conflictingExtra.OptionalExtra.Name is booked from @conflictingExtra.StartDate.ToString("d") to @conflictingExtra.EndDate.ToString("d") </li>
+                            }
+                        </ul>
+                        <br />
+                        <p>Please try another extra or select a different date range.</p>
                     }
-                </ul>
-                <br />
-                <p>Please try another extra or select a different date range.</p>
+                    @if (ViewBag.ErrorObj.isBelowMinRental == true)
+                    {
+                        <p>Your selected dates fall below the minimum rental period.</p>
+                    }
+                    @if (ViewBag.ErrorObj.isBeyondMaxRental == true)
+                    {
+                        <p>This booking exceeds the maximum rental period.</p>
+                    }
+                    @if (ViewBag.ErrorObj.isStartBeforeOpen == true)
+                    {
+                        <p>A vehicle cannot be collected before the garage opens.</p>
+                    }
+                    @if (ViewBag.ErrorObj.isStartAfterClose == true)
+                    {
+                        <p>A vehicle cannot be collected after the garage has closed.</p>
+                    }
+                    @if (ViewBag.ErrorObj.isEndBeforeOpen == true)
+                    {
+                        <p>A vehicle cannot be returned before the garage opens.</p>
+                    }
+                    @if (ViewBag.ErrorObj.isEndAfterClose == true)
+                    {
+                        if (ViewBag.IsUserTrusted == true || User.IsInRole("Admin"))
+                        {
+                            <p>A Late return has not been arranged for this booking. Please select the 'Late Return' checkbox to do so.</p>
+                        }
+                        else
+                        {
+                            <p>Late returns are not enabled for your account.</p>
+                        }
+                    }
+                </div>
             }
-            @if(ViewBag.ErrorObj.isBelowMinRental == true)
+
+            @if (User.IsInRole("Admin"))
             {
-                <p>Your selected dates fall below the minimum rental period.</p>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.booking.UserId, "Customer", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.booking.UserId, (SelectList)ViewBag.Users, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.booking.UserId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             }
-            @if(ViewBag.ErrorObj.isBeyondMaxRental == true)
-            {
-                <p>This booking exceeds the maximum rental period.</p>
-            }
-            @if(ViewBag.ErrorObj.isStartBeforeOpen == true)
-            {
-                <p>A vehicle cannot be collected before the garage opens.</p>
-            }
-            @if(ViewBag.ErrorObj.isStartAfterClose == true)
-            {
-                <p>A vehicle cannot be collected after the garage has closed.</p>
-            }
-            @if(ViewBag.ErrorObj.isEndBeforeOpen == true)
-            {
-                <p>A vehicle cannot be returned before the garage opens.</p>
-            }
-            @if(ViewBag.ErrorObj.isEndAfterClose == true)
-            {
-                if(ViewBag.IsUserTrusted == true || User.IsInRole("Admin"))
-                {
-                    <p>A Late return has not been arranged for this booking. Please select the 'Late Return' checkbox to do so.</p>
-                }
-                else
-                {
-                    <p>Late returns are not enabled for your account.</p>
-                }
-
-            }
-
-        </div>
-    }
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @if (User.IsInRole("Admin") || ViewBag.IsTrustedUser == true)
-        {
             <div class="form-group">
-                @Html.LabelFor(model => model.booking.IsLateReturn, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.booking.IsLateReturn, new { htmlAttributes = new { @class = "form-control" } })
-                    <p>Late return allows you to return the keys to your rented vehicle after closing time via the letterbox.</p>
-                    @Html.ValidationMessageFor(model => model.booking.IsLateReturn, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
                 </div>
             </div>
-        }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.Vehicles, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.booking.OptionalExtras, "Add Extras", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @if (ViewBag.OptionalExtraCount == 0)
-                {
-                    <b style="color: red; background-color:beige;">Unfortunately there are no available extras at this time.</b>
-                }
-                else
-                {
-                    @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
-                    @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
-                }
-            </div>
-        </div>
-
-        @if (User.IsInRole("Admin"))
-        {
             <div class="form-group">
-                @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
                 </div>
             </div>
-        }
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="form-group">
+                @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @if (User.IsInRole("Admin") || ViewBag.IsTrustedUser == true)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.booking.IsLateReturn, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.booking.IsLateReturn, new { htmlAttributes = new { @class = "form-control" } })
+                        <p>Late return allows you to return the keys to your rented vehicle after closing time via the letterbox.</p>
+                        @Html.ValidationMessageFor(model => model.booking.IsLateReturn, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.Vehicles, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.OptionalExtras, "Add Extras", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @if (ViewBag.OptionalExtraCount == 0)
+                    {
+                        <b style="color: red; background-color:beige;">Unfortunately there are no available extras at this time.</b>
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
+                        @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
+                    }
+                </div>
+            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-success" />
+                </div>
             </div>
         </div>
-    </div>
     }
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

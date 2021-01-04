@@ -10,14 +10,19 @@
         <div class="card">
             <div class="card-header bg-dark" id="headingConfiguration">
                 <h5 class="mb-0">
-                    <button class="btn btn-warning" data-toggle="collapse" data-target="#collapseConfiguration" aria-expanded="true" aria-controls="collapseConfiguration">
+                    <button class="btn btn-warning " data-toggle="collapse" data-target="#collapseConfiguration" aria-expanded="false" aria-controls="collapseConfiguration">
+                        <i class="fa fa-wrench"></i>
                         <strong>Configuration Records</strong>
                     </button>
                 </h5>
             </div>
             <div id="collapseConfiguration" class="collapse show" aria-labelledby="headingConfiguration" data-parent="#accordion">
                 <div class="card-body">
-                    <table class="table">
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>Configuration records store system-wide information. There must always be one active record.</p>
+                    </div>
+                    <table class="table table-striped">
                         <tr>
                             <th>
                                 @Html.DisplayNameFor(model => model.Configurations[0].Name)
@@ -69,30 +74,330 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-header bg-dark" id="headingTwo">
+            <div class="card-header bg-dark" id="headingVehicles">
                 <h5 class="mb-0">
-                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseVehicles" aria-expanded="false" aria-controls="collapseVehicles">
+                        <i class="fa fa-car"></i>
                         <strong>Vehicles</strong>
                     </button>
                 </h5>
             </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div id="collapseVehicles" class="collapse" aria-labelledby="headingVehicles" data-parent="#accordion">
                 <div class="card-body">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>Vehicles available to rent can be created and configured in this window.</p>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Vehicles[0].VRM)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Vehicles[0].Make)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Vehicles[0].Model)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Vehicles[0].EngineSize)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Vehicles[0].Transmission)
+                            </th>
+                            <th>
+                                <p>Actions</p>
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model.Vehicles)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.VRM)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Make)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Model)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EngineSize)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Transmission)
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details","Vehicle", new { id = item.Id })';return false;">Details</button>
+                                    <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","Vehicle", new { id = item.Id })';return false;">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create","Vehicle", new {})';return false;">Create</button>
                 </div>
             </div>
         </div>
         <div class="card">
-            <div class="card-header bg-dark" id="headingThree">
+            <div class="card-header bg-dark" id="headingVehicleTypes">
                 <h5 class="mb-0">
-                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Collapsible Group Item #3
+                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseVehicleTypes" aria-expanded="false" aria-controls="collapseVehicleTypes">
+                        <i class="fa fa-cogs"></i>
+                        <strong>Vehicle Types</strong>
                     </button>
                 </h5>
             </div>
-            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+            <div id="collapseVehicleTypes" class="collapse" aria-labelledby="headingVehicleTypes" data-parent="#accordion">
                 <div class="card-body">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>Vehicle types are the classification of each vehicle e.g. Car or Van.</p>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.VehicleTypes[0].Value)
+                            </th>
+                            <th>
+                                <p>Actions</p>
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model.VehicleTypes)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Value)
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details","VehicleType", new { id = item.Id })';return false;">Details</button>
+                                    <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","VehicleType", new { id = item.Id })';return false;">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create","VehicleType", new {})';return false;">Create</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-dark" id="headingFuelTypes">
+                <h5 class="mb-0">
+                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseFuelTypes" aria-expanded="false" aria-controls="collapseFuelTypes">
+                        <i class="fa fa-gas-pump"></i>
+                        <strong>Fuel Types</strong>
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseFuelTypes" class="collapse" aria-labelledby="headingFuelTypes" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>Vehicle Fuel Types are customised using this window.</p>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FuelTypes[0].Value)
+                            </th>
+                            <th>
+                                <p>Actions</p>
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model.FuelTypes)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Value)
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details","FuelType", new { id = item.Id })';return false;">Details</button>
+                                    <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","FuelType", new { id = item.Id })';return false;">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create","FuelType", new {})';return false;">Create</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-dark" id="headingOptionalExtras">
+                <h5 class="mb-0">
+                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseOptionalExtras" aria-expanded="false" aria-controls="collapseOptionalExtras">
+                        <i class="fa fa-clipboard-list"></i>
+                        <strong>Optional Extras</strong>
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseOptionalExtras" class="collapse" aria-labelledby="headingOptionalExtras" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>Optional extras can be added to a users booking if they are available.</p>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.OptionalExtras[0].Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.OptionalExtras[0].serialNumber)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.OptionalExtras[0].Remarks)
+                            </th>
+                            <th>
+                                <p>Actions</p>
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model.OptionalExtras)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.serialNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Remarks)
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details", "OptionalExtra", new { id = item.Id })';return false;">Details</button>
+                                    <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","OptionalExtra", new { id = item.Id })';return false;">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create","OptionalExtra", new {})';return false;">Create</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-dark" id="headingBooking">
+                <h5 class="mb-0">
+                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseBooking" aria-expanded="false" aria-controls="collapseBooking">
+                        <i class="fa fa-calendar-alt"></i>
+                        <strong>Bookings</strong>
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseBooking" class="collapse" aria-labelledby="headingBooking" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>Users can only view their own bookings, all system bookings can be viewed with this window.</p>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Bookings[0].Vehicle.DisplayString)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Bookings[0].BookingStart)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Bookings[0].BookingFinish)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Bookings[0].IsLateReturn)
+                            </th>
+                            <th>
+                                <p>Actions</p>
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model.Bookings)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Vehicle.DisplayString)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BookingStart)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BookingFinish)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsLateReturn)
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details", "Booking", new { id = item.Id })';return false;">Details</button>
+                                    <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","Booking", new { id = item.Id })';return false;">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create","Booking", new {})';return false;">Create</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-dark" id="headingUsers">
+                <h5 class="mb-0">
+                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+                        <i class="fa fa-users"></i>
+                        <strong>Users</strong>
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseUsers" class="collapse" aria-labelledby="headingUsers" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>Admins may be required to edit user details, blacklist a user or lock their account entirely.</p>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Users[0].Name)
+                            </th>
+                            <th>
+                                <p>Flags</p>
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Users[0].LockoutEnabled)
+                            </th>
+                            <th></th>
+                        </tr>
+
+                        @foreach (var item in Model.Users)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @if (item.IsBlackListed == true)
+                                    {
+                                        <span class="badge badge-dark">Blacklisted</span>
+                                    }
+                                    @if (item.IsTrustedCustomer == true)
+                                    {
+                                        <span class="badge badge-success">Trusted</span>
+                                    }
+                                    @if (item.LockoutEndDateUtc != null)
+                                    {
+                                        <span class="badge badge-danger">Locked</span>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LockoutEnabled)
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details", "Account", new { id = item.Id })';return false;">Details</button>
+                                    <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","Account", new { id = item.Id })';return false;">Delete</button>
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+                    <button class="btn btn-success" onclick="location.href='@Url.Action("Register","Account", new {})';return false;">Create</button>
                 </div>
             </div>
         </div>

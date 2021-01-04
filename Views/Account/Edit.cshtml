@@ -1,16 +1,20 @@
 ﻿@model EIRLSSAssignment1.Models.ApplicationUser
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit (" + Model.Name + ")";
 }
 
-<h2>Edit</h2>
+<div>
+    <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Details","Account", new {Id = Model.Id})';return false;"></button>
+    <hr />
+</div>
 
+<h2>Edit (@Model.Name)</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>ApplicationUser</h4>
         <hr />
@@ -18,7 +22,7 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
@@ -34,7 +38,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IsBlackListed, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IsBlackListed, "Blacklisted", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">
                     @Html.EditorFor(model => model.IsBlackListed)
@@ -44,7 +48,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IsTrustedCustomer, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IsTrustedCustomer, "Trusted", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">
                     @Html.EditorFor(model => model.IsTrustedCustomer)
@@ -54,7 +58,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Email, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
@@ -62,17 +66,17 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.PhoneNumber, "Phone Number", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        @if(User.IsInRole("Admin"))
+        @if (User.IsInRole("Admin"))
         {
             <div class="form-group">
-                @Html.LabelFor(model => model.LockoutEndDateUtc, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.LockoutEndDateUtc,htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.LockoutEndDateUtc, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.LockoutEndDateUtc, "", new { @class = "text-danger" })
@@ -86,21 +90,18 @@
                         @Html.EditorFor(model => model.LockoutEnabled)
                         @Html.ValidationMessageFor(model => model.LockoutEnabled, "", new { @class = "text-danger" })
                     </div>
-             </div>
-        </div>
+                </div>
+            </div>
         }
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

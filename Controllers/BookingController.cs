@@ -11,6 +11,7 @@ using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.RepeatLogic.Objects;
 using Microsoft.AspNet.Identity;
+using MVCWebAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {
@@ -35,16 +36,15 @@ namespace EIRLSSAssignment1.Controllers
         // GET: Bookings
         public ActionResult Index()
         {
-            var role = appDbContext.Roles.SingleOrDefault(r => r.Name == "Admin");
-            ApplicationUser user = appDbContext.Users.Find(User.Identity.GetUserId());
+            var userId = User.Identity.GetUserId();
 
-            if(user.Roles.FirstOrDefault().RoleId == role.Id)
+            if (User.IsInRole("Admin"))
             {
                 return View(_bookingRepository.GetBookings());
             }
             else
             {
-                return View(_bookingRepository.GetBookings().Where(x => x.UserId == user.Id));
+                return View(_bookingRepository.GetBookings().Where(x => x.UserId == userId));
             }
         }
 
@@ -97,19 +97,21 @@ namespace EIRLSSAssignment1.Controllers
                     ViewBag.OptionalExtras = optionalExtras;
                     ViewBag.OptionalExtraCount = optionalExtras.Count();
 
+                    ViewBag.Users = new SelectList(appDbContext.Users.ToList(), "Id", "Name");
+
                     return View();
                 }
                 else
                 {
                     //user is blacklisted
-                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                    return RedirectToAction("Error", "Error", new { @errorType = ErrorType.Account });
                 }
-               
+
             }
             else
             {
                 //Garage is not open for orders
-                return new HttpStatusCodeResult(HttpStatusCode.ServiceUnavailable);
+                return RedirectToAction("Error", "Error", new {@errorType = ErrorType.GarageClosed});
             }
         }
 
@@ -221,13 +223,23 @@ namespace EIRLSSAssignment1.Controllers
                                 bookedOptionalExtras.Add(_optionalExtraRepository.GetOptionalExtraById(id));
                             }
 
-                            bookingVM.booking.UserId = User.Identity.GetUserId();
+                            if(bookingVM.booking.UserId == "")
+                            {
+                                bookingVM.booking.UserId = User.Identity.GetUserId();
+                            }
                             bookingVM.booking.OptionalExtras = bookedOptionalExtras;
 
 
                             _bookingRepository.Insert(bookingVM.booking);
                             _bookingRepository.Save();
-                            return RedirectToAction("Index");
+                            if (User.IsInRole("Admin"))
+                            {
+                                return RedirectToAction("Index", "Admin", null);
+                            }
+                            else
+                            {
+                                return RedirectToAction("Index", "Home", null);
+                            }
                         }
                     }
                     else
@@ -236,7 +248,14 @@ namespace EIRLSSAssignment1.Controllers
                         bookingVM.booking.UserId = User.Identity.GetUserId(); //Attribute booking to user
                         _bookingRepository.Insert(bookingVM.booking);
                         _bookingRepository.Save();
-                        return RedirectToAction("Index");
+                        if (User.IsInRole("Admin"))
+                        {
+                            return RedirectToAction("Index", "Admin", null);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home", null);
+                        }
                     }
                 }
             }
@@ -328,6 +347,7 @@ namespace EIRLSSAssignment1.Controllers
                     }
                 }
 
+
                 //Remove selected optional extras attributed to this booking
                 if(bookingVM.SelectedExtraToRemoveIds !=null)
                 {
@@ -347,7 +367,16 @@ namespace EIRLSSAssignment1.Controllers
 
                 _bookingRepository.Update(existingBooking);
                 _bookingRepository.Save();
-                return RedirectToAction("Index");
+
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index", "Admin", null);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home", null);
+                }
+
 
             }
 
@@ -422,7 +451,7 @@ namespace EIRLSSAssignment1.Controllers
 
                             _bookingRepository.Update(existingBooking);
                             _bookingRepository.Save();
-                            return RedirectToAction("Edit", "Booking", new { @id = existingBooking.Id });
+                            return RedirectToAction("Details", "Booking", new { @id = existingBooking.Id });
                         }
                         else
                         {
@@ -441,11 +470,11 @@ namespace EIRLSSAssignment1.Controllers
                             {
                                 _bookingRepository.Update(existingBooking);
                                 _bookingRepository.Save();
-                                return RedirectToAction("Edit", "Booking", new { @id = existingBooking.Id });
+                                return RedirectToAction("Details", "Booking", new { @id = existingBooking.Id });
                             }
                             else
                             {
-                                errorObj.isBeyondClosed = true;
+                                errorObj.isBeyondClose = true;
                                 ViewBag.ErrorObj = errorObj;
                                 return View(bookingVM);
                             }
@@ -458,7 +487,7 @@ namespace EIRLSSAssignment1.Controllers
 
                             _bookingRepository.Update(existingBooking);
                             _bookingRepository.Save();
-                            return RedirectToAction("Edit", "Booking", new { @id = existingBooking.Id });
+                            return RedirectToAction("Details", "Booking", new { @id = existingBooking.Id });
                         }
 
                     }

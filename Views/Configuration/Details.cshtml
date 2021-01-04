@@ -1,12 +1,12 @@
 ﻿@model EIRLSSAssignment1.Models.Configuration
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Details (" + Model.Name + ")";
 }
 
 <div>
     <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin", new { })';return false;"></button>
-    <button class="btn btn-warning fa fa-pencil" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Edit","Configuration", new {id = Model.Id})';return false;"></button>
+    <button class="btn btn-warning fa fa-pen" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Edit","Configuration", new {id = Model.Id})';return false;"></button>
     <hr />
 </div>
 

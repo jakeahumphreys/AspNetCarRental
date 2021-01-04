@@ -10,14 +10,14 @@ namespace EIRLSSAssignment1.RepeatLogic.Objects
 
         public bool isBeyondPeriod { get; set; }
         public bool isBookedNextDay { get; set; }
-        public bool isBeyondClosed { get; set; }
+        public bool isBeyondClose { get; set; }
         public bool isBeforeOpen { get; set; }
 
         public EditBookingErrorObj()
         {
             this.isBeyondPeriod = false;
             this.isBookedNextDay = false;
-            this.isBeyondClosed = false;
+            this.isBeyondClose = false;
             this.isBeforeOpen = false;
         }
        

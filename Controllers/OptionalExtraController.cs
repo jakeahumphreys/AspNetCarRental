@@ -56,7 +56,7 @@ namespace EIRLSSAssignment1.Controllers
             {
                 _optionalExtraRepository.Insert(optionalExtra);
                 _optionalExtraRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
 
             //ViewBag.bookingId = new SelectList(db.Bookings, "Id", "Remarks", optionalExtra.bookingId);
@@ -90,7 +90,7 @@ namespace EIRLSSAssignment1.Controllers
             {
                 _optionalExtraRepository.Update(optionalExtra);
                 _optionalExtraRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
             //ViewBag.bookingId = new SelectList(db.Bookings, "Id", "Remarks", optionalExtra.bookingId);
             return View(optionalExtra);
@@ -119,7 +119,7 @@ namespace EIRLSSAssignment1.Controllers
             OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
             _optionalExtraRepository.Delete(optionalExtra);
             _optionalExtraRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Admin", null);
         }
 
         protected override void Dispose(bool disposing)

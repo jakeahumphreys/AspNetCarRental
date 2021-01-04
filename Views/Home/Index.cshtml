@@ -15,59 +15,115 @@
     @if (Request.IsAuthenticated)
     {
         <div class="container-fluid">
-            <div class="card-deck">
+            <div class="card-desk">
                 <div class="card">
                     <h5 class="card-header">My Bookings</h5>
                     <div class="card-body">
-                        <table class="table">
-                            <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Vehicle.DisplayString)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.BookingStart)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.BookingFinish)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.IsLateReturn)
-                                </th>
-                                <th></th>
-                            </tr>
-
-                            @foreach (var item in Model)
-                            {
+                        @if (ViewBag.UserBookingsCount > 0)
+                        {
+                            <table class="table table-striped">
                                 <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Vehicle.DisplayString)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.BookingStart)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.BookingFinish)
-                                    </td>
-                                    <td>
-                                        @if(item.IsLateReturn == true)
-                                        {
-                                            <p>Yes</p>
-                                        }
-                                        else
-                                        {
-                                            <p>No</p>
-                                        }
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-primary" onclick="location.href='@Url.Action("Details","Booking", new { id = item.Id })';return false;">Details</button>
-                                    </td>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Vehicle.DisplayString)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.BookingStart)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.BookingFinish)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.IsLateReturn)
+                                    </th>
+                                    <th></th>
                                 </tr>
-                            }
 
-                        </table>
-                        <a href="#" class="btn btn-primary">New Booking</a>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Vehicle.DisplayString)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.BookingStart)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.BookingFinish)
+                                        </td>
+                                        <td>
+                                            @if (item.IsLateReturn == true)
+                                            {
+                                                <p>Yes</p>
+                                            }
+                                            else
+                                            {
+                                                <p>No</p>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary" onclick="location.href='@Url.Action("Details","Booking", new { id = item.Id })';return false;">Details</button>
+                                            <button class="btn btn-primary" onclick="location.href='@Url.Action("ExtendBooking", "Booking",new { id = item.Id })';return false;">Extend Booking</button>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info" role="alert">
+                                You don't have any bookings yet! Click the button below to rent a vehicle.
+                            </div>
+                        }
+                        @if (!User.IsInRole("Admin"))
+                        {
+                            if (ViewBag.hasStoredLicense == false || ViewBag.hasStoredDocument == false)
+                            {
+                                <button class="btn btn-danger disabled" onclick="location.href='';return false;">Booking disabled</button>
+                            }
+                        }
+                        else
+                        {
+                            <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "Booking",new {})';return false;">New Booking</button>
+                        }
+
                     </div>
                 </div>
+                <div class="card-deck pt-3">
+                    <div class="card" style="width: 18rem;">
+                        @*<img class="card-img-top" src="..." alt="Card image cap">*@
+                        <div class="card-body">
+                            <h5 class="card-title">Your Supporting Document</h5>
+                            <hr/>
+                            @if(ViewBag.hasStoredLicense == false)
+                            {
+                                <div class="alert alert-warning">
+                                    <strong>Documentation Required</strong>
+                                    <p>You are unable to rent until you have submitted this document</p>
+                                </div>
+                            }
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                    <div class="card" style="width: 18rem;">
+                        @*<img class="card-img-top" src="..." alt="Card image cap">*@
+                        <div class="card-body">
+                            <h5 class="card-title">Your License</h5>
+                            <hr />
+                            @if(ViewBag.hasStoredDocument == false)
+                            {
+                                <div class="alert alert-warning">
+                                    <strong>Documentation Required</strong>
+                                    <p>You are unable to rent until you have submitted this document</p>
+                                </div>
+                            }
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+               
             </div>
         </div>
 

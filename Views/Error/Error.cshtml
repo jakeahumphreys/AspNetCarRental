@@ -1,0 +1,30 @@
+﻿@using MVCWebAssignment1.Customisations;
+@{
+    ViewBag.Title = "Error";
+}
+
+@if (ViewBag.ErrorType == ErrorType.GarageClosed)
+{
+    <div class="alert alert-danger">
+        <div class="row">
+            <span class="fa fa-sad-cry" style="color:red; font-size:40px; margin-right:10px;"></span>
+            <h3>We are currently closed for new bookings.</h3>
+        </div>
+
+        <hr />
+        <h5>Normal service will resume shortly.</h5>
+    </div>
+}
+@if (ViewBag.ErrorType == ErrorType.Account)
+{
+    <div class="alert alert-danger">
+        <div class="row">
+            <span class="fa fa-lock" style="color:darkgoldenrod; font-size:40px; margin-right:10px;"></span>
+            <h3>Your account is prohibited from completing that action.</h3>
+        </div>
+        <hr />
+        <h5>Please contact the garage for more information.</h5>
+    </div>
+}
+
+

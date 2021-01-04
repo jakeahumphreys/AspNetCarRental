@@ -55,7 +55,7 @@ namespace EIRLSSAssignment1.Controllers
             {
                 _vehicleTypeRepository.Insert(vehicleType);
                 _vehicleTypeRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
 
             return View(vehicleType);
@@ -84,7 +84,7 @@ namespace EIRLSSAssignment1.Controllers
             {
                 _vehicleTypeRepository.Update(vehicleType);
                 _vehicleTypeRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
             return View(vehicleType);
         }
@@ -110,7 +110,7 @@ namespace EIRLSSAssignment1.Controllers
             VehicleType vehicleType = _vehicleTypeRepository.GetVehicleTypeById(id);
             _vehicleTypeRepository.Delete(vehicleType);
             _vehicleTypeRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Admin", null);
         }
 
         protected override void Dispose(bool disposing)

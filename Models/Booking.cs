@@ -30,5 +30,14 @@ namespace EIRLSSAssignment1.Models
         public ICollection<OptionalExtra> OptionalExtras { get; set; }
         public string Remarks { get; set; }
         public bool IsReturned { get; set; }
+        [Display(Name = "Booking")]
+        public string DisplayString
+        {
+            get
+            {
+                return "Booking #" + Id + ", vehicle: " + Vehicle.VRM;
+            }
+        }
+
     }
 }

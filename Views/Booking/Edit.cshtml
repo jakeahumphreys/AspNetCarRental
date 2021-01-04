@@ -1,129 +1,131 @@
 ﻿@model EIRLSSAssignment1.Models.BookingViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit " + Model.booking.DisplayString;
 }
 
 <h2>Edit</h2>
 
+@if (User.IsInRole("Admin"))
+{
+    <div>
+        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Details","Booking", new {Id = Model.booking.Id})';return false;"></button>
+        <hr />
+    </div>
+}
+else
+{
+    <div>
+        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Details","Booking", new {Id = Model.booking.Id })';return false;"></button>
+        <hr />
+    </div>
+}
+
+<h2> Edit @Model.booking.DisplayString</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>Booking</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.booking.Id)
-    @Html.HiddenFor(model => model.booking.VehicleId)
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.booking.Id)
+        @Html.HiddenFor(model => model.booking.VehicleId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-            @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-            @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(model => model.booking.Vehicle.DisplayString)
-        </div>
-    </div>
-
-    <button class="btn btn-primary" onclick="location.href='@Url.Action("ExtendBooking",new { id = Model.booking.Id })';return false;">Extend Booking</button>
-
-    @*<div class="form-group">
+        <div class="form-group">
             @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.booking.VehicleId, (SelectList)ViewBag.VehicleId, htmlAttributes: new { @class = "form-control", })
-                @Html.ValidationMessageFor(model => model.booking.VehicleId, "", new { @class = "text-danger" })
+                @Html.DisplayFor(model => model.booking.Vehicle.DisplayString)
             </div>
-        </div>*@
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.SelectedExtraIds, "Add More Extras", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @if (ViewBag.OptionalExtraCount == 0)
-            {
-                <b>There are no available extras at this time.</b>
-            }
-            else
-            {
-                @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
-                @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
-            }
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.SelectedExtraToRemoveIds, "Remove Booked Extras", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @if (ViewBag.BookedOptionalExtraCount == 0)
-            {
-                <b>You haven't booked any extras.</b>
-            }
-            else
-            {
-                @Html.DropDownListFor(model => model.SelectedExtraToRemoveIds, (MultiSelectList)ViewBag.BookedOptionalExtras, new { @class = "multi-select", multiple = "multiple" })
-                @Html.ValidationMessageFor(model => model.SelectedExtraToRemoveIds, "", new { @class = "text-danger" })
-            }
-        </div>
-    </div>
-
-
-
-    @if (User.IsInRole("Admin"))
-    {
         <div class="form-group">
-            @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.SelectedExtraIds, "Add More Extras", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+                @if (ViewBag.OptionalExtraCount == 0)
+                {
+                    <b>There are no available extras at this time.</b>
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
+                    @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
+                }
             </div>
         </div>
-    }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SelectedExtraToRemoveIds, "Remove Booked Extras", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.BookedOptionalExtraCount == 0)
+                {
+                    <b>You haven't booked any extras.</b>
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.SelectedExtraToRemoveIds, (MultiSelectList)ViewBag.BookedOptionalExtras, new { @class = "multi-select", multiple = "multiple" })
+                    @Html.ValidationMessageFor(model => model.SelectedExtraToRemoveIds, "", new { @class = "text-danger" })
+                }
+            </div>
+        </div>
+
+
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
 
 
 
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
         </div>
     </div>
-</div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

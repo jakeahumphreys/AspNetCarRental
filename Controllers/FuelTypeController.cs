@@ -55,7 +55,7 @@ namespace EIRLSSAssignment1.Controllers
             {
                 _fuelTypeRepository.Insert(fuelType);
                 _fuelTypeRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
 
             return View(fuelType);
@@ -83,7 +83,7 @@ namespace EIRLSSAssignment1.Controllers
             {
                 _fuelTypeRepository.Update(fuelType);
                 _fuelTypeRepository.Save();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
             return View(fuelType);
         }
@@ -111,7 +111,7 @@ namespace EIRLSSAssignment1.Controllers
             FuelType fuelType = _fuelTypeRepository.GetFuelTypeById(id);
             _fuelTypeRepository.Delete(fuelType);
             _fuelTypeRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Admin", null);
         }
 
         protected override void Dispose(bool disposing)

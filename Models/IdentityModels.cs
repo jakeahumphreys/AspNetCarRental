@@ -24,14 +24,28 @@ namespace EIRLSSAssignment1.Models
         [Required]
         public string Name { get; set; }
         [Required]
+        [Display(Name = "Date of Birth")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
+        [Display(Name="Blacklisted")]
         public  bool IsBlackListed { get; set; }
+        [Display(Name = "Trusted")]
         public bool IsTrustedCustomer { get; set; }
+        [Display(Name = "License Id")]
         public int? DrivingLicenseId { get; set; }
         public DrivingLicense DrivingLicense { get; set; }
+        [Display(Name = "Document Id")]
         public int? SupportingDocumentId { get; set; }
         public SupportingDocument SupportingDocument { get; set; }
+
+        [Display(Name = "Account Locked Until")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        override public DateTime? LockoutEndDateUtc { get; set; }
+
+        [Display(Name = "Account can be locked")]
+        override public bool LockoutEnabled { get;set; }
 
     }
 

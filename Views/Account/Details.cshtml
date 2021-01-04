@@ -1,15 +1,20 @@
 ﻿@model EIRLSSAssignment1.Models.ApplicationUser
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Details (" + Model.Name + ")";
 }
 
-<h2>Details</h2>
+<div>
+    <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin", new { })';return false;"></button>
+    <button class="btn btn-warning fa fa-pen" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Edit","Account", new {id = Model.Id})';return false;"></button>
+    <hr />
+</div>
+
+<h2>Details (@Model.Name)</h2>
 
 <div>
-    <h4>ApplicationUser</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <dl class="dl-horizontal d">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
@@ -23,7 +28,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DateOfBirth)
+            @Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control", @readonly ="readonly" } })
         </dd>
 
         <dt>
@@ -51,27 +56,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EmailConfirmed)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.PasswordHash)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.PasswordHash)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SecurityStamp)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SecurityStamp)
         </dd>
 
         <dt>
@@ -83,27 +72,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumberConfirmed)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TwoFactorEnabled)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.LockoutEndDateUtc)
+            @Html.EditorFor(model => model.LockoutEndDateUtc, new { htmlAttributes = new { @class = "form-control", @readonly="readonly" } })
         </dd>
 
         <dt>
@@ -114,25 +87,6 @@
             @Html.DisplayFor(model => model.LockoutEnabled)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AccessFailedCount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AccessFailedCount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+

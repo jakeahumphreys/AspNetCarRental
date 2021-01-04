@@ -19,23 +19,7 @@
                     </div>
                 </li>
             }
-            <li>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-info dropdown-toggle ml-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Bookings
-                    </button>
-                    <div class="dropdown-menu">
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a class="dropdown-item" href=@Url.Action("Index","Booking", new {id = "customerBookingsLink"})>Customer bookings</a>
-                        }
-                        else
-                        {
-                            <a class="dropdown-item" href=@Url.Action("Index","Booking", new {id = "customerBookingsLink"})>My Bookings</a>
-                        }
-                    </div>
-                </div>
-            </li>
+            
             <li class="nav-item"><button class="btn btn-outline-info ml-2" onclick="javascript:document.getElementById('logoutForm').submit()">Logout</button></li>
             }
         </ul>

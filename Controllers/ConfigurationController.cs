@@ -105,7 +105,7 @@ namespace EIRLSSAssignment1.Controllers
                 _configurationRepository.Update(configToUpdate);
                 _configurationRepository.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Admin", null);
             }
             return View(configuration);
         }
@@ -133,7 +133,7 @@ namespace EIRLSSAssignment1.Controllers
             Configuration configuration = _configurationRepository.GetConfigurationById(id);
             _configurationRepository.Delete(configuration);
             _configurationRepository.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Admin", null);
         }
 
         protected override void Dispose(bool disposing)

@@ -13,5 +13,6 @@ namespace EIRLSSAssignment1.Models
         public List<VehicleType> VehicleTypes { get; set; }
         public List<FuelType> FuelTypes { get; set; }
         public List<Vehicle> Vehicles { get; set; }
+        public List<OptionalExtra> OptionalExtras { get; set; }
     }
 }
