@@ -103,6 +103,7 @@ namespace EIRLSSAssignment1.Controllers
                 configToUpdate.ClosingTime = configuration.ClosingTime;
                 configToUpdate.MinRentalHours = configuration.MinRentalHours;
                 configToUpdate.MaxRentalHours = configuration.MaxRentalHours;
+                configToUpdate.LateReturnEligibility = configuration.LateReturnEligibility;
 
                 _configurationRepository.Update(configToUpdate);
                 _configurationRepository.Save();
