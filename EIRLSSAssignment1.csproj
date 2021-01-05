@@ -232,6 +232,10 @@
     <Compile Include="Migrations\MigrationContext\202101042306471_addReturnDate.Designer.cs">
       <DependentUpon>202101042306471_addReturnDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\MigrationContext\202101050124100_addBookingCost.cs" />
+    <Compile Include="Migrations\MigrationContext\202101050124100_addBookingCost.Designer.cs">
+      <DependentUpon>202101050124100_addBookingCost.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationContext\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -662,6 +666,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\MigrationContext\202101042306471_addReturnDate.resx">
       <DependentUpon>202101042306471_addReturnDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101050124100_addBookingCost.resx">
+      <DependentUpon>202101050124100_addBookingCost.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -130,6 +130,14 @@ else
                 </div>
 
                 <div class="form-group">
+                    @Html.LabelFor(model => model.booking.BookingCost, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.booking.BookingCost, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.booking.BookingCost, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
                     @Html.LabelFor(model => model.booking.IsReturned, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.booking.IsReturned, new { htmlAttributes = new { @class = "form-control" } })
@@ -155,7 +163,6 @@ else
                 </div>
             </div>
         </div>
-        }
     </div>
 }
 @section Scripts {

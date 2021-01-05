@@ -264,7 +264,7 @@ namespace EIRLSSAssignment1.Controllers
 
                             bookingVM.booking.OptionalExtras = bookedOptionalExtras;
 
-
+                            bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
                             _bookingRepository.Insert(bookingVM.booking);
                             _bookingRepository.Save();
                             if (User.IsInRole("Admin"))
@@ -285,6 +285,7 @@ namespace EIRLSSAssignment1.Controllers
                             bookingVM.booking.UserId = User.Identity.GetUserId();
                         }
 
+                        bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
                          //Attribute booking to user
                         _bookingRepository.Insert(bookingVM.booking);
                         _bookingRepository.Save();
@@ -335,7 +336,7 @@ namespace EIRLSSAssignment1.Controllers
             var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge).Where(x => x.IsInactive == false), "Id", "DisplayString");
             var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.Bookings.Contains(booking) == false).Where(x => x.IsInactive == false), "Id", "DisplayString");
             var bookedOptionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.Bookings.Contains(booking)).ToList(), "Id", "DisplayString");
-            //var bookedOptionalExtras = new MultiSelectList(booking.OptionalExtras, "Id", "DisplayString");
+
 
             //Set Viewbag Vehicle Data
             ViewBag.Vehicles = vehicles;
@@ -411,6 +412,11 @@ namespace EIRLSSAssignment1.Controllers
                 existingBooking.IsReturned = bookingVM.booking.IsReturned;
                 existingBooking.ReturnDate = bookingVM.booking.ReturnDate;
                 existingBooking.Remarks = bookingVM.booking.Remarks;
+
+                if (existingBooking.BookingCost == 0)
+                {
+                    existingBooking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
+                }
 
                 _bookingRepository.Update(existingBooking);
                 _bookingRepository.Save();
@@ -497,6 +503,11 @@ namespace EIRLSSAssignment1.Controllers
                             //User is reducing end time, which is permitted up until 4pm
                             existingBooking.BookingStart = bookingVM.booking.BookingStart;
                             existingBooking.BookingFinish = bookingVM.booking.BookingFinish;
+
+                            if(existingBooking.BookingCost == 0)
+                            {
+                                existingBooking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
+                            }
 
                             _bookingRepository.Update(existingBooking);
                             _bookingRepository.Save();
@@ -619,6 +630,15 @@ namespace EIRLSSAssignment1.Controllers
                 _bookingRepository.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private double CalculateBookingCost(DateTime startDate, DateTime endDate, int vehicleId)
+        {
+            TimeSpan dateRange = endDate - startDate;
+            double rentalDays = dateRange.TotalDays;
+            Vehicle vehicle = _vehicleRepository.GetVehicleById(vehicleId);
+            double totalCost = vehicle.RentalCost * rentalDays;
+            return Math.Round(totalCost,2);
         }
 
         private List<Booking> CheckConflictingBookings(Booking booking)

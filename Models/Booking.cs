@@ -33,6 +33,8 @@ namespace EIRLSSAssignment1.Models
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd H:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? ReturnDate {get;set;}
+        [Display(Name = "Cost of Booking")]
+        public double BookingCost { get; set; }
         [Display(Name = "Booking")]
         public string DisplayString
         {
