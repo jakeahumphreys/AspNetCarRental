@@ -47,8 +47,8 @@ namespace EIRLSSAssignment1.Controllers
         // GET: Vehicle/Create
         public ActionResult Create()
         {
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes(), "Id", "Value");
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes(), "Id", "Value");
+            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value");
+            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value");
             return View();
         }
 
@@ -65,8 +65,8 @@ namespace EIRLSSAssignment1.Controllers
                 return RedirectToAction("Index", "Admin", null);
             }
 
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes(), "Id", "Value", vehicle.FuelTypeId);
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes(), "Id", "Value", vehicle.VehicleTypeId);
+            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.FuelTypeId);
+            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.VehicleTypeId);
             return View(vehicle);
         }
 
@@ -82,25 +82,25 @@ namespace EIRLSSAssignment1.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes(), "Id", "Value", vehicle.FuelTypeId);
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes(), "Id", "Value", vehicle.VehicleTypeId);
+            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.FuelTypeId);
+            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.VehicleTypeId);
             return View(vehicle);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,VRM,VIN,VehicleTypeId,FuelTypeId,Make,Model,EngineSize,Transmission,RentalCost,MinimumAgeToRent,Remarks")] Vehicle vehicle)
+        public ActionResult Edit([Bind(Include = "Id,VRM,VIN,VehicleTypeId,FuelTypeId,Make,Model,EngineSize,Transmission,RentalCost,MinimumAgeToRent,Remarks,IsInactive")] Vehicle vehicle)
         {
             if (ModelState.IsValid)
             {
                 _vehicleRepository.Update(vehicle);
                 _vehicleRepository.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Vehicle", new {Id = vehicle.Id});
             }
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes(), "Id", "Value", vehicle.FuelTypeId);
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes(), "Id", "Value", vehicle.VehicleTypeId);
+            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.FuelTypeId);
+            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.VehicleTypeId);
             return View(vehicle);
         }
 

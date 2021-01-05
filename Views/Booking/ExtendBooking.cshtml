@@ -6,6 +6,8 @@
 
 <h2>Ammend Booking Times</h2>
 
+<button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin", new { })';return false;"></button>
+
 
 @using (Html.BeginForm())
 {
@@ -32,7 +34,7 @@
                 {
                     <p>A late return has not been agreed for this booking.</p>
                 }
-                @if(ViewBag.ErrorObj.isBeforeOpen ==  true)
+                @if (ViewBag.ErrorObj.isBeforeOpen == true)
                 {
                     <p>You are unable to to collect or return before the garage is open.</p>
                 }
@@ -92,10 +94,6 @@
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

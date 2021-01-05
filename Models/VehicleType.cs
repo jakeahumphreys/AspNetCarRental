@@ -11,5 +11,7 @@ namespace EIRLSSAssignment1.Models
         public int Id { get; set; }
         [Display(Name = "Vehicle Type")]
         public string Value { get; set; }
+        [Display(Name = "Inactive")]
+        public bool IsInactive { get; set; }
     }
 }

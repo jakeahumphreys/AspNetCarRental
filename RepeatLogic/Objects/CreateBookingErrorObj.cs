@@ -14,6 +14,9 @@ namespace EIRLSSAssignment1.RepeatLogic.Objects
         public bool isStartAfterClose { get; set; }
         public bool isEndBeforeOpen { get; set; }
         public bool isEndAfterClose { get; set; }
+        public bool isInThePast { get; set; }
+        public bool isEndBeforeStart { get; set; }
+        public bool isStartAfterEnd { get; set; }
         public List<Booking> conflictingBookings { get; set; }
         public List<ConflictingExtraItem> conflictingOptionalExtras { get; set; }
 
@@ -25,6 +28,9 @@ namespace EIRLSSAssignment1.RepeatLogic.Objects
             this.isStartAfterClose = false;
             this.isEndBeforeOpen = false;
             this.isEndAfterClose = false;
+            this.isInThePast = false;
+            this.isEndBeforeStart = false;
+            this.isStartAfterEnd = false;
             this.conflictingBookings = null;
             this.conflictingOptionalExtras = null;
         }

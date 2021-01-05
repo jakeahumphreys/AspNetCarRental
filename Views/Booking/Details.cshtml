@@ -5,21 +5,29 @@
 }
 
 
-@if(User.IsInRole("Admin"))
+@if (User.IsInRole("Admin"))
 {
-    <div>
-        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin", new { })';return false;"></button>
-        <button class="btn btn-warning fa fa-pen" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Edit","Booking", new {id = Model.booking.Id})';return false;"></button>
-        <hr />
-    </div>
+<div>
+    <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin", new { })';return false;"></button>
+    <button class="btn btn-warning fa fa-pen" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Edit","Booking", new {id = Model.booking.Id})';return false;"></button>
+    @if (Model.booking.IsReturned == false)
+    {
+        <button class="btn btn-warning" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Return","Booking", new {id = Model.booking.Id})';return false;">Return</button>
+    }
+    <hr />
+</div>
 }
 else
 {
-    <div>
-        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Home", new { })';return false;"></button>
+<div>
+    <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Home", new { })';return false;"></button>
+    @if (Model.booking.IsReturned == false)
+    {
         <button class="btn btn-warning fa fa-pen" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Edit","Booking", new {id = Model.booking.Id})';return false;"></button>
-        <hr />
-    </div>
+        <button class="btn btn-warning" data-toggle="tooltip" title="Edit" onclick="location.href='@Url.Action("Return","Booking", new {id = Model.booking.Id})';return false;">Return</button>
+    }
+    <hr />
+</div>
 }
 
 <h2>Details: @Model.booking.DisplayString</h2>
@@ -27,6 +35,12 @@ else
 <div>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.User.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.booking.User.Name)
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.booking.Vehicle.VRM)
         </dt>
@@ -60,14 +74,6 @@ else
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.booking.IsReturned)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.booking.IsReturned)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.booking.OptionalExtras)
         </dt>
 
@@ -88,6 +94,22 @@ else
 
             <dd>
                 @Html.DisplayFor(model => model.booking.Remarks)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.booking.IsReturned)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.booking.IsReturned)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.booking.ReturnDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.booking.ReturnDate)
             </dd>
         }
 

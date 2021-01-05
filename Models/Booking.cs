@@ -14,15 +14,15 @@ namespace EIRLSSAssignment1.Models
         public ApplicationUser User { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy H:mm:ss}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Booking Starts")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd H:mm:ss}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Starts")]
         public DateTime BookingStart { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy H:mm:ss}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Booking Ends")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd H:mm:ss}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Ends")]
         public DateTime BookingFinish { get; set; }
-        [Display(Name = "Late return arranged?")]
+        [Display(Name = "Late Return")]
         public bool IsLateReturn { get; set; }
         public int VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
@@ -30,6 +30,9 @@ namespace EIRLSSAssignment1.Models
         public ICollection<OptionalExtra> OptionalExtras { get; set; }
         public string Remarks { get; set; }
         public bool IsReturned { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd H:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime? ReturnDate {get;set;}
         [Display(Name = "Booking")]
         public string DisplayString
         {

@@ -228,8 +228,10 @@ namespace EIRLSSAssignment1.Controllers
                 {
                     //Default role is: USER
                     UserManager.AddToRole(user.Id, "User");
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                   
+                    if (!User.IsInRole("Admin"))
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    }                   
 
                     return RedirectToAction("Index", "Home");
                 }

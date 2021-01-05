@@ -31,7 +31,8 @@ namespace EIRLSSAssignment1.Models
         public string Remarks { get; set; }
         [Display(Name = "Currently Rented?")]
         public bool IsRented { get; set; }
-
+        [Display(Name = "Inactive")]
+        public bool IsInactive { get; set; }
         [Display(Name ="Vehicle")]
         public string DisplayString
         {

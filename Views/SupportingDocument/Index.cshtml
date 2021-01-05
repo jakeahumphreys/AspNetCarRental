@@ -1,14 +1,13 @@
 ﻿@model IEnumerable<EIRLSSAssignment1.Models.SupportingDocument>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Supporting Documents";
 }
+<button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin", new { })';return false;"></button>
 
-<h2>Index</h2>
+<h2>Supporting Documents</h2>
+<hr />
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
@@ -20,20 +19,21 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.DocumentType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateRecieved)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DocumentType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateRecieved)
+            </td>
+            <td>
+                <button class="btn btn-primary" onclick="location.href='@Url.Action("Details","SupportingDocument", new { id = item.Id })';return false;">Details</button>
+                <button class="btn btn-warning" onclick="location.href='@Url.Action("Edit","SupportingDocument", new { id = item.Id })';return false;">Edit</button>
+                <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","SupportingDocument", new { id = item.Id })';return false;">Delete</button>
+            </td>
+        </tr>
+    }
 
 </table>

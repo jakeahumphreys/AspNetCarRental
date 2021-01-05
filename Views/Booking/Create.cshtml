@@ -72,6 +72,19 @@ else
                         <br />
                         <p>Please try another extra or select a different date range.</p>
                     }
+                    @if (ViewBag.ErrorObj.isInThePast == true)
+                    {
+                        <p>Unable to make bookings for dates in the past.</p>
+
+                    }
+                    @if (ViewBag.ErrorObj.isStartAfterEnd == true)
+                    {
+                        <p>The Start date must come before end date.</p>
+                    }
+                    @if (ViewBag.ErrorObj.isEndBeforeStart == true)
+                    {
+                        <p>The End date must come after the start date.</p>
+                    }
                     @if (ViewBag.ErrorObj.isBelowMinRental == true)
                     {
                         <p>Your selected dates fall below the minimum rental period.</p>

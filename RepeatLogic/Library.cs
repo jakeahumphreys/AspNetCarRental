@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.DAL;
+using System.Data.Entity;
 
 namespace EIRLSSAssignment1.RepeatLogic
 {
@@ -220,6 +221,36 @@ namespace EIRLSSAssignment1.RepeatLogic
             {
                 return false;
             }
+        }
+
+        public void HandleAutoTrust(string userId)
+        {
+            Configuration config = GetActiveConfiguration();
+
+            if(config != null)
+            {
+                if(config.LateReturnEligibility > 0)
+                {
+                    ApplicationUser user = _applicationDbContext.Users.Find(userId);
+
+                    if(user != null)
+                    {
+                        List<Booking> bookingsForUser = _bookingRepository.GetBookings().Where(x => x.UserId == userId).Where(x => x.IsReturned == true).Where(x => x.ReturnDate <= x.BookingFinish).ToList();
+
+                        if (bookingsForUser.Count >= config.LateReturnEligibility)
+                        {
+
+                            if(user.IsBlackListed == false && user.IsTrustedCustomer == false)
+                            {
+                                user.IsTrustedCustomer = true;
+                                _applicationDbContext.Entry(user).State = EntityState.Modified;
+                                _applicationDbContext.SaveChanges();
+                            }
+                        }
+                    } 
+                }
+            }
+
         }
     }
 }

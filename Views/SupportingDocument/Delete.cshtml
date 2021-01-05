@@ -34,13 +34,6 @@
             @Html.DisplayFor(model => model.DateRecieved)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Image)
-        </dd>
 
     </dl>
 
@@ -48,8 +41,8 @@
         @Html.AntiForgeryToken()
 
     <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Licenses","Admin", new { })';return false;"></button>
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","SupportingDocument", new { })';return false;"></button>
     </div>
     }
 </div>

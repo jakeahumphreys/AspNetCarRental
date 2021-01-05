@@ -77,7 +77,7 @@ namespace EIRLSSAssignment1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Value")] FuelType fuelType)
+        public ActionResult Edit([Bind(Include = "Id,Value,IsInactive")] FuelType fuelType)
         {
             if (ModelState.IsValid)
             {

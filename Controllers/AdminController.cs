@@ -17,6 +17,10 @@ namespace EIRLSSAssignment1.Controllers
         private ApplicationDbContext _appDbContext;
         private BookingRepository _bookingRepository;
         private OptionalExtraRepository _optionalExtraRepository;
+        private DrivingLicenseRepository _drivingLicenseRepository;
+        private SupportingDocumentRepository _supportingDocumentRepository;
+
+
 
         public AdminController()
         {
@@ -27,6 +31,8 @@ namespace EIRLSSAssignment1.Controllers
             _appDbContext = new ApplicationDbContext();
             _bookingRepository = new BookingRepository(new ApplicationDbContext());
             _optionalExtraRepository = new OptionalExtraRepository(new ApplicationDbContext());
+            _drivingLicenseRepository = new DrivingLicenseRepository(new ApplicationDbContext());
+            _supportingDocumentRepository = new SupportingDocumentRepository(new ApplicationDbContext());
 
         }
 
@@ -54,6 +60,17 @@ namespace EIRLSSAssignment1.Controllers
 
 
             return View(adminVM);
+        }
+
+
+        public ActionResult DrivingLicenses()
+        {
+            return View(_drivingLicenseRepository.GetDrivingLicenses());
+        }
+
+        public ActionResult SupportingDocuments()
+        {
+            return View(_supportingDocumentRepository.GetSupportingDocuments());
         }
     }
 }

@@ -1,0 +1,82 @@
+﻿@model EIRLSSAssignment1.Models.Booking
+
+@{
+    ViewBag.Title = "Return " + Model.DisplayString;
+}
+
+
+@if (ViewBag.dateStatus == "late")
+{
+    <div class="alert alert-danger">
+        <div class="row">
+            <span class="fa fa-exclamation-triangle" style="color:red; font-size:40px; margin-right:10px;"></span>
+            <h3>This booking is overdue.</h3>
+        </div>
+        <hr />
+        <h5>Ensure the vehicle is returned to the garage prior to confirming the return.</h5>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <div class="row">
+            <span class="fa fa-exclamation-triangle" style="color:orange; font-size:40px; margin-right:10px;"></span>
+            <h3>Are you sure you want to return this booking?</h3>
+        </div>
+        <hr />
+        <h5>Closing this booking will prevent further changes. Closed bookings are expected to be at the garage before being marked as returned.</h5>
+    </div>
+}
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Vehicle.VRM)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Vehicle.VRM)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BookingStart)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BookingStart)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BookingFinish)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BookingFinish)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsLateReturn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsLateReturn)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Return" class="btn btn-warning" />
+            <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Details","Booking", new { Id = Model.Id })';return false;"></button>
+        </div>
+    }
+</div>

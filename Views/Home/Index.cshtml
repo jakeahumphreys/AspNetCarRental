@@ -50,7 +50,7 @@
                                         </div>
                                         <div class="card">
                                             <div class="card-body">
-                                                <h5 class="card-title">Late Return</h5>
+                                                <h5 class="card-title">Returns</h5>
                                                 <hr />
                                                 <label for="lateReturn">Late return arranged?</label>
                                                 <select name="searchParamLateReturn" id="lateReturn">
@@ -58,6 +58,8 @@
                                                     <option value="Yes">Yes</option>
                                                     <option value="Yes">No</option>
                                                 </select>
+                                                <label for="lateReturn">Hide Returned?</label>
+                                                <input type="checkbox" id="hideReturned" name="searchParamHideReturned" />
                                             </div>
                                         </div>
                                     </div>
@@ -79,7 +81,12 @@
                                     <th>
                                         @Html.DisplayNameFor(model => model.IsLateReturn)
                                     </th>
-                                    <th></th>
+                                    <th>
+                                        <p>Flags</p>
+                                    </th>
+                                    <th>
+                                        <p>Actions</p>
+                                    </th>
                                 </tr>
 
                                 @foreach (var item in Model)
@@ -93,6 +100,7 @@
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.BookingFinish)
+
                                         </td>
                                         <td>
                                             @if (item.IsLateReturn == true)
@@ -105,8 +113,26 @@
                                             }
                                         </td>
                                         <td>
+                                            @if (item.IsReturned == true)
+                                            {
+                                                <span class="badge badge-success">Returned</span>
+                                            }
+                                            @if (DateTime.Now > item.BookingFinish && item.IsReturned == false)
+                                            {
+                                                <span class="badge badge-danger">OVERDUE</span>
+                                            }
+                                            @if (DateTime.Now >= item.BookingStart && DateTime.Now <= item.BookingFinish && item.IsReturned == false)
+                                            {
+                                                <span class="badge badge-warning">Current</span>
+                                            }
+                                            @if (DateTime.Now < item.BookingStart && item.IsReturned == false)
+                                            {
+                                                <span class="badge badge-info">Upcoming</span>
+                                            }
+                                        </td>
+                                        <td>
                                             <button class="btn btn-primary" onclick="location.href='@Url.Action("Details","Booking", new { id = item.Id })';return false;">Details</button>
-                                            <button class="btn btn-primary" onclick="location.href='@Url.Action("ExtendBooking", "Booking",new { id = item.Id })';return false;">Extend Booking</button>
+                                            <button class="btn btn-primary" onclick="location.href='@Url.Action("ExtendBooking", "Booking",new { id = item.Id })';return false;">Ammend</button>
                                         </td>
                                     </tr>
                                 }

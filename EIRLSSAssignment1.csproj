@@ -224,6 +224,14 @@
     <Compile Include="Migrations\MigrationContext\202101030648034_AddMinMaxRentalHours.Designer.cs">
       <DependentUpon>202101030648034_AddMinMaxRentalHours.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\MigrationContext\202101042223467_addInactiveFields.cs" />
+    <Compile Include="Migrations\MigrationContext\202101042223467_addInactiveFields.Designer.cs">
+      <DependentUpon>202101042223467_addInactiveFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationContext\202101042306471_addReturnDate.cs" />
+    <Compile Include="Migrations\MigrationContext\202101042306471_addReturnDate.Designer.cs">
+      <DependentUpon>202101042306471_addReturnDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationContext\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -553,6 +561,8 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Error\Error.cshtml" />
+    <Content Include="Views\Admin\DrivingLicenses.cshtml" />
+    <Content Include="Views\Booking\Return.cshtml" />
     <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -646,6 +656,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\MigrationContext\202101030648034_AddMinMaxRentalHours.resx">
       <DependentUpon>202101030648034_AddMinMaxRentalHours.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101042223467_addInactiveFields.resx">
+      <DependentUpon>202101042223467_addInactiveFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\MigrationContext\202101042306471_addReturnDate.resx">
+      <DependentUpon>202101042306471_addReturnDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

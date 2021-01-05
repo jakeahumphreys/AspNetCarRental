@@ -16,7 +16,7 @@
                     </button>
                 </h5>
             </div>
-            <div id="collapseConfiguration" class="collapse show" aria-labelledby="headingConfiguration" data-parent="#accordion">
+            <div id="collapseConfiguration" class="collapse" aria-labelledby="headingConfiguration" data-parent="#accordion">
                 <div class="card-body">
                     <div class="row">
                         <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
@@ -292,7 +292,7 @@
                         <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
                         <p>Users can only view their own bookings, all system bookings can be viewed with this window.</p>
                     </div>
-                    <table class="table">
+                    <table class="table table-striped">
                         <tr>
                             <th>
                                 @Html.DisplayNameFor(model => model.Bookings[0].Vehicle.DisplayString)
@@ -307,30 +307,51 @@
                                 @Html.DisplayNameFor(model => model.Bookings[0].IsLateReturn)
                             </th>
                             <th>
+                                <p>Flags</p>
+                            </th>
+                            <th>
                                 <p>Actions</p>
                             </th>
                         </tr>
 
                         @foreach (var item in Model.Bookings)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Vehicle.DisplayString)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.BookingStart)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.BookingFinish)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.IsLateReturn)
-                                </td>
-                                <td>
-                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details", "Booking", new { id = item.Id })';return false;">Details</button>
-                                    <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","Booking", new { id = item.Id })';return false;">Delete</button>
-                                </td>
-                            </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Vehicle.DisplayString)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BookingStart)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BookingFinish)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsLateReturn)
+                        </td>
+                        <td>
+                            @if (item.IsReturned == true)
+                            {
+                                <span class="badge badge-success">Returned</span>
+                            }
+                            @if (DateTime.Now > item.BookingFinish && item.IsReturned == false)
+                            {
+                                <span class="badge badge-danger">OVERDUE</span>
+                            }
+                            @if (DateTime.Now >= item.BookingStart && DateTime.Now <= item.BookingFinish && item.IsReturned == false)
+                            {
+                                <span class="badge badge-warning">Current</span>
+                            }
+                            @if (DateTime.Now < item.BookingStart && item.IsReturned == false)
+                            {
+                                <span class="badge badge-info">Upcoming</span>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" onclick="location.href='@Url.Action("Details", "Booking", new { id = item.Id })';return false;">Details</button>
+                            <button class="btn btn-danger" onclick="location.href='@Url.Action("Delete","Booking", new { id = item.Id })';return false;">Delete</button>
+                        </td>
+                    </tr>
                         }
                     </table>
                     <button class="btn btn-success" onclick="location.href='@Url.Action("Create","Booking", new {})';return false;">Create</button>
@@ -352,7 +373,7 @@
                         <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
                         <p>Admins may be required to edit user details, blacklist a user or lock their account entirely.</p>
                     </div>
-                    <table class="table">
+                    <table class="table table-striped">
                         <tr>
                             <th>
                                 @Html.DisplayNameFor(model => model.Users[0].Name)
@@ -398,6 +419,50 @@
 
                     </table>
                     <button class="btn btn-success" onclick="location.href='@Url.Action("Register","Account", new {})';return false;">Create</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-dark" id="headingDocuments">
+                <h5 class="mb-0">
+                    <button class="btn btn-warning collapsed" data-toggle="collapse" data-target="#collapseDocuments" aria-expanded="false" aria-controls="collapseDocuments">
+                        <i class="fa fa-file-upload"></i>
+                        <strong>Documents</strong>
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseDocuments" class="collapse" aria-labelledby="headingDocuments" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                        <p>User documents are required before they can make a booking.</p>
+                    </div>
+                    <div class="card-desk">
+                        <div class="card">
+                        <div class="card-header">
+                            Driving License Renders
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                                <p>DL Renders are a visual way to view all driving licenses stored within the system.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="location.href='@Url.Action("DrivingLicenses", "Admin", new {})';return false;">View</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            Supporting Documents
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <span class="fa fa-info-circle" style="color:dodgerblue; margin-left:5px; margin-right: 5px; margin-top: 5px;"></span>
+                                <p>Supporting documents can be any valid document that prove a user is who they say they are.</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="location.href='@Url.Action("Index", "SupportingDocument", new {})';return false;">View</button>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>

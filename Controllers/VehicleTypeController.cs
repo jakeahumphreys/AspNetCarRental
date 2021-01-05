@@ -78,7 +78,7 @@ namespace EIRLSSAssignment1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Value")] VehicleType vehicleType)
+        public ActionResult Edit([Bind(Include = "Id,Value,IsInactive")] VehicleType vehicleType)
         {
             if (ModelState.IsValid)
             {

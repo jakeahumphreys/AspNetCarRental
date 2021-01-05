@@ -27,7 +27,7 @@ namespace EIRLSSAssignment1.Controllers
         }
 
 
-        public ActionResult Index(DateTime? searchParamDateStart, DateTime? searchParamDateEnd, string searchParamVehicle, string searchParamLateReturn)
+        public ActionResult Index(DateTime? searchParamDateStart, DateTime? searchParamDateEnd, string searchParamVehicle, string searchParamLateReturn, string searchParamHideReturned)
         {
             var userId = User.Identity.GetUserId();
             ApplicationUser user = _appDbContext.Users.Find(userId);
@@ -84,6 +84,14 @@ namespace EIRLSSAssignment1.Controllers
             if(searchParamVehicle != null && searchParamVehicle != "")
             {
                 userBookings = userBookings.Where(b => b.Vehicle.DisplayString == searchParamVehicle).ToList();
+            }
+
+            if(searchParamHideReturned != null && searchParamHideReturned !="")
+            {
+                if(searchParamHideReturned == "on")
+                {
+                    userBookings = userBookings.Where(b => b.IsReturned == false).ToList();
+                }
             }
 
             return View(userBookings);

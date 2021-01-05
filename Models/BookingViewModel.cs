@@ -24,7 +24,7 @@ namespace EIRLSSAssignment1.Models
         public DateTime StartDate { get; set; }
         [Required]
         [DataType(DataType.Time)]
-        [DisplayFormat(DataFormatString = "{0:H:mm:ss}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime StartDateTime { get; set; }
         [Required]
         [DataType(DataType.Date)]
@@ -32,7 +32,7 @@ namespace EIRLSSAssignment1.Models
         public DateTime EndDate { get; set; }
         [Required]
         [DataType(DataType.Time)]
-        [DisplayFormat(DataFormatString = "{0:H:mm:ss}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime EndDateTime { get; set; }
     }
 }

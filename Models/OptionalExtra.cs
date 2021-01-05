@@ -14,6 +14,8 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "Serial Number")]
         public string serialNumber { get; set; }
         public string Remarks { get; set; }
+        [Display(Name = "Inactive")]
+        public bool IsInactive { get; set; }
 
         //EF6 References
         public ICollection<Booking> Bookings { get; set; }
