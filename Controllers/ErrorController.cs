@@ -7,10 +7,10 @@ using MVCWebAssignment1.Customisations;
 
 namespace MVCWebAssignment1.Controllers
 {
+    [AllowAnonymous]
     public class ErrorController : Controller
     {
         // GET: Unauthorized
-        [AllowAnonymous]
         public ActionResult Index()
         {
             return View();

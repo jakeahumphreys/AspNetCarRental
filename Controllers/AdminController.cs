@@ -1,5 +1,6 @@
 ﻿using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
+using MVCWebAssignment1.Customisations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 
 namespace EIRLSSAssignment1.Controllers
 {
+    [CustomAuthorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private ConfigurationRepository _configurationRepository;
@@ -21,7 +23,7 @@ namespace EIRLSSAssignment1.Controllers
         private SupportingDocumentRepository _supportingDocumentRepository;
 
 
-
+       
         public AdminController()
         {
             _configurationRepository = new ConfigurationRepository(new ApplicationDbContext());
@@ -37,6 +39,7 @@ namespace EIRLSSAssignment1.Controllers
         }
 
         // GET: Admin
+        [CustomAuthorize(Roles = "Admin")]
         public ActionResult Index()
         {
             List<Configuration> configurations = _configurationRepository.GetConfigurations().ToList();
@@ -62,15 +65,10 @@ namespace EIRLSSAssignment1.Controllers
             return View(adminVM);
         }
 
-
+        [CustomAuthorize(Roles = "Admin")]
         public ActionResult DrivingLicenses()
         {
             return View(_drivingLicenseRepository.GetDrivingLicenses());
-        }
-
-        public ActionResult SupportingDocuments()
-        {
-            return View(_supportingDocumentRepository.GetSupportingDocuments());
         }
     }
 }

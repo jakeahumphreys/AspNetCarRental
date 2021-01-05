@@ -10,9 +10,11 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using Microsoft.AspNet.Identity;
+using MVCWebAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {
+    [CustomAuthorize(Roles = "User,Admin")]
     public class SupportingDocumentController : Controller
     {
         private SupportingDocumentRepository _supportingDocumentRepository;

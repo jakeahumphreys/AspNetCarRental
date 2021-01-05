@@ -34,6 +34,7 @@ namespace EIRLSSAssignment1.Controllers
         }
 
         // GET: Bookings
+        [CustomAuthorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var userId = User.Identity.GetUserId();
@@ -49,6 +50,7 @@ namespace EIRLSSAssignment1.Controllers
         }
 
         // GET: Bookings/Details/5
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Details(int id)
         {
             if (id == 0)
@@ -74,6 +76,7 @@ namespace EIRLSSAssignment1.Controllers
         }
 
         // GET: Bookings/Create
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Create()
         {
             //Handle preventing users from creating bookings based on conditions
@@ -121,6 +124,7 @@ namespace EIRLSSAssignment1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Create(BookingViewModel bookingVM)
         {
             var userId = User.Identity.GetUserId();
@@ -305,6 +309,7 @@ namespace EIRLSSAssignment1.Controllers
 
 
         // GET: Bookings/Edit/5
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Edit(int id)
         {
             if (id == 0)
@@ -353,6 +358,7 @@ namespace EIRLSSAssignment1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Edit(BookingViewModel bookingVM)
         {
             if (ModelState.IsValid)
@@ -444,6 +450,7 @@ namespace EIRLSSAssignment1.Controllers
             return View(bookingVM);
         }
 
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult ExtendBooking(int id)
         {
             if (id == 0)
@@ -464,6 +471,7 @@ namespace EIRLSSAssignment1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult ExtendBooking(BookingViewModel bookingVM)
         {
             if (ModelState.IsValid)
@@ -538,6 +546,7 @@ namespace EIRLSSAssignment1.Controllers
             return View(bookingVM);
         }
 
+        [CustomAuthorize(Roles = "User,Admin")]
         // GET: Bookings/Delete/5
         public ActionResult Return(int id)
         {
@@ -562,6 +571,7 @@ namespace EIRLSSAssignment1.Controllers
         // POST: Bookings/Delete/5
         [HttpPost, ActionName("Return")]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult ReturnConfirmed(int id)
         {
             Booking booking = _bookingRepository.GetBookingById(id);
@@ -575,6 +585,7 @@ namespace EIRLSSAssignment1.Controllers
 
 
         // GET: Bookings/Delete/5
+        [CustomAuthorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             if (id == 0)
@@ -592,6 +603,7 @@ namespace EIRLSSAssignment1.Controllers
         // POST: Bookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
             Booking booking = _bookingRepository.GetBookingById(id);

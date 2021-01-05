@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using EIRLSSAssignment1.Models;
 using System.Net;
 using System.Data.Entity;
+using MVCWebAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {
@@ -56,11 +57,13 @@ namespace EIRLSSAssignment1.Controllers
             }
         }
 
+        [CustomAuthorize(Roles ="Admin")]
         public ActionResult Index()
         {
             return View(_applicationDbContext.Users.ToList());
         }
 
+        [CustomAuthorize(Roles = "Admin")]
         public ActionResult Details(string id)
         {
             if (id == null)
@@ -77,7 +80,7 @@ namespace EIRLSSAssignment1.Controllers
             return View(applicationUser);
         }
 
-        // GET: DrivingLicense/Edit/5
+        [CustomAuthorize(Roles = "Admin")]
         public ActionResult Edit(string id)
         {
             if (id == null)
@@ -96,6 +99,7 @@ namespace EIRLSSAssignment1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles ="Admin")]
         public ActionResult Edit(ApplicationUser user)
         {
 
@@ -130,8 +134,6 @@ namespace EIRLSSAssignment1.Controllers
             return View(user);
         }
 
-        //
-        // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
