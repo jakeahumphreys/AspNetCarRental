@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 
@@ -38,7 +39,7 @@ namespace EIRLSSAssignment1.Models
         {
             get
             {
-                return Make + " " + Model + " (" + VRM + ")";
+                return Make + " " + Model + " (" + VRM + ") " + "[" + CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol + RentalCost + " p.d]";
             }
         }
 
