@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EIRLSSAssignment1.Customisations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace EIRLSSAssignment1.Models
         {
             get
             {
-                return "Booking #" + Id + ", vehicle: " + Vehicle.VRM;
+                return "Booking #" + Id + ",(" + BookingStart.ToString("d") + " to " + BookingFinish.ToString("d") + ")";
             }
         }
 

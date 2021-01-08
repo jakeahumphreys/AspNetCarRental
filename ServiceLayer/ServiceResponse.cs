@@ -5,8 +5,9 @@ using System.Web;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
-    public class ServiceResult<T>
-    {
-        public T ResultObject { get; set; }
+    public class ServiceResponse
+    { 
+        public bool Result { get; set; }
+        public Object ServiceObject { get; set; }
     }
 }

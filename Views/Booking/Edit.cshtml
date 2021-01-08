@@ -1,4 +1,4 @@
-﻿@model EIRLSSAssignment1.Models.BookingViewModel
+﻿@model EIRLSSAssignment1.Models.ViewModels.BookingCreateViewModel
 
 @{
     ViewBag.Title = "Edit " + Model.booking.DisplayString;
@@ -27,143 +27,217 @@ else
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.booking.Id)
-        @Html.HiddenFor(model => model.booking.VehicleId)
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.booking.Id)
+    @Html.HiddenFor(model => model.booking.VehicleId)
+    @if (Model.ErrorObj != null)
+    {
+        <div class="alert alert-danger">
+            <h4>Unable to create booking:</h4>
+            <hr />
+            @if (Model.ErrorObj.conflictingBookings != null)
+            {
+                <p>Your chosen period intersects with the following booking period(s):</p>
+                <ul>
+                    @foreach (var booking in Model.ErrorObj.conflictingBookings)
+                    {
+                        <li>@booking.BookingStart.ToString("d") to @booking.BookingFinish.ToString("d")</li>
+                    }
+                </ul>
+                <br />
+                <p>Please try another vehicle or select a different date range.</p>
+            }
+            @if (Model.ErrorObj.conflictingOptionalExtras != null)
+            {
+                <p>Your chosen optional extras are booked in the following intersecting period(s):</p>
+                <ul>
+                    @foreach (var conflictingExtra in Model.ErrorObj.conflictingOptionalExtras)
+                    {
+                        <li>Extra: @conflictingExtra.OptionalExtra.Name is booked from @conflictingExtra.StartDate.ToString("d") to @conflictingExtra.EndDate.ToString("d") </li>
+                    }
+                </ul>
+                <br />
+                <p>Please try another extra or select a different date range.</p>
+            }
+            @if (Model.ErrorObj.isInThePast == true)
+            {
+                <p>Unable to make bookings for dates in the past.</p>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @if (User.IsInRole("Admin"))
+            }
+            @if (Model.ErrorObj.isStartAfterEnd == true)
+            {
+                <p>The Start date must come before end date.</p>
+            }
+            @if (Model.ErrorObj.isEndBeforeStart == true)
+            {
+                <p>The End date must come after the start date.</p>
+            }
+            @if (Model.ErrorObj.isBelowMinRental == true)
+            {
+                <p>Your selected dates fall below the minimum rental period.</p>
+            }
+            @if (Model.ErrorObj.isBeyondMaxRental == true)
+            {
+                <p>This booking exceeds the maximum rental period.</p>
+            }
+            @if (Model.ErrorObj.isStartBeforeOpen == true)
+            {
+                <p>A vehicle cannot be collected before the garage opens.</p>
+            }
+            @if (Model.ErrorObj.isStartAfterClose == true)
+            {
+                <p>A vehicle cannot be collected after the garage has closed.</p>
+            }
+            @if (Model.ErrorObj.isEndBeforeOpen == true)
+            {
+                <p>A vehicle cannot be returned before the garage opens.</p>
+            }
+            @if (Model.ErrorObj.isEndAfterClose == true)
+            {
+                if (Model.IsTrustedUser == true || User.IsInRole("Admin"))
                 {
-                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                    <p>A Late return has not been arranged for this booking. Please select the 'Late Return' checkbox to do so.</p>
                 }
                 else
                 {
-                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    <p>Late returns are not enabled for your account.</p>
                 }
-                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
-            </div>
+            }
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @if (User.IsInRole("Admin"))
-                {
-                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
-                }
-                else
-                {
-                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                }
-                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="form-group">
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.booking.Vehicle.DisplayString)
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.SelectedExtraIds, "Add More Extras", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @if (ViewBag.OptionalExtraCount == 0)
-                    {
-                        <b>There are no available extras at this time.</b>
-                    }
-                    else
-                    {
-                        @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)ViewBag.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
-                        @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
-                    }
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.SelectedExtraToRemoveIds, "Remove Booked Extras", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @if (ViewBag.BookedOptionalExtraCount == 0)
-                    {
-                        <b>You haven't booked any extras.</b>
-                    }
-                    else
-                    {
-                        @Html.DropDownListFor(model => model.SelectedExtraToRemoveIds, (MultiSelectList)ViewBag.BookedOptionalExtras, new { @class = "multi-select", multiple = "multiple" })
-                        @Html.ValidationMessageFor(model => model.SelectedExtraToRemoveIds, "", new { @class = "text-danger" })
-                    }
-                </div>
-            </div>
-
-
-
+    }
+    <div class="form-group">
+        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
             @if (User.IsInRole("Admin"))
             {
-                <div class="form-group">
-                    @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.booking.BookingCost, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.booking.BookingCost, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.booking.BookingCost, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.booking.IsReturned, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.booking.IsReturned, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.booking.IsReturned, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.booking.ReturnDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.booking.ReturnDate, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.booking.ReturnDate, "", new { @class = "text-danger" })
-                    </div>
-                </div>
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
             }
+            else
+            {
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            }
+            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StartDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StartDateTime, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.StartDateTime, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @if (User.IsInRole("Admin"))
+            {
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+            }
+            else
+            {
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            }
+            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.EndDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.EndDateTime, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.booking.VehicleId, "Vehicle", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.booking.Vehicle.DisplayString)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SelectedExtraIds, "Add More Extras", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.OptionalExtraCount == 0)
+                {
+                    <b>There are no available extras at this time.</b>
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.SelectedExtraIds, (MultiSelectList)Model.OptionalExtras, new { @class = "multi-select", multiple = "multiple" })
+                    @Html.ValidationMessageFor(model => model.SelectedExtraIds, "", new { @class = "text-danger" })
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SelectedExtraToRemoveIds, "Remove Booked Extras", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.BookedOptionalExtraCount == 0)
+                {
+                    <b>You haven't booked any extras.</b>
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.SelectedExtraToRemoveIds, (MultiSelectList)Model.BookedOptionalExtras, new { @class = "multi-select", multiple = "multiple" })
+                    @Html.ValidationMessageFor(model => model.SelectedExtraToRemoveIds, "", new { @class = "text-danger" })
+                }
+            </div>
+        </div>
 
 
 
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.booking.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.booking.Remarks, "", new { @class = "text-danger" })
+                </div>
+            </div>
 
             <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-success" />
+                @Html.LabelFor(model => model.booking.BookingCost, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.booking.BookingCost, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.booking.BookingCost, "", new { @class = "text-danger" })
                 </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.IsReturned, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.booking.IsReturned, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.booking.IsReturned, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.booking.ReturnDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.booking.ReturnDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.booking.ReturnDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </div>
     </div>
+</div>
 }
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

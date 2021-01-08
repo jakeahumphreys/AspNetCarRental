@@ -15,15 +15,12 @@ using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.RepeatLogic.Objects;
 using Microsoft.AspNet.Identity;
 using MVCWebAssignment1.Customisations;
+using EIRLSSAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
     public class BookingService
     {
-
-
-
-
         private BookingRepository _bookingRepository;
         private VehicleRepository _vehicleRepository;
         private OptionalExtraRepository _optionalExtraRepository;
@@ -62,13 +59,13 @@ namespace EIRLSSAssignment1.ServiceLayer
         {
             if (id == 0)
             {
-                throw new ArgumentException();
+                throw new ParameterNotValidException("Provided parameter must be an integer");
             }
             Booking booking = _bookingRepository.GetBookingById(id);
 
             if (booking == null)
             {
-                throw new HttpException(404, "Booking not found");
+                throw new BookingNotFoundException("Booking not found.");
             }
 
             var bookingVM = new BookingViewModel { booking = booking };
@@ -122,14 +119,14 @@ namespace EIRLSSAssignment1.ServiceLayer
                 else
                 {
                     //user is blacklisted
-                    throw new Exception("User is blacklisted");
+                    throw new UserIsBlacklistedException("User is blacklisted.");
                 }
 
             }
             else
             {
                 //Garage is not open for orders
-                throw new Exception("Garage is closed");
+                throw new GarageIsClosedException("Garage is closed.");
             }
         }
 
@@ -203,6 +200,291 @@ namespace EIRLSSAssignment1.ServiceLayer
                 return false;
             }
 
+        }
+
+        public BookingCreateViewModel EditView(int id)
+        {
+            if (id == 0)
+            {
+                throw new ParameterNotValidException("Provided parameter must be an integer");
+            }
+            Booking booking = _bookingRepository.GetBookingById(id);
+
+            if (booking == null)
+            {
+                throw new BookingNotFoundException("Booking not found.");
+            }
+
+
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var userAge = _library.CalculateUserAge(userId);
+
+            var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge).Where(x => x.IsInactive == false), "Id", "DisplayString");
+            var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.Bookings.Contains(booking) == false).Where(x => x.IsInactive == false), "Id", "DisplayString");
+            var bookedOptionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.Bookings.Contains(booking)).ToList(), "Id", "DisplayString");
+
+            BookingCreateViewModel bookingVM = new BookingCreateViewModel
+            {
+                Vehicles = vehicles,
+                VehicleCount = vehicles.Count(),
+                OptionalExtras = optionalExtras,
+                OptionalExtraCount = optionalExtras.Count(),
+                BookedOptionalExtras = bookedOptionalExtras,
+                BookedOptionalExtraCount = bookedOptionalExtras.Count(),
+                IsTrustedUser = _library.CanUserReturnLate(userId),
+                booking = booking,
+                StartDate = booking.BookingStart,
+                EndDate = booking.BookingFinish,
+                StartDateTime = booking.BookingStart,
+                EndDateTime = booking.BookingFinish
+            };
+
+            return bookingVM;
+        }
+
+        public bool EditAction(BookingCreateViewModel bookingVM)
+        {
+            //Construct DateTime from object
+            DateTime StartTime = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
+            DateTime EndTime = new DateTime(bookingVM.EndDate.Year, bookingVM.EndDate.Month, bookingVM.EndDate.Day, bookingVM.EndDateTime.Hour, bookingVM.EndDateTime.Minute, bookingVM.EndDateTime.Second);
+
+            bookingVM.booking.BookingStart = StartTime;
+            bookingVM.booking.BookingFinish = EndTime;
+
+            Booking existingBooking = _bookingRepository.GetBookingById(bookingVM.booking.Id);
+
+            bool bookingValid = false;
+
+            BookingErrorObj errorObj = new BookingErrorObj();
+
+            if (bookingVM.SelectedExtraIds != null)
+            {
+                errorObj = CreateBookingErrorObject(bookingVM);
+
+                //Validate created error object and perform booking if valid
+                if (ValidateErrorObject(errorObj) == true)
+                {
+                    foreach (var extraId in bookingVM.SelectedExtraIds)
+                    {
+                        OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(extraId);
+                        existingBooking.OptionalExtras.Add(optionalExtra);
+                    }
+                    bookingValid = true;
+                }
+                else
+                {
+                    bookingVM.ErrorObj = errorObj;
+                    return false;
+                }
+            }
+
+
+            //Remove selected optional extras attributed to this booking
+            if (bookingVM.SelectedExtraToRemoveIds != null)
+            {
+                errorObj = CreateBookingErrorObject(bookingVM);
+
+                //Validate created error object and perform booking if valid
+                if (ValidateErrorObject(errorObj) == true)
+                {
+                    foreach (var id in bookingVM.SelectedExtraToRemoveIds)
+                    {
+                        OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
+
+                        if (optionalExtra != null)
+                        {
+                            existingBooking.OptionalExtras.Remove(optionalExtra);
+                        }
+                    }
+
+                    bookingValid = true;
+                }
+                else
+                {
+                    bookingVM.ErrorObj = errorObj;
+                    return false;
+                }
+            }
+
+            if (bookingValid == true)
+            {
+                existingBooking.BookingStart = bookingVM.booking.BookingStart;
+                existingBooking.BookingFinish = bookingVM.booking.BookingFinish;
+                existingBooking.IsLateReturn = bookingVM.booking.IsLateReturn;
+                existingBooking.IsReturned = bookingVM.booking.IsReturned;
+                existingBooking.ReturnDate = bookingVM.booking.ReturnDate;
+                existingBooking.Remarks = bookingVM.booking.Remarks;
+
+                if (existingBooking.BookingCost == 0)
+                {
+                    existingBooking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
+                }
+
+                _bookingRepository.Update(existingBooking);
+                _bookingRepository.Save();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }        
+        }
+
+        public BookingCreateViewModel ExtendBookingView(int id)
+        {
+            if (id == 0)
+            {
+                throw new ParameterNotValidException("Parameter requires an int");
+            }
+
+            Booking booking = _bookingRepository.GetBookingById(id);
+
+            if (booking == null)
+            {
+                throw new BookingNotFoundException("Booking not found");
+            }
+
+            BookingCreateViewModel bookingVM = new BookingCreateViewModel
+            {
+                hasPendingRequest = HasPendingRequest(booking.Id),
+                booking = booking,
+                StartDate = booking.BookingStart,
+                StartDateTime = booking.BookingStart,
+                EndDate = booking.BookingFinish,
+                EndDateTime = booking.BookingFinish
+            };
+    
+            return bookingVM;
+        }
+
+        public ServiceResponse ExtendBookingAction(BookingCreateViewModel bookingVM)
+        {
+            DateTime StartDate = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
+            DateTime EndDate = new DateTime(bookingVM.EndDate.Year, bookingVM.EndDate.Month, bookingVM.EndDate.Day, bookingVM.EndDateTime.Hour, bookingVM.EndDateTime.Minute, bookingVM.EndDateTime.Second);
+
+            bookingVM.booking.BookingStart = StartDate;
+            bookingVM.booking.BookingFinish = EndDate;
+
+            bookingVM.hasPendingRequest = HasPendingRequest(bookingVM.booking.Id);
+
+            BookingErrorObj errorObj = new BookingErrorObj();
+
+            //If user has requested a changed date
+            errorObj = CreateBookingErrorObject(bookingVM);
+
+            if (ValidateErrorObject(errorObj) == true)
+            {
+                ExtensionRequest request = new ExtensionRequest
+                {
+                    BookingId = bookingVM.booking.Id,
+                    EndDateRequest = bookingVM.booking.BookingFinish,
+                    extensionRequestStatus = ExtensionStatus.Pending
+                };
+
+
+                ServiceResponse response = new ServiceResponse
+                {
+                    Result = true,
+                    ServiceObject = request
+                };
+
+                return response;
+            }
+            else
+            {
+                bookingVM.ErrorObj = errorObj;
+
+                ServiceResponse response = new ServiceResponse
+                {
+                    Result = false,
+                    ServiceObject = bookingVM
+                };
+
+                return response;
+            }
+        }
+
+        public BookingReturnViewModel ReturnView(int id)
+        {
+            if (id == 0)
+            {
+                throw new ParameterNotValidException("Parameter expecting an int");
+            }
+            var bookingVM = new BookingReturnViewModel();
+
+            Booking booking = _bookingRepository.GetBookingById(id);
+
+            bookingVM.booking = booking;
+
+            if (DateTime.Now > booking.BookingFinish)
+            {
+                bookingVM.dateStatus = "late";
+            }
+            
+            if(DateTime.Now < booking.BookingStart)
+            {
+                bookingVM.dateStatus = "early";
+            }
+
+            if (booking == null)
+            {
+                throw new BookingNotFoundException("Booking not found.");
+            }
+            return bookingVM;
+        }
+
+        public bool ReturnAction(int id)
+        {
+            Booking booking = _bookingRepository.GetBookingById(id);
+            booking.IsReturned = true;
+            booking.ReturnDate = DateTime.Now;
+            _bookingRepository.Update(booking);
+            _bookingRepository.Save();
+            return true;
+        }
+
+        public Booking DeleteView(int id)
+        {
+            if (id == 0)
+            {
+                throw new ParameterNotValidException("Parameter expected an int.");
+            }
+            Booking booking = _bookingRepository.GetBookingById(id);
+            if (booking == null)
+            {
+                throw new BookingNotFoundException("Booking not found.");
+            }
+            return booking;
+        }
+
+        public bool DeleteAction(int id)
+        {
+            Booking booking = _bookingRepository.GetBookingById(id);
+            _bookingRepository.Delete(booking);
+            _bookingRepository.Save();
+            return true;
+        }
+
+        public void Dispose()
+        {
+            _bookingRepository.Dispose();
+        }
+
+        public bool HasPendingRequest(int bookingId)
+        {
+            bool HasRequest = false;
+
+            if (bookingId != 0)
+            {
+                List<ExtensionRequest> extensions = _extensionRequestRepository.GetExtensionRequests().Where(x => x.extensionRequestStatus == ExtensionStatus.Pending && x.BookingId == bookingId).ToList();
+                if (extensions.Count > 0)
+                {
+                    HasRequest = true;
+                }
+            }
+
+            return HasRequest;
         }
 
         public BookingErrorObj CreateBookingErrorObject(BookingCreateViewModel bookingVM)

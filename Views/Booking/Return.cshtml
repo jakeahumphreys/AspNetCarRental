@@ -1,11 +1,11 @@
-﻿@model EIRLSSAssignment1.Models.Booking
+﻿@model EIRLSSAssignment1.Models.ViewModels.BookingReturnViewModel
 
 @{
-    ViewBag.Title = "Return " + Model.DisplayString;
+    ViewBag.Title = "Return " + Model.booking.DisplayString;
 }
 
 
-@if (ViewBag.dateStatus == "late")
+@if (Model.dateStatus == "late")
 {
     <div class="alert alert-danger">
         <div class="row">
@@ -14,6 +14,17 @@
         </div>
         <hr />
         <h5>Ensure the vehicle is returned to the garage prior to confirming the return.</h5>
+    </div>
+}
+else if (Model.dateStatus == "early")
+{
+    <div class="alert alert-success">
+        <div class="row">
+            <span class="fa fa-question" style="color:green; font-size:40px; margin-right:10px;"></span>
+            <h3>Are you sure you want to return this booking early?</h3>
+        </div>
+        <hr />
+        <h5>Closing this booking will prevent further changes. Closing this booking early will require you to rebook the vehicle if needed.</h5>
     </div>
 }
 else
@@ -31,41 +42,41 @@ else
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.User.Name)
+            @Html.DisplayNameFor(model => model.booking.User.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.User.Name)
+            @Html.DisplayFor(model => model.booking.User.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Vehicle.VRM)
+            @Html.DisplayNameFor(model => model.booking.Vehicle.VRM)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Vehicle.VRM)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.BookingStart)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.BookingStart)
+            @Html.DisplayFor(model => model.booking.Vehicle.VRM)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.BookingFinish)
+            @Html.DisplayNameFor(model => model.booking.BookingStart)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.BookingFinish)
+            @Html.DisplayFor(model => model.booking.BookingStart)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.IsLateReturn)
+            @Html.DisplayNameFor(model => model.booking.BookingFinish)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IsLateReturn)
+            @Html.DisplayFor(model => model.booking.BookingFinish)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.booking.IsLateReturn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.booking.IsLateReturn)
         </dd>
 
     </dl>
@@ -76,7 +87,7 @@ else
 
         <div class="form-actions no-color">
             <input type="submit" value="Return" class="btn btn-warning" />
-            <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Details","Booking", new { Id = Model.Id })';return false;"></button>
+            <button class="btn btn-primary fa fa-arrow-circle-left" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Details","Booking", new { Id = Model.booking.Id })';return false;"></button>
         </div>
     }
 </div>
