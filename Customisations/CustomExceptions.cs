@@ -25,5 +25,45 @@ namespace EIRLSSAssignment1.Customisations
         public BookingNotFoundException(string message) : base(message) { }
     }
 
+    public class VehicleNotFoundException : Exception
+    {
+        public VehicleNotFoundException(string message) : base(message) { }
+    }
+
+    public class VehicleTypeNotFoundException : Exception
+    {
+        public VehicleTypeNotFoundException(string message) : base(message) { }
+    }
+
+    public class OptionalExtraNotFoundException : Exception
+    {
+        public OptionalExtraNotFoundException(string message) : base(message) { }
+    }
+
+    public class DrivingLicenseNotFoundException : Exception
+    {
+        public DrivingLicenseNotFoundException(string message) : base(message) { }
+    }
+
+    public class SupportingDocumentNotFoundException : Exception
+    {
+        public SupportingDocumentNotFoundException(string message) : base(message) { }
+    }
+
+    public class FuelTypeNotFoundException : Exception
+    {
+        public FuelTypeNotFoundException(string message) : base(message) { }
+    }
+
+    public class ConfigurationNotFoundException : Exception
+    {
+        public ConfigurationNotFoundException(string message) : base(message) { }
+    }
+
+    public class ExtensionRequestNotFoundException : Exception
+    {
+        public ExtensionRequestNotFoundException(string message) : base(message) { }
+    }
+
 
 }
