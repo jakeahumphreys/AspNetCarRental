@@ -21,6 +21,7 @@ namespace EIRLSSAssignment1.Controllers
         private OptionalExtraRepository _optionalExtraRepository;
         private DrivingLicenseRepository _drivingLicenseRepository;
         private SupportingDocumentRepository _supportingDocumentRepository;
+        private ExtensionRequestRepository _extentionRepository;
 
 
        
@@ -35,6 +36,7 @@ namespace EIRLSSAssignment1.Controllers
             _optionalExtraRepository = new OptionalExtraRepository(new ApplicationDbContext());
             _drivingLicenseRepository = new DrivingLicenseRepository(new ApplicationDbContext());
             _supportingDocumentRepository = new SupportingDocumentRepository(new ApplicationDbContext());
+            _extentionRepository = new ExtensionRequestRepository(new ApplicationDbContext());
 
         }
 
@@ -49,6 +51,7 @@ namespace EIRLSSAssignment1.Controllers
             List<ApplicationUser> applicationUsers = _appDbContext.Users.ToList();
             List<Booking> bookings = _bookingRepository.GetBookings().ToList();
             List<OptionalExtra> optionalExtras = _optionalExtraRepository.GetOptionalExtras().ToList();
+            List<ExtensionRequest> extensionRequests = _extentionRepository.GetExtensionRequests().ToList();
 
 
             var adminVM = new AdminViewModel {
@@ -58,12 +61,15 @@ namespace EIRLSSAssignment1.Controllers
                 FuelTypes = fuelTypes,
                 Users = applicationUsers,
                 Bookings = bookings,
-                OptionalExtras = optionalExtras
+                OptionalExtras = optionalExtras,
+                ExtensionRequests = extensionRequests
             };
 
 
             return View(adminVM);
         }
+
+
 
         [CustomAuthorize(Roles = "Admin")]
         public ActionResult DrivingLicenses()

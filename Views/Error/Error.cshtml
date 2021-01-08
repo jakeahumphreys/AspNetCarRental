@@ -37,5 +37,16 @@
         <h5>Please contact the garage for more information.</h5>
     </div>
 }
+@if (ViewBag.ErrorType == ErrorType.Extension)
+{
+    <div class="alert alert-danger">
+        <div class="row">
+            <span class="fa fa-calendar-times" style="color:red; font-size:40px; margin-right:10px;"></span>
+            <h3>Unable to process extension.</h3>
+        </div>
+        <hr />
+        <h5></h5>
+    </div>
+}
 
 

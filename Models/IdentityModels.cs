@@ -69,6 +69,7 @@ namespace EIRLSSAssignment1.Models
         public DbSet<DrivingLicense> DrivingLicenses { get; set; }
         public DbSet<SupportingDocument> SupportingDocuments { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<ExtensionRequest> ExtensionRequests { get; set; }
 
     }
 }

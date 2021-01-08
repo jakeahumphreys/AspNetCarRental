@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EIRLSSAssignment1.Models.enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,5 +15,6 @@ namespace EIRLSSAssignment1.Models
         public List<FuelType> FuelTypes { get; set; }
         public List<Vehicle> Vehicles { get; set; }
         public List<OptionalExtra> OptionalExtras { get; set; }
+        public List<ExtensionRequest> ExtensionRequests { get; set; }
     }
 }

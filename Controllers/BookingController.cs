@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
+using EIRLSSAssignment1.Models.enums;
 using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.RepeatLogic.Objects;
 using Microsoft.AspNet.Identity;
@@ -20,6 +21,7 @@ namespace EIRLSSAssignment1.Controllers
         private BookingRepository _bookingRepository;
         private VehicleRepository _vehicleRepository;
         private OptionalExtraRepository _optionalExtraRepository;
+        private ExtensionRequestRepository _extensionRequestRepository;
         private ApplicationDbContext appDbContext = new ApplicationDbContext();
         private Library _library;
 
@@ -29,6 +31,7 @@ namespace EIRLSSAssignment1.Controllers
             _bookingRepository = new BookingRepository(context);
             _vehicleRepository = new VehicleRepository(context);
             _optionalExtraRepository = new OptionalExtraRepository(context);
+            _extensionRequestRepository = new ExtensionRequestRepository(new ApplicationDbContext());
             
             _library = new Library();
         }
@@ -106,6 +109,9 @@ namespace EIRLSSAssignment1.Controllers
 
                     ViewBag.Users = new SelectList(appDbContext.Users.ToList(), "Id", "Name");
 
+                    ViewBag.IsTrustedUser = _library.CanUserReturnLate(userId);
+
+
                     return View();
                 }
                 else
@@ -145,164 +151,64 @@ namespace EIRLSSAssignment1.Controllers
                 ViewBag.OptionalExtras = optionalExtras;
                 ViewBag.OptionalExtraCount = optionalExtras.Count();
 
-                ViewBag.IsUserTrusted = _library.CanUserReturnLate(userId);
-
                 DateTime startTime = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
                 DateTime endTime = new DateTime(bookingVM.EndDate.Year, bookingVM.EndDate.Month, bookingVM.EndDate.Day, bookingVM.EndDateTime.Hour, bookingVM.EndDateTime.Minute, bookingVM.EndDateTime.Second);
 
                 bookingVM.booking.BookingStart = startTime;
                 bookingVM.booking.BookingFinish = endTime;
 
-                CreateBookingErrorObj errorObj = new CreateBookingErrorObj();
+                BookingErrorObj errorObj = new BookingErrorObj();
 
-                if(startTime > endTime)
-                {
-                    errorObj.isStartAfterEnd = true;
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
-                }
+                //Create and store values in an error object
+                errorObj = CreateBookingErrorObject(bookingVM);
 
-                if(endTime < startTime)
+                //Validate created error object and perform booking if valid
+                if(ValidateErrorObject(errorObj) == true)
                 {
-                    errorObj.isEndBeforeStart = true;
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
-                }
-
-                if(!User.IsInRole("Admin"))
-                {
-                    if (startTime < DateTime.Now)
+                    //Add Optional Extras to bookings if any were selected
+                    if (bookingVM.SelectedExtraIds != null && bookingVM.SelectedExtraIds.Count > 0)
                     {
-                        errorObj.isInThePast = true;
-                        ViewBag.ErrorObj = errorObj;
-                        return View(bookingVM);
-                    }
-                }
-                
+                        var bookedOptionalExtras = new List<OptionalExtra>();
 
-
-                if (_library.isBeforeOpening(startTime.Hour) == true)
-                {
-                    errorObj.isStartBeforeOpen = true;
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
-                }
-
-                if(_library.isBeforeOpening(endTime.Hour) == true)
-                {
-                    errorObj.isEndBeforeOpen = true;
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
-                }
-
-                if(_library.isBeyondClosing(startTime.Hour) ==true)
-                {
-                    errorObj.isStartAfterClose = true;
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
-                }
-
-                if(_library.isBeyondClosing(endTime.Hour) == true) 
-                {
-                    if(bookingVM.booking.IsLateReturn == false)
-                    {
-                        errorObj.isEndAfterClose = true;
-                        ViewBag.ErrorObj = errorObj;
-                        return View(bookingVM);
-                    }
-                }
-
-                if (_library.isMinRental(startTime, endTime) == false)
-                {
-                    errorObj.isBelowMinRental = true;
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
-                }
-
-                if (_library.isMaxRental(startTime, endTime) == true)
-                {
-                    errorObj.isBeyondMaxRental = true;
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
-                }
-
-                List<Booking> conflictingBookings = CheckConflictingBookings(bookingVM.booking);
-
-                if (conflictingBookings != null && conflictingBookings.Count > 0)
-                {
-                    //There are conflicting bookings
-                    errorObj.conflictingBookings = conflictingBookings;
-                    ViewBag.ErrorObj = errorObj;
-                }
-                else
-                {
-                    if (bookingVM.SelectedExtraIds != null)
-                    {
-                        List<ConflictingExtraItem> conflictingOptionalExtras = CheckConflictingOptionalExtras(bookingVM);
-
-                        if (conflictingOptionalExtras != null && conflictingOptionalExtras.Count > 0)
+                        foreach (var id in bookingVM.SelectedExtraIds)
                         {
-                            //There are conflicting optional extras
-                            errorObj.conflictingOptionalExtras = conflictingOptionalExtras;
-                            ViewBag.ErrorObj = errorObj;
+                            bookedOptionalExtras.Add(_optionalExtraRepository.GetOptionalExtraById(id));
                         }
-                        else
-                        {
 
-                            var bookedOptionalExtras = new List<OptionalExtra>();
+                        bookingVM.booking.OptionalExtras = bookedOptionalExtras;
 
-                            foreach (var id in bookingVM.SelectedExtraIds)
-                            {
-                                bookedOptionalExtras.Add(_optionalExtraRepository.GetOptionalExtraById(id));
-                            }
+                    }
 
-                            if(!User.IsInRole("Admin"))
-                            {
-                                bookingVM.booking.UserId = User.Identity.GetUserId();
-                            }
-              
+                    //Attribute the user ID automatically if they aren't an admin.
+                    //Admins set the user manually to create bookings for others.
+                    if (!User.IsInRole("Admin"))
+                    {
+                        bookingVM.booking.UserId = User.Identity.GetUserId();
+                    }
 
-                            bookingVM.booking.OptionalExtras = bookedOptionalExtras;
+                    //Calculate the booking cost.
+                    bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
 
-                            bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
-                            _bookingRepository.Insert(bookingVM.booking);
-                            _bookingRepository.Save();
-                            if (User.IsInRole("Admin"))
-                            {
-                                return RedirectToAction("Index", "Admin", null);
-                            }
-                            else
-                            {
-                                return RedirectToAction("Index", "Home", null);
-                            }
-                        }
+                    //Save booking
+                    _bookingRepository.Insert(bookingVM.booking);
+                    _bookingRepository.Save();
+
+                    //Redirect to appropriate place.
+                    if (User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("Index", "Admin", null);
                     }
                     else
                     {
-                        //User has not selected optional extras
-                        if(!User.IsInRole("Admin"))
-                        {
-                            bookingVM.booking.UserId = User.Identity.GetUserId();
-                        }
-
-                        bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
-                         //Attribute booking to user
-                        _bookingRepository.Insert(bookingVM.booking);
-                        _bookingRepository.Save();
-                        if (User.IsInRole("Admin"))
-                        {
-                            return RedirectToAction("Index", "Admin", null);
-                        }
-                        else
-                        {
-                            return RedirectToAction("Index", "Home", null);
-                        }
+                        return RedirectToAction("Index", "Home", null);
                     }
                 }
-            }
-            else
-            {
-                return View(bookingVM);
+                else
+                {
+                    //An error was recorded within the object, pass to viewbag for display and return view.
+                    ViewBag.ErrorObj = errorObj;
+                    return View(bookingVM);
+                }
             }
 
             return View(bookingVM);
@@ -341,6 +247,8 @@ namespace EIRLSSAssignment1.Controllers
             //Set Viewbag Vehicle Data
             ViewBag.Vehicles = vehicles;
             ViewBag.VehicleCount = vehicles.Count();
+
+            ViewBag.IsTrustedUser = _library.CanUserReturnLate(userId);
 
             //Set Viewbag Optional Extra Data
             ViewBag.OptionalExtras = optionalExtras;
@@ -464,6 +372,7 @@ namespace EIRLSSAssignment1.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Booking booking = _bookingRepository.GetBookingById(id);
+            ViewBag.HasPendingRequest = HasPendingRequest(booking.Id);
 
             if (booking == null)
             {
@@ -482,79 +391,59 @@ namespace EIRLSSAssignment1.Controllers
         {
             if (ModelState.IsValid)
             {
-                DateTime StartTime = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
-                DateTime EndTime = new DateTime(bookingVM.EndDate.Year, bookingVM.EndDate.Month, bookingVM.EndDate.Day, bookingVM.EndDateTime.Hour, bookingVM.EndDateTime.Minute, bookingVM.EndDateTime.Second);
+                DateTime StartDate = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
+                DateTime EndDate = new DateTime(bookingVM.EndDate.Year, bookingVM.EndDate.Month, bookingVM.EndDate.Day, bookingVM.EndDateTime.Hour, bookingVM.EndDateTime.Minute, bookingVM.EndDateTime.Second);
 
-                bookingVM.booking.BookingStart = StartTime;
-                bookingVM.booking.BookingFinish = EndTime;
+                bookingVM.booking.BookingStart = StartDate;
+                bookingVM.booking.BookingFinish = EndDate;
 
                 Booking existingBooking = _bookingRepository.GetBookingById(bookingVM.booking.Id);
+                ViewBag.HasPendingRequest = HasPendingRequest(bookingVM.booking.Id);
 
-                EditBookingErrorObj errorObj = new EditBookingErrorObj();
+                BookingErrorObj errorObj = new BookingErrorObj();
 
-
+                //If user has requested a changed date
                 if (bookingVM.booking.BookingFinish != existingBooking.BookingFinish)
                 {
-                    //User has changed the end date.
-                    if (_library.isBookedNextDay(bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId) == true)
+                    errorObj = CreateBookingErrorObject(bookingVM);
+
+                    if(ValidateErrorObject(errorObj) == true)
                     {
-                        if(bookingVM.booking.BookingFinish.Hour <= 16)
-                        {
-                            //User is reducing end time, which is permitted up until 4pm
-                            existingBooking.BookingStart = bookingVM.booking.BookingStart;
-                            existingBooking.BookingFinish = bookingVM.booking.BookingFinish;
+                        ExtensionRequest request = new ExtensionRequest {
+                            BookingId = bookingVM.booking.Id,
+                            EndDateRequest = bookingVM.booking.BookingFinish,
+                            extensionRequestStatus = ExtensionStatus.Pending
+                        };
+                        TempData["extensionRequest"] = request;
 
-                            if(existingBooking.BookingCost == 0)
-                            {
-                                existingBooking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
-                            }
-
-                            _bookingRepository.Update(existingBooking);
-                            _bookingRepository.Save();
-                            return RedirectToAction("Details", "Booking", new { @id = existingBooking.Id });
-                        }
-                        else
-                        {
-                            //User is attempting to extend, where there is a booking the next day.
-                            errorObj.isBookedNextDay = true;
-                            ViewBag.ErrorObj = errorObj;
-                            return View(bookingVM);
-                        }
-                        
+                        return RedirectToAction("Create", "ExtensionRequest");
                     }
                     else
                     {
-                        if (_library.isBeyondClosing(bookingVM.booking.BookingFinish.Hour) == true)
-                        {
-                            if (bookingVM.booking.IsLateReturn)
-                            {
-                                _bookingRepository.Update(existingBooking);
-                                _bookingRepository.Save();
-                                return RedirectToAction("Details", "Booking", new { @id = existingBooking.Id });
-                            }
-                            else
-                            {
-                                errorObj.isBeyondClose = true;
-                                ViewBag.ErrorObj = errorObj;
-                                return View(bookingVM);
-                            }
-
-                        }
-                        else
-                        {
-                            existingBooking.BookingStart = bookingVM.booking.BookingStart;
-                            existingBooking.BookingFinish = bookingVM.booking.BookingFinish;
-
-                            _bookingRepository.Update(existingBooking);
-                            _bookingRepository.Save();
-                            return RedirectToAction("Details", "Booking", new { @id = existingBooking.Id });
-                        }
-
+                        ViewBag.ErrorObj = errorObj;
+                        return View(bookingVM);
                     }
+
                 }
             }
 
-            return View(bookingVM);
+            return View();
+        }
+
+        public bool HasPendingRequest(int bookingId)
+        {
+            bool HasRequest = false;
+
+            if(bookingId != 0)
+            {
+                List<ExtensionRequest> extensions = _extensionRequestRepository.GetExtensionRequests().Where(x => x.extensionRequestStatus == ExtensionStatus.Pending && x.BookingId == bookingId).ToList();
+                if(extensions.Count > 0)
+                {
+                    HasRequest = true;
+                }
+            }
+
+            return HasRequest;
         }
 
         [CustomAuthorize(Roles = "User,Admin")]
@@ -632,6 +521,137 @@ namespace EIRLSSAssignment1.Controllers
             base.Dispose(disposing);
         }
 
+        public BookingErrorObj CreateBookingErrorObject(BookingViewModel bookingVM)
+        {
+            BookingErrorObj errorObj = new BookingErrorObj();
+            List<Booking> conflictingBookings = CheckConflictingBookings(bookingVM.booking);
+            List<ConflictingExtraItem> conflictingOptionalExtras = CheckConflictingOptionalExtras(bookingVM);
+
+
+            if (bookingVM != null)
+            {
+                if (_library.isBookedNextDay(bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId) == true)
+                {
+                    errorObj.isBookedNextDay = true;
+                }
+                if (_library.isMaxRental(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish) == true)
+                {
+                    errorObj.isBeyondMaxRental = true;
+                }
+                if(_library.isMinRental(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish) == false)
+                {
+                    errorObj.isBelowMinRental = true;
+                }
+                if (_library.isBeforeOpening(bookingVM.booking.BookingStart.Hour) == true)
+                {
+                    errorObj.isStartBeforeOpen = true;
+                }
+                if(_library.isBeforeOpening(bookingVM.booking.BookingFinish.Hour) == true)
+                {
+                    errorObj.isEndBeforeOpen = true;
+                }
+                if (_library.isBeyondClosing(bookingVM.booking.BookingFinish.Hour) == true)
+                {
+                    errorObj.isEndAfterClose = true;
+                }
+                if(_library.isBeyondClosing(bookingVM.booking.BookingStart.Hour) == true)
+                {
+                    errorObj.isStartAfterClose = true;
+                }
+                if(bookingVM.booking.BookingFinish < bookingVM.booking.BookingStart)
+                {
+                    errorObj.isEndBeforeStart = true;
+                }
+                if(bookingVM.booking.BookingStart > bookingVM.booking.BookingFinish)
+                {
+                    errorObj.isStartAfterEnd = true;
+                }
+                if(!User.IsInRole("Admin"))
+                {
+                    if(bookingVM.booking.BookingStart < DateTime.Today)
+                    {
+                        errorObj.isInThePast = true;
+                    }
+                }
+                if(conflictingOptionalExtras.Count > 0)
+                {
+                    errorObj.conflictingOptionalExtras = conflictingOptionalExtras;
+                }
+                if (conflictingBookings.Count > 0)
+                {
+                    errorObj.conflictingBookings = conflictingBookings;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            return errorObj;
+
+        }
+
+        public bool ValidateErrorObject(BookingErrorObj errorObj)
+        {
+            if(errorObj != null)
+            {
+                if(errorObj.isBookedNextDay == true)
+                {
+                    return false;
+                }
+                if(errorObj.isBelowMinRental == true)
+                {
+                    return false;
+                }
+                if(errorObj.isBeyondMaxRental == true)
+                {
+                    return false;
+                }
+                if(errorObj.isStartBeforeOpen == true)
+                {
+                    return false;
+                }
+                if(errorObj.isStartAfterClose == true)
+                {
+                    return false;
+                }
+                if(errorObj.isEndBeforeOpen == true)
+                {
+                    return false;
+                }
+                if(errorObj.isEndAfterClose == true)
+                {
+                    return false;
+                }
+                if(errorObj.isInThePast == true)
+                {
+                    return false;
+                }
+                if(errorObj.isEndBeforeOpen == true)
+                {
+                    return false;
+                }
+                if(errorObj.isStartAfterEnd == true)
+                {
+                    return false;
+                }
+                if(errorObj.conflictingBookings != null)
+                {
+                    return false;
+                }
+                if(errorObj.conflictingOptionalExtras != null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private double CalculateBookingCost(DateTime startDate, DateTime endDate, int vehicleId)
         {
             TimeSpan dateRange = endDate - startDate;
@@ -643,11 +663,11 @@ namespace EIRLSSAssignment1.Controllers
 
         private List<Booking> CheckConflictingBookings(Booking booking)
         {
-            if(booking != null)
-            {
-                List<Booking> conflictingBookings = new List<Booking>();
+            List<Booking> conflictingBookings = new List<Booking>();
 
-                foreach (var existingBooking in _bookingRepository.GetBookings().Where(x => x.VehicleId == booking.VehicleId).ToList())
+            if (booking != null)
+            {
+                foreach (var existingBooking in _bookingRepository.GetBookings().Where(x => x.VehicleId == booking.VehicleId && x.IsReturned == false && x.Id != booking.Id).ToList())
                 {
                     if (existingBooking != null)
                     { 
@@ -658,27 +678,25 @@ namespace EIRLSSAssignment1.Controllers
                     }
                 }
 
-                return conflictingBookings;
             }
-            else
-            {
-                return null;
-            }
+
+            return conflictingBookings;
+
         }
 
         private List<ConflictingExtraItem> CheckConflictingOptionalExtras(BookingViewModel bookingVM)
         {
-            if(bookingVM != null)
-            {
-                List<Booking> conlictingBookingsWithExtra = new List<Booking>();
-                List<ConflictingExtraItem> conflictingExtras = new List<ConflictingExtraItem>();
+            List<Booking> conlictingBookingsWithExtra = new List<Booking>();
+            List<ConflictingExtraItem> conflictingExtras = new List<ConflictingExtraItem>();
 
+            if (bookingVM != null && bookingVM.SelectedExtraIds != null)
+            {
                 foreach (var extraId in bookingVM.SelectedExtraIds)
                 {
                     OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(extraId);
-                    List<Booking> bookingsWithSelectedExtra = _bookingRepository.GetBookings().Where(x => x.OptionalExtras.Contains(optionalExtra)).ToList();
+                    List<Booking> bookingsWithSelectedExtra = _bookingRepository.GetBookings().Where(x => x.OptionalExtras.Contains(optionalExtra) && x.IsReturned == false).ToList();
 
-                    foreach(var bookingWithSelectedExtra in bookingsWithSelectedExtra)
+                    foreach (var bookingWithSelectedExtra in bookingsWithSelectedExtra)
                     {
                         if (bookingVM.booking.BookingStart <= bookingWithSelectedExtra.BookingFinish && bookingWithSelectedExtra.BookingStart <= bookingVM.booking.BookingFinish)
                         {
@@ -692,13 +710,8 @@ namespace EIRLSSAssignment1.Controllers
                         }
                     }
                 }
-
-                return conflictingExtras;
             }
-            else
-            {
-                return null;
-            }
+            return conflictingExtras;
         }
     }
 }

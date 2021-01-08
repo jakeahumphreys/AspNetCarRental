@@ -88,11 +88,11 @@ namespace EIRLSSAssignment1.RepeatLogic
             }
         }
 
-        public bool isBookedNextDay(DateTime date, int vehicleId)
+        public bool isBookedNextDay(DateTime endDate, int vehicleId)
         {
-            if(date != null)
+            if(endDate != null)
             {
-                var dateToCheck = date.AddDays(1);
+                var dateToCheck = endDate.AddDays(1);
                 List<Booking> bookings = _bookingRepository.GetBookings().Where(x => x.VehicleId == vehicleId).Where(x => x.BookingStart.Day == dateToCheck.Day).ToList();
                 if(bookings.Count > 0)
                 {
@@ -111,24 +111,21 @@ namespace EIRLSSAssignment1.RepeatLogic
 
         public bool isMinRental(DateTime startTime, DateTime endTime)
         {
+            bool isMinRental = true;
+
             if(startTime != null && endTime != null)
             {
                 Configuration config = GetActiveConfiguration();
                 TimeSpan timeSpan = endTime.Subtract(startTime);
 
-                if (timeSpan.TotalHours > config.MinRentalHours)
+                if (timeSpan.TotalHours < config.MinRentalHours)
                 {
-                    return true;
+                    isMinRental = false;
                 }
-                else
-                {
-                    return false;
-                }
+
             }
-            else
-            {
-                return false;
-            }
+
+            return isMinRental;
         }
 
         public bool isMaxRental(DateTime startTime, DateTime endTime)

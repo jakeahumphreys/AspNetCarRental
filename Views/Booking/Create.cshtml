@@ -160,8 +160,7 @@ else
                     @Html.ValidationMessageFor(model => model.EndDateTime, "", new { @class = "text-danger" })
                 </div>
             </div>
-
-            @if (User.IsInRole("Admin") || ViewBag.IsTrustedUser == true)
+            @if (User.IsInRole("Admin") || @ViewBag.IsTrustedUser == true)
             {
                 <div class="form-group">
                     @Html.LabelFor(model => model.booking.IsLateReturn, htmlAttributes: new { @class = "control-label col-md-2" })

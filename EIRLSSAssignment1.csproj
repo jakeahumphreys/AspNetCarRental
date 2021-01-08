@@ -175,6 +175,7 @@
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\DrivingLicenseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\ExtensionRequestController.cs" />
     <Compile Include="Controllers\FuelTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -184,59 +185,36 @@
     <Compile Include="Controllers\VehicleTypeController.cs" />
     <Compile Include="Customisations\CustomAuthorize.cs" />
     <Compile Include="Customisations\ErrorType.cs" />
-    <Compile Include="DAL\BookingContext.cs" />
     <Compile Include="DAL\BookingRepository.cs" />
-    <Compile Include="DAL\ConfigurationContext.cs" />
     <Compile Include="DAL\ConfigurationRepository.cs" />
-    <Compile Include="DAL\DrivingLicenseContext.cs" />
     <Compile Include="DAL\DrivingLicenseRepository.cs" />
-    <Compile Include="DAL\FuelTypeContext.cs" />
+    <Compile Include="DAL\ExtensionRequestRepository.cs" />
     <Compile Include="DAL\FuelTypeRepository.cs" />
     <Compile Include="DAL\IBookingRepository.cs" />
     <Compile Include="DAL\IConfigurationRepository.cs" />
     <Compile Include="DAL\IDrivingLicensceRepository.cs" />
+    <Compile Include="DAL\IExtensionRequestRepository.cs" />
     <Compile Include="DAL\IFuelTypeRepository.cs" />
     <Compile Include="DAL\IOptionalExtraRepository.cs" />
     <Compile Include="DAL\ISupportingDocumentRepository.cs" />
     <Compile Include="DAL\IVehicleRepository.cs" />
     <Compile Include="DAL\IVehicleTypeRepository.cs" />
-    <Compile Include="DAL\MigrationContext.cs" />
-    <Compile Include="DAL\OptionalExtraContext.cs" />
     <Compile Include="DAL\OptionalExtraRepository.cs" />
-    <Compile Include="DAL\SupportingDocumentContext.cs" />
     <Compile Include="DAL\SupportingDocumentRepository.cs" />
-    <Compile Include="DAL\VehicleContext.cs" />
     <Compile Include="DAL\VehicleRepository.cs" />
-    <Compile Include="DAL\VehicleTypeContext.cs" />
     <Compile Include="DAL\VehicleTypeRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\MigrationContext\202101022119193_InitialCreate.cs" />
-    <Compile Include="Migrations\MigrationContext\202101022119193_InitialCreate.Designer.cs">
-      <DependentUpon>202101022119193_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202101072227091_AddExtensions.cs" />
+    <Compile Include="Migrations\202101072227091_AddExtensions.Designer.cs">
+      <DependentUpon>202101072227091_AddExtensions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\MigrationContext\202101030605447_ChangeConfigToDateTime.cs" />
-    <Compile Include="Migrations\MigrationContext\202101030605447_ChangeConfigToDateTime.Designer.cs">
-      <DependentUpon>202101030605447_ChangeConfigToDateTime.cs</DependentUpon>
+    <Compile Include="Migrations\202101072346587_RemoveRemarks.cs" />
+    <Compile Include="Migrations\202101072346587_RemoveRemarks.Designer.cs">
+      <DependentUpon>202101072346587_RemoveRemarks.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\MigrationContext\202101030648034_AddMinMaxRentalHours.cs" />
-    <Compile Include="Migrations\MigrationContext\202101030648034_AddMinMaxRentalHours.Designer.cs">
-      <DependentUpon>202101030648034_AddMinMaxRentalHours.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\MigrationContext\202101042223467_addInactiveFields.cs" />
-    <Compile Include="Migrations\MigrationContext\202101042223467_addInactiveFields.Designer.cs">
-      <DependentUpon>202101042223467_addInactiveFields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\MigrationContext\202101042306471_addReturnDate.cs" />
-    <Compile Include="Migrations\MigrationContext\202101042306471_addReturnDate.Designer.cs">
-      <DependentUpon>202101042306471_addReturnDate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\MigrationContext\202101050124100_addBookingCost.cs" />
-    <Compile Include="Migrations\MigrationContext\202101050124100_addBookingCost.Designer.cs">
-      <DependentUpon>202101050124100_addBookingCost.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\MigrationContext\Configuration.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
     <Compile Include="Models\Booking.cs" />
@@ -244,6 +222,8 @@
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
     <Compile Include="Models\DrivingLicenseViewModel.cs" />
+    <Compile Include="Models\enums\ExtensionStatus.cs" />
+    <Compile Include="Models\ExtensionRequest.cs" />
     <Compile Include="Models\FuelType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -256,7 +236,7 @@
     <Compile Include="RepeatLogic\DateRange.cs" />
     <Compile Include="RepeatLogic\Library.cs" />
     <Compile Include="RepeatLogic\Objects\ConflictingExtraItem.cs" />
-    <Compile Include="RepeatLogic\Objects\CreateBookingErrorObj.cs" />
+    <Compile Include="RepeatLogic\Objects\BookingErrorObj.cs" />
     <Compile Include="RepeatLogic\Objects\EditBookingErrorObj.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -567,6 +547,8 @@
     <Content Include="Views\Error\Error.cshtml" />
     <Content Include="Views\Admin\DrivingLicenses.cshtml" />
     <Content Include="Views\Booking\Return.cshtml" />
+    <Content Include="Views\ExtensionRequest\Create.cshtml" />
+    <Content Include="Views\ExtensionRequest\Details.cshtml" />
     <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -652,30 +634,18 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\MigrationContext\202101022119193_InitialCreate.resx">
-      <DependentUpon>202101022119193_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\MigrationContext\202101030605447_ChangeConfigToDateTime.resx">
-      <DependentUpon>202101030605447_ChangeConfigToDateTime.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\MigrationContext\202101030648034_AddMinMaxRentalHours.resx">
-      <DependentUpon>202101030648034_AddMinMaxRentalHours.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\MigrationContext\202101042223467_addInactiveFields.resx">
-      <DependentUpon>202101042223467_addInactiveFields.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\MigrationContext\202101042306471_addReturnDate.resx">
-      <DependentUpon>202101042306471_addReturnDate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\MigrationContext\202101050124100_addBookingCost.resx">
-      <DependentUpon>202101050124100_addBookingCost.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202101072227091_AddExtensions.resx">
+      <DependentUpon>202101072227091_AddExtensions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101072346587_RemoveRemarks.resx">
+      <DependentUpon>202101072346587_RemoveRemarks.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

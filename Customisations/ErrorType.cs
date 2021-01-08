@@ -10,6 +10,7 @@ namespace MVCWebAssignment1.Customisations
         Account = 1,
         Authorisation = 2,
         System = 3,
-        GarageClosed = 4
+        GarageClosed = 4,
+        Extension = 5
     }
 }

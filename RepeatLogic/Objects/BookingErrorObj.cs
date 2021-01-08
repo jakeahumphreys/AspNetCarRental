@@ -6,8 +6,9 @@ using System.Web;
 
 namespace EIRLSSAssignment1.RepeatLogic.Objects
 {
-    public class CreateBookingErrorObj
+    public class BookingErrorObj
     {
+        public bool isBookedNextDay { get; set; }
         public bool isBelowMinRental{ get; set; }
         public bool isBeyondMaxRental{ get; set; }
         public bool isStartBeforeOpen { get; set; }
@@ -20,8 +21,9 @@ namespace EIRLSSAssignment1.RepeatLogic.Objects
         public List<Booking> conflictingBookings { get; set; }
         public List<ConflictingExtraItem> conflictingOptionalExtras { get; set; }
 
-        public CreateBookingErrorObj()
+        public BookingErrorObj()
         {
+            this.isBookedNextDay = false;
             this.isBelowMinRental = false;
             this.isBeyondMaxRental = false;
             this.isStartBeforeOpen = false;
