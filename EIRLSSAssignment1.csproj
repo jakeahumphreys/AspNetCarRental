@@ -238,6 +238,7 @@
     <Compile Include="RepeatLogic\Objects\ConflictingExtraItem.cs" />
     <Compile Include="RepeatLogic\Objects\BookingErrorObj.cs" />
     <Compile Include="RepeatLogic\Objects\EditBookingErrorObj.cs" />
+    <Compile Include="ServiceLayer\AdminService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -627,7 +628,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ServiceLayer\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
