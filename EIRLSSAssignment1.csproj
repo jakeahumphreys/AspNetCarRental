@@ -627,6 +627,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ServiceLayer\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
