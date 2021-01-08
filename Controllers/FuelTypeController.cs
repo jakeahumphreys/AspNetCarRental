@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
-using MVCWebAssignment1.Customisations;
+using EIRLSSAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {

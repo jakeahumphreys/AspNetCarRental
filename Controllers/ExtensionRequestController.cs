@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Models.enums;
-using MVCWebAssignment1.Customisations;
+using EIRLSSAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {

@@ -1,11 +1,5 @@
-﻿using EIRLSSAssignment1.DAL;
-using EIRLSSAssignment1.Models;
-using EIRLSSAssignment1.ServiceLayer;
-using MVCWebAssignment1.Customisations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using EIRLSSAssignment1.ServiceLayer;
+using EIRLSSAssignment1.Customisations;
 using System.Web.Mvc;
 
 namespace EIRLSSAssignment1.Controllers

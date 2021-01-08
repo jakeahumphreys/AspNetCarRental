@@ -11,7 +11,7 @@ using Microsoft.Owin.Security;
 using EIRLSSAssignment1.Models;
 using System.Net;
 using System.Data.Entity;
-using MVCWebAssignment1.Customisations;
+using EIRLSSAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {

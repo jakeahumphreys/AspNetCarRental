@@ -2,7 +2,6 @@
 using EIRLSSAssignment1.Customisations;
 using EIRLSSAssignment1.Models.ViewModels;
 using EIRLSSAssignment1.ServiceLayer;
-using MVCWebAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {

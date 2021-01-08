@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Models.ViewModels;
@@ -14,7 +11,6 @@ using EIRLSSAssignment1.Models.enums;
 using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.RepeatLogic.Objects;
 using Microsoft.AspNet.Identity;
-using MVCWebAssignment1.Customisations;
 using EIRLSSAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.ServiceLayer

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace MVCWebAssignment1.Customisations
+namespace EIRLSSAssignment1.Customisations
 {
     public enum ErrorType
     {
