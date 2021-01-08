@@ -11,6 +11,8 @@ namespace MVCWebAssignment1.Customisations
         Authorisation = 2,
         System = 3,
         GarageClosed = 4,
-        Extension = 5
+        Extension = 5,
+        HTTP
+
     }
 }

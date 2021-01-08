@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using EIRLSSAssignment1.Customisations;
+using System.Web;
 using System.Web.Mvc;
 
 namespace EIRLSSAssignment1
@@ -7,7 +8,7 @@ namespace EIRLSSAssignment1
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new CustomHandleErrorAttribute());
         }
     }
 }

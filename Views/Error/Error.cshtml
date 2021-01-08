@@ -48,5 +48,28 @@
         <h5></h5>
     </div>
 }
+@if (ViewBag.ErrorType == ErrorType.HTTP)
+{
+    <div class="alert alert-danger">
+        <div class="row">
+            <span class="fa fa-exclamation-circle" style="color:red; font-size:40px; margin-right:10px;"></span>
+            <h3>An error occurred</h3>
+        </div>
+        <hr />
+        <h5>@ViewBag.Message</h5>
+    </div>
+}
+@if (ViewBag.ErrorType == ErrorType.System)
+{
+<div class="alert alert-danger">
+    <div class="row">
+        <span class="fa fa-exclamation-circle" style="color:red; font-size:40px; margin-right:10px;"></span>
+        <h3>An error occurred</h3>
+    </div>
+    <hr />
+    <h5>@ViewBag.Message</h5>
+    <h4>Please report this to the system administrator.</h4>
+</div>
+}
 
 

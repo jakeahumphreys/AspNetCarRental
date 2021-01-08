@@ -9,13 +9,16 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Models.enums;
+using EIRLSSAssignment1.Models.ViewModels;
 using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.RepeatLogic.Objects;
+using EIRLSSAssignment1.ServiceLayer;
 using Microsoft.AspNet.Identity;
 using MVCWebAssignment1.Customisations;
 
 namespace EIRLSSAssignment1.Controllers
 {
+    [HandleError]
     public class BookingController : Controller
     {
         private BookingRepository _bookingRepository;
@@ -24,6 +27,8 @@ namespace EIRLSSAssignment1.Controllers
         private ExtensionRequestRepository _extensionRequestRepository;
         private ApplicationDbContext appDbContext = new ApplicationDbContext();
         private Library _library;
+
+        private BookingService _bookingService;
 
         public BookingController()
         {
@@ -34,184 +39,61 @@ namespace EIRLSSAssignment1.Controllers
             _extensionRequestRepository = new ExtensionRequestRepository(new ApplicationDbContext());
             
             _library = new Library();
+
+            _bookingService = new BookingService();
         }
 
         // GET: Bookings
         [CustomAuthorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            var userId = User.Identity.GetUserId();
-
-            if (User.IsInRole("Admin"))
-            {
-                return View(_bookingRepository.GetBookings());
-            }
-            else
-            {
-                return View(_bookingRepository.GetBookings().Where(x => x.UserId == userId));
-            }
+            return View(_bookingService.GetIndex());
         }
 
         // GET: Bookings/Details/5
         [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Details(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_bookingService.GetDetails(id));
             }
-            Booking booking = _bookingRepository.GetBookingById(id);
-            if (booking == null)
+            catch(Exception ex)
             {
-                return HttpNotFound();
-            }
-
-            var bookingVM = new BookingViewModel { booking = booking };
-
-            List<OptionalExtra> bookedOptionalExtras = booking.OptionalExtras.ToList();
-
-            if (bookedOptionalExtras != null)
-            {
-                bookingVM.BookedOptionalExtras = bookedOptionalExtras;
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
 
-            return View(bookingVM);
         }
 
         // GET: Bookings/Create
         [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Create()
         {
-            //Handle preventing users from creating bookings based on conditions
-            if (_library.IsGarageAllowingOrders())
-            {
-                var userId = User.Identity.GetUserId();
-                //if autotrust is enabled, send userid to be judged for promotion.
-                _library.HandleAutoTrust(userId);
-
-                ViewBag.IsUserTrusted = _library.CanUserReturnLate(userId);
-
-                if (!_library.IsUserBlacklisted(userId))
-                {
-                    var userAge = _library.CalculateUserAge(userId); //Calculate users age from their dob for minimum rental age
-
-                    var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge).Where(x => x.IsInactive == false), "Id", "DisplayString");
-
-                    var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.IsInactive == false), "Id", "DisplayString");
-
-                    //Set Viewbag Vehicle Data
-                    ViewBag.Vehicles = vehicles;
-                    ViewBag.VehicleCount = vehicles.Count();
-
-                    //Set Viewbag Optional Extra Data
-                    ViewBag.OptionalExtras = optionalExtras;
-                    ViewBag.OptionalExtraCount = optionalExtras.Count();
-
-                    ViewBag.Users = new SelectList(appDbContext.Users.ToList(), "Id", "Name");
-
-                    ViewBag.IsTrustedUser = _library.CanUserReturnLate(userId);
-
-
-                    return View();
-                }
-                else
-                {
-                    //user is blacklisted
-                    return RedirectToAction("Error", "Error", new { @errorType = ErrorType.Account });
-                }
-
-            }
-            else
-            {
-                //Garage is not open for orders
-                return RedirectToAction("Error", "Error", new {@errorType = ErrorType.GarageClosed});
-            }
+            return View(_bookingService.CreateView());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [CustomAuthorize(Roles = "User,Admin")]
-        public ActionResult Create(BookingViewModel bookingVM)
+        public ActionResult Create(BookingCreateViewModel bookingVM)
         {
-            var userId = User.Identity.GetUserId();
+            var result = _bookingService.CreateAction(bookingVM);
 
-            if (ModelState.IsValid)
+            if(result == true)
             {
-                //Set variables for re-display of viewModel
-
-                var userAge = _library.CalculateUserAge(userId); //Calculate users age from their dob for minimum rental age
-                var vehicles = new SelectList(_vehicleRepository.GetVehicles().Where(x => x.MinimumAgeToRent <= userAge).Where(x => x.IsInactive == false), "Id", "DisplayString");
-                var optionalExtras = new MultiSelectList(_optionalExtraRepository.GetOptionalExtras().Where(x => x.IsInactive == false), "Id", "DisplayString");
-
-                //Set Viewbag Vehicle Data
-                ViewBag.Vehicles = vehicles;
-                ViewBag.VehicleCount = vehicles.Count();
-
-                //Set Viewbag Optional Extra Data
-                ViewBag.OptionalExtras = optionalExtras;
-                ViewBag.OptionalExtraCount = optionalExtras.Count();
-
-                DateTime startTime = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
-                DateTime endTime = new DateTime(bookingVM.EndDate.Year, bookingVM.EndDate.Month, bookingVM.EndDate.Day, bookingVM.EndDateTime.Hour, bookingVM.EndDateTime.Minute, bookingVM.EndDateTime.Second);
-
-                bookingVM.booking.BookingStart = startTime;
-                bookingVM.booking.BookingFinish = endTime;
-
-                BookingErrorObj errorObj = new BookingErrorObj();
-
-                //Create and store values in an error object
-                errorObj = CreateBookingErrorObject(bookingVM);
-
-                //Validate created error object and perform booking if valid
-                if(ValidateErrorObject(errorObj) == true)
+                if(User.IsInRole("Admin"))
                 {
-                    //Add Optional Extras to bookings if any were selected
-                    if (bookingVM.SelectedExtraIds != null && bookingVM.SelectedExtraIds.Count > 0)
-                    {
-                        var bookedOptionalExtras = new List<OptionalExtra>();
-
-                        foreach (var id in bookingVM.SelectedExtraIds)
-                        {
-                            bookedOptionalExtras.Add(_optionalExtraRepository.GetOptionalExtraById(id));
-                        }
-
-                        bookingVM.booking.OptionalExtras = bookedOptionalExtras;
-
-                    }
-
-                    //Attribute the user ID automatically if they aren't an admin.
-                    //Admins set the user manually to create bookings for others.
-                    if (!User.IsInRole("Admin"))
-                    {
-                        bookingVM.booking.UserId = User.Identity.GetUserId();
-                    }
-
-                    //Calculate the booking cost.
-                    bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
-
-                    //Save booking
-                    _bookingRepository.Insert(bookingVM.booking);
-                    _bookingRepository.Save();
-
-                    //Redirect to appropriate place.
-                    if (User.IsInRole("Admin"))
-                    {
-                        return RedirectToAction("Index", "Admin", null);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home", null);
-                    }
+                    return RedirectToAction("Index", "Admin", null);
                 }
                 else
                 {
-                    //An error was recorded within the object, pass to viewbag for display and return view.
-                    ViewBag.ErrorObj = errorObj;
-                    return View(bookingVM);
+                    return RedirectToAction("Index", "Home", null);
                 }
             }
-
-            return View(bookingVM);
+            else
+            {
+                return View(bookingVM);
+            }
         }
 
 
