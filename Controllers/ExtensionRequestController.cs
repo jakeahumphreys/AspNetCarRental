@@ -10,6 +10,7 @@ using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Models.enums;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.ServiceLayer;
 
 namespace EIRLSSAssignment1.Controllers
 {
@@ -18,81 +19,56 @@ namespace EIRLSSAssignment1.Controllers
 
         private ExtensionRequestRepository _extensionRepository;
         private BookingRepository _bookingRepository;
+        private ExtensionRequestService _extensionRequestService;
 
         public ExtensionRequestController()
         {
             _extensionRepository = new ExtensionRequestRepository(new ApplicationDbContext());
             _bookingRepository = new BookingRepository(new ApplicationDbContext());
+            _extensionRequestService = new ExtensionRequestService();
         }
 
         // GET: ExtensionRequest/Details/5
         public ActionResult Details(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_extensionRequestService.GetDetails(id));
             }
-            ExtensionRequest extensionRequest = _extensionRepository.GetExtensionRequestById(id);
-            if (extensionRequest == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(extensionRequest);
+            catch (DrivingLicenseNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
         public ActionResult Create()
         {
             ExtensionRequest extensionRequest = TempData["extensionRequest"] as ExtensionRequest;
 
-            if (extensionRequest != null)
-            {
+            ServiceResponse response = _extensionRequestService.CreateAction(extensionRequest);
 
-                _extensionRepository.Insert(extensionRequest);
-                _extensionRepository.Save();
+            if(response.Result == true)
+            {
                 return RedirectToAction("Index", "Home", null);
             }
             else
             {
                 return RedirectToAction("Error", "Error", new { @errorType = ErrorType.Extension });
             }
+
         }
 
         public ActionResult Approve(bool approved, int extensionId)
         {
+            ServiceResponse response = _extensionRequestService.ApproveExtension(approved, extensionId);
 
-            ExtensionRequest extension = _extensionRepository.GetExtensionRequestById(extensionId);
-            
-            if(extension != null)
+            if(response.Result == true)
             {
-                Booking booking = _bookingRepository.GetBookingById(extension.BookingId);
-
-                if(booking != null)
-                {
-                    if (approved == true)
-                    {
-                        booking.BookingFinish = extension.EndDateRequest;
-                        _bookingRepository.Update(booking);
-                        _bookingRepository.Save();
-
-                        extension.extensionRequestStatus = ExtensionStatus.Accepted;
-                        _extensionRepository.Update(extension);
-                        _extensionRepository.Save();
-
-                        return RedirectToAction("Admin", "Index", null);
-                    }
-                    else
-                    {
-                        extension.extensionRequestStatus = ExtensionStatus.Rejected;
-                        _extensionRepository.Update(extension);
-                        _extensionRepository.Save();
-                        return RedirectToAction("Admin", "Index", null);
-
-                    }
-                }
-                else
-                {
-                    return RedirectToAction("Error", "Error", new { @errorType = ErrorType.Extension });
-                }
+                return RedirectToAction("Index", "Admin", null);
             }
             else
             {
@@ -105,7 +81,7 @@ namespace EIRLSSAssignment1.Controllers
         {
             if (disposing)
             {
-                _extensionRepository.Dispose();
+                _extensionRequestService.Dispose();
             }
             base.Dispose(disposing);
         }

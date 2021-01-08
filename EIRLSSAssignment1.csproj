@@ -245,6 +245,7 @@
     <Compile Include="ServiceLayer\BookingService.cs" />
     <Compile Include="ServiceLayer\ConfigurationService.cs" />
     <Compile Include="ServiceLayer\DrivingLicenseService.cs" />
+    <Compile Include="ServiceLayer\ExtensionRequestService.cs" />
     <Compile Include="ServiceLayer\ServiceResponse.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
