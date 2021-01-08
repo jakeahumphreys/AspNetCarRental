@@ -223,7 +223,7 @@
     <Compile Include="Models\BookingViewModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
-    <Compile Include="Models\DrivingLicenseViewModel.cs" />
+    <Compile Include="Models\ViewModels\DrivingLicenseViewModel.cs" />
     <Compile Include="Models\enums\ExtensionStatus.cs" />
     <Compile Include="Models\ExtensionRequest.cs" />
     <Compile Include="Models\FuelType.cs" />
@@ -244,6 +244,7 @@
     <Compile Include="ServiceLayer\AdminService.cs" />
     <Compile Include="ServiceLayer\BookingService.cs" />
     <Compile Include="ServiceLayer\ConfigurationService.cs" />
+    <Compile Include="ServiceLayer\DrivingLicenseService.cs" />
     <Compile Include="ServiceLayer\ServiceResponse.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

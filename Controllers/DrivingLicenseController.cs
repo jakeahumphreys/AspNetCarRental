@@ -1,209 +1,134 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
-using Microsoft.AspNet.Identity;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.ServiceLayer;
 
 namespace EIRLSSAssignment1.Controllers
 {
     [CustomAuthorize(Roles = "User,Admin")]
     public class DrivingLicenseController : Controller
     {
-        private DrivingLicenseRepository _drivingLicenseRepository;
-        private ApplicationDbContext _applicationDbContext;
+        private DrivingLicenseService _drivingLicenseService;
 
         public DrivingLicenseController()
         {
-            _drivingLicenseRepository = new DrivingLicenseRepository(new ApplicationDbContext());
-            _applicationDbContext = new ApplicationDbContext();
+            _drivingLicenseService = new DrivingLicenseService();
         }
 
-        // GET: DrivingLicense
         public ActionResult Index()
         {
-            return View(_drivingLicenseRepository.GetDrivingLicenses());
+            return View(_drivingLicenseService.GetIndex());
         }
 
-        // GET: DrivingLicense/Details/5
         public ActionResult Details(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_drivingLicenseService.GetDetails(id));
             }
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-            if (drivingLicense == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-
-            return View(drivingLicense);
+            catch (DrivingLicenseNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // GET: DrivingLicense/Create
         public ActionResult Create()
         {
-            if (User.IsInRole("Admin"))
-            {
-                ViewBag.userId = new SelectList(_applicationDbContext.Users.ToList(), "Id", "Name");
-                return View();
-            }
-            else
-            {
-                var userId = User.Identity.GetUserId();
-                var user = _applicationDbContext.Users.Find(userId);
-                ViewBag.Name = user.Name;
-                ViewBag.UserId = userId;
-                return View();
-            }
-            
+            return View(_drivingLicenseService.CreateView());            
         }
 
-        // POST: DrivingLicense/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(DrivingLicenseViewModel drivingLicenseVM)
         {
+            ServiceResponse response = _drivingLicenseService.CreationAction(drivingLicenseVM);
 
-            if (drivingLicenseVM.ImageToUpload != null)
+            if(response.Result == true)
             {
-                drivingLicenseVM.License.Image = convertImageToByteArray(drivingLicenseVM.ImageToUpload);
-            }
-
-            if (ModelState.IsValid)
-            {
-                _drivingLicenseRepository.Insert(drivingLicenseVM.License);
-                _drivingLicenseRepository.Save();
-
-                if (drivingLicenseVM.License != null)
-                {
-                    var user = _applicationDbContext.Users.Find(User.Identity.GetUserId());
-                    if(user != null)
-                    {
-                        if(user.DrivingLicenseId != 0)
-                        {
-                            user.DrivingLicenseId = drivingLicenseVM.License.Id;
-                            _applicationDbContext.SaveChanges();
-                        }
-                    }
-                }
-
                 return RedirectToAction("Index", "Home", null);
             }
-
-            return View(drivingLicenseVM);
+            else
+            {
+                return View();
+            }
         }
 
-        // GET: DrivingLicense/Edit/5
         public ActionResult Edit(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_drivingLicenseService.EditView(id));
             }
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-            if (drivingLicense == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-
-            var drivingLicenseVM = new DrivingLicenseViewModel { License = drivingLicense, ImageToUpload = null};
-
-            return View(drivingLicenseVM);
+            catch (BookingNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit( DrivingLicenseViewModel drivingLicenseVM)
         {
+            ServiceResponse response = _drivingLicenseService.EditAction(drivingLicenseVM);
 
-
-            if (drivingLicenseVM.ImageToUpload != null)
+            if(response.Result == true)
             {
-                drivingLicenseVM.License.Image = convertImageToByteArray(drivingLicenseVM.ImageToUpload);
-            }
-
-
-            if (ModelState.IsValid)
-            {
-                _drivingLicenseRepository.Update(drivingLicenseVM.License);
-                _drivingLicenseRepository.Save();
-;
                 return RedirectToAction("Index", "Home", null);
             }
-            return View(drivingLicenseVM);
+            else
+            {
+                return View();
+            }
         }
 
-        // GET: DrivingLicense/Delete/5
         public ActionResult Delete(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_drivingLicenseService.DeleteView(id));
             }
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-            if (drivingLicense == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(drivingLicense);
+            catch (BookingNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // POST: DrivingLicense/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ApplicationUser user = _applicationDbContext.Users.Find(User.Identity.GetUserId());
+            ServiceResponse response = _drivingLicenseService.DeleteAction(id);
 
-            DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-
-
-            if (user.DrivingLicenseId == id)
+            if (response.Result == true)
             {
-                user.DrivingLicenseId = null;
-                _applicationDbContext.SaveChanges();
+                return RedirectToAction("Index", "Admin", null);
             }
-
-            _drivingLicenseRepository.Delete(drivingLicense);
-            _drivingLicenseRepository.Save();
-            return RedirectToAction("Index", "Admin", null);
+            else
+            {
+                return View();
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _drivingLicenseRepository.Save();
+                _drivingLicenseService.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private byte[] convertImageToByteArray(HttpPostedFileBase image)
-        {
-            byte[] imageByteArray = null;
-
-            if (image != null)
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    image.InputStream.CopyTo(memoryStream);
-                    imageByteArray = memoryStream.GetBuffer();
-                }
-            }
-
-            return imageByteArray;
         }
     }
 }
