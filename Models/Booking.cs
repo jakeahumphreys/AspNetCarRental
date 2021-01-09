@@ -41,7 +41,7 @@ namespace EIRLSSAssignment1.Models
         {
             get
             {
-                return "Booking #" + Id + ",(" + BookingStart.ToString("d") + " to " + BookingFinish.ToString("d") + ")";
+                return "Booking #" + Id + " (" + BookingStart.ToString("d") + " to " + BookingFinish.ToString("d") + ")";
             }
         }
 

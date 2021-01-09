@@ -62,9 +62,9 @@ namespace EIRLSSAssignment1.Controllers
         [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Create(BookingCreateViewModel bookingVM)
         {
-            var result = _bookingService.CreateAction(bookingVM);
+            ServiceResponse response = _bookingService.CreateAction(bookingVM);
 
-            if (result == true)
+            if (response.Result == true)
             {
                 if (User.IsInRole("Admin"))
                 {
@@ -77,7 +77,7 @@ namespace EIRLSSAssignment1.Controllers
             }
             else
             {
-                return View(bookingVM);
+                return View(response.ServiceObject as BookingCreateViewModel);
             }
 
         }
@@ -104,9 +104,9 @@ namespace EIRLSSAssignment1.Controllers
         [CustomAuthorize(Roles = "User,Admin")]
         public ActionResult Edit(BookingCreateViewModel bookingVM)
         {
-            var result = _bookingService.EditAction(bookingVM);
+            ServiceResponse response = _bookingService.EditAction(bookingVM);
 
-            if (result == true)
+            if (response.Result == true)
             {
                 if (User.IsInRole("Admin"))
                 {
@@ -119,7 +119,7 @@ namespace EIRLSSAssignment1.Controllers
             }
             else
             {
-                return View(bookingVM);
+                return View(response.ServiceObject as BookingCreateViewModel);
             }
         }
 

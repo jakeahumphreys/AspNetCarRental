@@ -126,7 +126,7 @@ namespace EIRLSSAssignment1.ServiceLayer
             }
         }
 
-        public bool CreateAction(BookingCreateViewModel bookingVM)
+        public ServiceResponse CreateAction(BookingCreateViewModel bookingVM)
         {
             var httpContext = HttpContext.Current;
 
@@ -187,13 +187,13 @@ namespace EIRLSSAssignment1.ServiceLayer
                 _bookingRepository.Save();
 
                 //Redirect to appropriate place.
-                return true;
+                return new ServiceResponse { Result = true };
             }
             else
             {
                 //An error was recorded within the object, pass to viewbag for display and return view.
                 bookingVM.ErrorObj = errorObj;
-                return false;
+                return new ServiceResponse { Result = false, ServiceObject = bookingVM };
             }
 
         }
@@ -238,7 +238,7 @@ namespace EIRLSSAssignment1.ServiceLayer
             return bookingVM;
         }
 
-        public bool EditAction(BookingCreateViewModel bookingVM)
+        public ServiceResponse EditAction(BookingCreateViewModel bookingVM)
         {
             //Construct DateTime from object
             DateTime StartTime = new DateTime(bookingVM.StartDate.Year, bookingVM.StartDate.Month, bookingVM.StartDate.Day, bookingVM.StartDateTime.Hour, bookingVM.StartDateTime.Minute, bookingVM.StartDateTime.Second);
@@ -249,28 +249,14 @@ namespace EIRLSSAssignment1.ServiceLayer
 
             Booking existingBooking = _bookingRepository.GetBookingById(bookingVM.booking.Id);
 
-            bool bookingValid = false;
 
-            BookingErrorObj errorObj = new BookingErrorObj();
 
             if (bookingVM.SelectedExtraIds != null)
             {
-                errorObj = CreateBookingErrorObject(bookingVM);
-
-                //Validate created error object and perform booking if valid
-                if (ValidateErrorObject(errorObj) == true)
+                foreach (var extraId in bookingVM.SelectedExtraIds)
                 {
-                    foreach (var extraId in bookingVM.SelectedExtraIds)
-                    {
-                        OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(extraId);
-                        existingBooking.OptionalExtras.Add(optionalExtra);
-                    }
-                    bookingValid = true;
-                }
-                else
-                {
-                    bookingVM.ErrorObj = errorObj;
-                    return false;
+                    OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(extraId);
+                    existingBooking.OptionalExtras.Add(optionalExtra);
                 }
             }
 
@@ -278,31 +264,23 @@ namespace EIRLSSAssignment1.ServiceLayer
             //Remove selected optional extras attributed to this booking
             if (bookingVM.SelectedExtraToRemoveIds != null)
             {
-                errorObj = CreateBookingErrorObject(bookingVM);
-
-                //Validate created error object and perform booking if valid
-                if (ValidateErrorObject(errorObj) == true)
+                foreach (var id in bookingVM.SelectedExtraToRemoveIds)
                 {
-                    foreach (var id in bookingVM.SelectedExtraToRemoveIds)
+                    OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
+
+                    if (optionalExtra != null)
                     {
-                        OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
-
-                        if (optionalExtra != null)
-                        {
-                            existingBooking.OptionalExtras.Remove(optionalExtra);
-                        }
+                        existingBooking.OptionalExtras.Remove(optionalExtra);
                     }
+                }
 
-                    bookingValid = true;
-                }
-                else
-                {
-                    bookingVM.ErrorObj = errorObj;
-                    return false;
-                }
             }
 
-            if (bookingValid == true)
+            BookingErrorObj errorObj = CreateBookingErrorObject(bookingVM);
+
+
+
+            if (ValidateErrorObject(errorObj) == true)
             {
                 existingBooking.BookingStart = bookingVM.booking.BookingStart;
                 existingBooking.BookingFinish = bookingVM.booking.BookingFinish;
@@ -319,12 +297,13 @@ namespace EIRLSSAssignment1.ServiceLayer
                 _bookingRepository.Update(existingBooking);
                 _bookingRepository.Save();
 
-                return true;
+                return new ServiceResponse { Result = true};
             }
             else
             {
-                return false;
-            }        
+                bookingVM.ErrorObj = errorObj;
+                return new ServiceResponse { Result = false, ServiceObject = bookingVM };
+            }
         }
 
         public BookingCreateViewModel ExtendBookingView(int id)
