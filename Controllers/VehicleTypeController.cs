@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.ServiceLayer;
 
 namespace EIRLSSAssignment1.Controllers
 {
@@ -16,19 +17,14 @@ namespace EIRLSSAssignment1.Controllers
     public class VehicleTypeController : Controller
     {
         private VehicleTypeRepository _vehicleTypeRepository;
+        private VehicleTypeService _vehicleTypeService;
 
         public VehicleTypeController()
         {
             _vehicleTypeRepository = new VehicleTypeRepository(new ApplicationDbContext());
+            _vehicleTypeService = new VehicleTypeService();
         }
 
-        // GET: VehicleTypes
-        public ActionResult Index()
-        {
-            return View(_vehicleTypeRepository.GetVehicleTypes());
-        }
-
-        // GET: VehicleTypes/Details/5
         public ActionResult Details(int id)
         {
             if (id ==0)
@@ -53,73 +49,87 @@ namespace EIRLSSAssignment1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Value")] VehicleType vehicleType)
         {
-            if (ModelState.IsValid)
+            ServiceResponse response = _vehicleTypeService.CreateAction(vehicleType);
+
+            if (response.Result == true)
             {
-                _vehicleTypeRepository.Insert(vehicleType);
-                _vehicleTypeRepository.Save();
                 return RedirectToAction("Index", "Admin", null);
             }
-
-            return View(vehicleType);
+            else
+            {
+                return View(vehicleType);
+            }
         }
 
-        // GET: VehicleTypes/Edit/5
         public ActionResult Edit(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_vehicleTypeService.EditView(id));
             }
-            VehicleType vehicleType = _vehicleTypeRepository.GetVehicleTypeById(id);
-            if (vehicleType == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(vehicleType);
+            catch (VehicleTypeNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Value,IsInactive")] VehicleType vehicleType)
         {
-            if (ModelState.IsValid)
+            ServiceResponse response = _vehicleTypeService.EditAction(vehicleType);
+
+            if (response.Result == true)
             {
-                _vehicleTypeRepository.Update(vehicleType);
-                _vehicleTypeRepository.Save();
                 return RedirectToAction("Index", "Admin", null);
             }
-            return View(vehicleType);
+            else
+            {
+                return View();
+            }
         }
 
         public ActionResult Delete(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_vehicleTypeService.DeleteView(id));
             }
-            VehicleType vehicleType = _vehicleTypeRepository.GetVehicleTypeById(id);
-            if (vehicleType == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(vehicleType);
+            catch (OptionalExtraNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            VehicleType vehicleType = _vehicleTypeRepository.GetVehicleTypeById(id);
-            _vehicleTypeRepository.Delete(vehicleType);
-            _vehicleTypeRepository.Save();
-            return RedirectToAction("Index", "Admin", null);
+            ServiceResponse response = _vehicleTypeService.DeleteAction(id);
+
+            if (response.Result == true)
+            {
+                return RedirectToAction("Index", "Admin", null);
+            }
+            else
+            {
+                return View();
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _vehicleTypeRepository.Dispose();
+                _vehicleTypeService.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -1,49 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.ServiceLayer;
 
 namespace EIRLSSAssignment1.Controllers
 {
     [CustomAuthorize(Roles = "Admin")]
     public class FuelTypeController : Controller
     {
-        private FuelTypeRepository _fuelTypeRepository;
+        private FuelTypeService _fuelTypeService;
 
         public FuelTypeController()
         {
-            _fuelTypeRepository = new FuelTypeRepository(new ApplicationDbContext());
+            _fuelTypeService = new FuelTypeService();
         }
 
-        // GET: FuelType
-        public ActionResult Index()
-        {
-            return View(_fuelTypeRepository.GetFuelTypes());
-        }
-
-        // GET: FuelType/Details/5
         public ActionResult Details(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_fuelTypeService.GetDetails(id));
             }
-            FuelType fuelType = _fuelTypeRepository.GetFuelTypeById(id);
-            if (fuelType == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(fuelType);
+            catch (FuelTypeNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // GET: FuelType/Create
         public ActionResult Create()
         {
             return View();
@@ -53,74 +42,87 @@ namespace EIRLSSAssignment1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Value")] FuelType fuelType)
         {
-            if (ModelState.IsValid)
+            ServiceResponse response = _fuelTypeService.CreateAction(fuelType);
+
+            if(response.Result == true)
             {
-                _fuelTypeRepository.Insert(fuelType);
-                _fuelTypeRepository.Save();
                 return RedirectToAction("Index", "Admin", null);
             }
-
-            return View(fuelType);
+            else
+            {
+                return View(fuelType);
+            }
         }
 
         public ActionResult Edit(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_fuelTypeService.EditView(id));
             }
-            FuelType fuelType = _fuelTypeRepository.GetFuelTypeById(id);
-            if (fuelType == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(fuelType);
+            catch (BookingNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Value,IsInactive")] FuelType fuelType)
         {
-            if (ModelState.IsValid)
+            ServiceResponse response = _fuelTypeService.EditAction(fuelType);
+
+            if (response.Result == true)
             {
-                _fuelTypeRepository.Update(fuelType);
-                _fuelTypeRepository.Save();
                 return RedirectToAction("Index", "Admin", null);
             }
-            return View(fuelType);
+            else
+            {
+                return View();
+            }
         }
 
-        // GET: FuelType/Delete/5
         public ActionResult Delete(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_fuelTypeService.DeleteView(id));
             }
-            FuelType fuelType = _fuelTypeRepository.GetFuelTypeById(id);
-            if (fuelType == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(fuelType);
+            catch (BookingNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // POST: FuelType/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            FuelType fuelType = _fuelTypeRepository.GetFuelTypeById(id);
-            _fuelTypeRepository.Delete(fuelType);
-            _fuelTypeRepository.Save();
-            return RedirectToAction("Index", "Admin", null);
+            ServiceResponse response = _fuelTypeService.DeleteAction(id);
+
+            if (response.Result == true)
+            {
+                return RedirectToAction("Index", "Admin", null);
+            }
+            else
+            {
+                return View();
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _fuelTypeRepository.Dispose();
+                _fuelTypeService.Dispose();
             }
             base.Dispose(disposing);
         }

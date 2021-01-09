@@ -16,15 +16,10 @@ namespace EIRLSSAssignment1.Controllers
 {
     public class ExtensionRequestController : Controller
     {
-
-        private ExtensionRequestRepository _extensionRepository;
-        private BookingRepository _bookingRepository;
         private ExtensionRequestService _extensionRequestService;
 
         public ExtensionRequestController()
         {
-            _extensionRepository = new ExtensionRequestRepository(new ApplicationDbContext());
-            _bookingRepository = new BookingRepository(new ApplicationDbContext());
             _extensionRequestService = new ExtensionRequestService();
         }
 
@@ -39,7 +34,7 @@ namespace EIRLSSAssignment1.Controllers
             {
                 return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            catch (DrivingLicenseNotFoundException ex)
+            catch (ExtensionRequestNotFoundException ex)
             {
                 return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }

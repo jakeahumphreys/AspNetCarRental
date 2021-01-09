@@ -9,44 +9,38 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.ServiceLayer;
 
 namespace EIRLSSAssignment1.Controllers
 {
     [CustomAuthorize(Roles = "Admin")]
     public class OptionalExtraController : Controller
     {
-        private OptionalExtraRepository _optionalExtraRepository;
+        private OptionalExtraService _optionalExtraService;
 
         public OptionalExtraController()
         {
-            _optionalExtraRepository = new OptionalExtraRepository(new ApplicationDbContext());
+            _optionalExtraService = new OptionalExtraService();
         }
 
-        // GET: OptionalExtras
-        public ActionResult Index()
-        { 
-            return View(_optionalExtraRepository.GetOptionalExtras());
-        }
-
-        // GET: OptionalExtras/Details/5
         public ActionResult Details(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_optionalExtraService.GetDetails(id));
             }
-            OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
-            if (optionalExtra == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(optionalExtra);
+            catch (OptionalExtraNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // GET: OptionalExtras/Create
         public ActionResult Create()
         {
-            //ViewBag.bookingId = new SelectList(db.Bookings, "Id", "Remarks");
             return View();
         }
 
@@ -54,81 +48,87 @@ namespace EIRLSSAssignment1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,serialNumber,Remarks")] OptionalExtra optionalExtra)
         {
-            if (ModelState.IsValid)
+            ServiceResponse response = _optionalExtraService.CreateAction(optionalExtra);
+
+            if (response.Result == true)
             {
-                _optionalExtraRepository.Insert(optionalExtra);
-                _optionalExtraRepository.Save();
                 return RedirectToAction("Index", "Admin", null);
             }
-
-            //ViewBag.bookingId = new SelectList(db.Bookings, "Id", "Remarks", optionalExtra.bookingId);
-            return View(optionalExtra);
+            else
+            {
+                return View(optionalExtra);
+            }
         }
 
-        // GET: OptionalExtras/Edit/5
         public ActionResult Edit(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_optionalExtraService.EditView(id));
             }
-            OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
-            if (optionalExtra == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            //ViewBag.bookingId = new SelectList(db.Bookings, "Id", "Remarks", optionalExtra.bookingId);
-            return View(optionalExtra);
+            catch (OptionalExtraNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // POST: OptionalExtras/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,serialNumber,Remarks,IsInactive")] OptionalExtra optionalExtra)
         {
-            if (ModelState.IsValid)
+            ServiceResponse response = _optionalExtraService.EditAction(optionalExtra);
+
+            if (response.Result == true)
             {
-                _optionalExtraRepository.Update(optionalExtra);
-                _optionalExtraRepository.Save();
                 return RedirectToAction("Index", "Admin", null);
             }
-            //ViewBag.bookingId = new SelectList(db.Bookings, "Id", "Remarks", optionalExtra.bookingId);
-            return View(optionalExtra);
+            else
+            {
+                return View();
+            }
         }
 
-        // GET: OptionalExtras/Delete/5
         public ActionResult Delete(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_optionalExtraService.DeleteView(id));
             }
-            OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
-            if (optionalExtra == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(optionalExtra);
+            catch (OptionalExtraNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // POST: OptionalExtras/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(id);
-            _optionalExtraRepository.Delete(optionalExtra);
-            _optionalExtraRepository.Save();
-            return RedirectToAction("Index", "Admin", null);
+            ServiceResponse response = _optionalExtraService.DeleteAction(id);
+
+            if (response.Result == true)
+            {
+                return RedirectToAction("Index", "Admin", null);
+            }
+            else
+            {
+                return View();
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _optionalExtraRepository.Dispose();
+                _optionalExtraService.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -9,132 +9,129 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.ServiceLayer;
+using EIRLSSAssignment1.Models.ViewModels;
 
 namespace EIRLSSAssignment1.Controllers
 {
     [CustomAuthorize(Roles = "Admin")]
     public class VehicleController : Controller
     {
-        private VehicleRepository _vehicleRepository;
-        private FuelTypeRepository _fuelTypeRepository;
-        private VehicleTypeRepository _vehicleTypeRepository;
+        private VehicleService _vehicleService;
 
         public VehicleController()
         {
-            ApplicationDbContext context = new ApplicationDbContext();
-            _vehicleRepository = new VehicleRepository(context);
-            _fuelTypeRepository = new FuelTypeRepository(context);
-            _vehicleTypeRepository = new VehicleTypeRepository(context);
-        }
-
-        public ActionResult Index()
-        {
-            return View(_vehicleRepository.GetVehicles());
+            _vehicleService = new VehicleService();
         }
 
         public ActionResult Details(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_vehicleService.GetDetails(id));
             }
-            Vehicle vehicle = _vehicleRepository.GetVehicleById(id);
-            if (vehicle == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(vehicle);
+            catch (VehicleNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
-        // GET: Vehicle/Create
         public ActionResult Create()
         {
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value");
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value");
-            return View();
+            return View(_vehicleService.CreateView());
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,VRM,VIN,VehicleTypeId,FuelTypeId,Make,Model,EngineSize,Transmission,RentalCost,MinimumAgeToRent,Remarks")] Vehicle vehicle)
+        public ActionResult Create(VehicleViewModel vehicleVM)
         {
-            if (ModelState.IsValid)
+
+            ServiceResponse response = _vehicleService.CreateAction(vehicleVM);
+
+            if(response.Result == true)
             {
-                _vehicleRepository.Insert(vehicle);
-                _vehicleRepository.Save();
-
                 return RedirectToAction("Index", "Admin", null);
-            }
 
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.FuelTypeId);
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.VehicleTypeId);
-            return View(vehicle);
+            }
+            else
+            {
+                return View(response.ServiceObject as VehicleViewModel);
+            }
         }
 
-        // GET: Vehicle/Edit/5
         public ActionResult Edit(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_vehicleService.EditView(id));
             }
-            Vehicle vehicle = _vehicleRepository.GetVehicleById(id);
-            if (vehicle == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.FuelTypeId);
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.VehicleTypeId);
-            return View(vehicle);
+            catch (VehicleNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,VRM,VIN,VehicleTypeId,FuelTypeId,Make,Model,EngineSize,Transmission,RentalCost,MinimumAgeToRent,Remarks,IsInactive")] Vehicle vehicle)
+        public ActionResult Edit(VehicleViewModel vehicleVM)
         {
-            if (ModelState.IsValid)
-            {
-                _vehicleRepository.Update(vehicle);
-                _vehicleRepository.Save();
+            ServiceResponse response = _vehicleService.EditAction(vehicleVM);
 
-                return RedirectToAction("Details", "Vehicle", new {Id = vehicle.Id});
+            if(response.Result == true)
+            {
+                return RedirectToAction("Details", "Vehicle", new { Id = vehicleVM.vehicle.Id });
             }
-            ViewBag.FuelTypeId = new SelectList(_fuelTypeRepository.GetFuelTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.FuelTypeId);
-            ViewBag.VehicleTypeId = new SelectList(_vehicleTypeRepository.GetVehicleTypes().Where(x => x.IsInactive == false), "Id", "Value", vehicle.VehicleTypeId);
-            return View(vehicle);
+            else
+            {
+                return View(vehicleVM);
+            }
         }
 
         public ActionResult Delete(int id)
         {
-            if (id == 0)
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View(_vehicleService.DeleteView(id));
             }
-            Vehicle vehicle = _vehicleRepository.GetVehicleById(id);
-            if (vehicle == null)
+            catch (ArgumentException ex)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
             }
-            return View(vehicle);
+            catch (VehicleNotFoundException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Vehicle vehicle = _vehicleRepository.GetVehicleById(id);
-            _vehicleRepository.Delete(vehicle);
-            _vehicleRepository.Save();
-            return RedirectToAction("Index", "Admin", null);
+            ServiceResponse response = _vehicleService.DeleteAction(id);
+
+            if (response.Result == true)
+            {
+                return RedirectToAction("Index", "Admin", null);
+            }
+            else
+            {
+                return View();
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _vehicleRepository.Dispose();
+                _vehicleService.Dispose();
             }
             base.Dispose(disposing);
         }
