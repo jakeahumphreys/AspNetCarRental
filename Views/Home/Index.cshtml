@@ -192,7 +192,7 @@
                                 }
                                 else
                                 {
-                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Manage", "SupportingDocument",new {})';return false;">Manage Document</button>
+                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Details", "SupportingDocument",new {id = ViewBag.documentId})';return false;">Manage Document</button>
                                 }
                             </div>
                         </div>
@@ -213,7 +213,7 @@
                                 }
                                 else
                                 {
-                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Manage", "DrivingLicense",new {})';return false;">Manage License</button>
+                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Details", "DrivingLicense",new {id = ViewBag.licenseId})';return false;">Manage License</button>
                                 }
                             </div>
                         </div>

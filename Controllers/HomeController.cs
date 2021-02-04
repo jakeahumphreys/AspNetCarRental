@@ -46,7 +46,7 @@ namespace EIRLSSAssignment1.Controllers
                 
                 if(userHasDocument == true)
                 {
-                    ViewBag.licenseId = user.SupportingDocumentId;
+                    ViewBag.documentId = user.SupportingDocumentId;
                 }
                 
 
