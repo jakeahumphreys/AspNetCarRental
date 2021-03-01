@@ -25,7 +25,7 @@ else
     if (Model.ErrorObj != null)
     {
         <div class="alert alert-danger">
-            <h4>Unable to create booking:</h4>
+            <h4>Unfortunately we are unable to make that booking, here's why:</h4>
             <hr />
             @if (Model.ErrorObj.conflictingBookings != null)
             {
@@ -114,10 +114,11 @@ else
     {
         <div class="form-horizontal">
             <hr />
-            <h2>New Booking</h2>
+            <h2>Request a booking</h2>
+            <h5>This is the start of your booking journey! First we'll need to take some details to reserve the vehicle for collection.</h5>
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
+            
 
             @if (User.IsInRole("Admin"))
             {
@@ -208,7 +209,7 @@ else
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-success" />
+                    <input type="submit" value="Reserve" class="btn btn-success" />
                 </div>
             </div>
         </div>

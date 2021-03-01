@@ -152,73 +152,11 @@
                                 You don't have any bookings yet! Click the button below to rent a vehicle.
                             </div>
                         }
-                        @if (!User.IsInRole("Admin"))
-                        {
-                            if (ViewBag.hasStoredLicense == false || ViewBag.hasStoredDocument == false)
-                            {
-                                <button class="btn btn-danger disabled" onclick="location.href='';return false;">Booking disabled</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "Booking",new {})';return false;">New Booking</button>
-
-                            }
-                        }
-                        else
-                        {
-                            <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "Booking",new {})';return false;">New Booking</button>
-                        }
+                    
+                        <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "Booking",new {})';return false;">Get a quote</button>
 
                     </div>
                 </div>
-                @if (!User.IsInRole("Admin"))
-                {
-                    <div class="card-deck pt-3">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <row>
-                                    <h5 class="card-title">Your Supporting Document</h5>
-
-                                    @if (ViewBag.hasStoredDocument == false)
-                                    {
-                                        <span class="badge badge-warning">Upload required</span>
-                                    }
-                                    <hr />
-                                </row>
-                                <p class="card-text">Upload / Manage your supporting document.</p>
-                                @if (ViewBag.hasStoredDocument == false)
-                                {
-                                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "SupportingDocument",new {})';return false;">Upload Document</button>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Details", "SupportingDocument",new {id = ViewBag.documentId})';return false;">Manage Document</button>
-                                }
-                            </div>
-                        </div>
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <row>
-                                    <h5 class="card-title">Your License</h5>
-                                    @if (ViewBag.hasStoredLicense == false)
-                                    {
-                                        <span class="badge badge-warning">Upload required</span>
-                                    }
-                                    <hr />
-                                </row>
-                                <p class="card-text">Upload / Manage your drivers license.</p>
-                                @if (ViewBag.hasStoredLicense == false)
-                                {
-                                    <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "DrivingLicense",new {})';return false;">Upload License</button>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-warning" onclick="location.href='@Url.Action("Details", "DrivingLicense",new {id = ViewBag.licenseId})';return false;">Manage License</button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                }
             </div>
         </div>
     }

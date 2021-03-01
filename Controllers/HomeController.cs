@@ -31,29 +31,7 @@ namespace EIRLSSAssignment1.Controllers
         {
             var userId = User.Identity.GetUserId();
             ApplicationUser user = _appDbContext.Users.Find(userId);
-            if(user != null)
-            {
-                var userHasLicense =  _library.userHasStoredLicense(userId);
-                var userHasDocument = _library.userHasStoredDocument(userId);
-
-                ViewBag.hasStoredLicense = userHasLicense;
-                ViewBag.hasStoredDocument = userHasDocument;
-
-                if(userHasLicense == true)
-                {
-                    ViewBag.licenseId = user.DrivingLicenseId;
-                }
-                
-                if(userHasDocument == true)
-                {
-                    ViewBag.documentId = user.SupportingDocumentId;
-                }
-                
-
-                ViewBag.User = user;
-                ViewBag.FirstName = user.Name.Substring(0, user.Name.IndexOf(" "));
-            }
-
+           
             //Get all vehicles for searchlist
             SelectList vehicles = new SelectList(_vehicleRepository.GetVehicles().ToList(), "DisplayString", "DisplayString");
             ViewBag.vehicles = vehicles;
