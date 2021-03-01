@@ -226,6 +226,10 @@
     <Compile Include="Migrations\202103011604332_AddBookingStatusToBooking.Designer.cs">
       <DependentUpon>202103011604332_AddBookingStatusToBooking.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103012152185_AddDvlaReference.cs" />
+    <Compile Include="Migrations\202103012152185_AddDvlaReference.Designer.cs">
+      <DependentUpon>202103012152185_AddDvlaReference.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -676,6 +680,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103011604332_AddBookingStatusToBooking.resx">
       <DependentUpon>202103011604332_AddBookingStatusToBooking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103012152185_AddDvlaReference.resx">
+      <DependentUpon>202103012152185_AddDvlaReference.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

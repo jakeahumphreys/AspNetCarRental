@@ -33,7 +33,8 @@ namespace EIRLSSAssignment1.Models
         public int MaxRentalHours { get; set; }
         [Required]
         [Display(Name = "DVLA 15 Digit Reference")]
-        public int DvlaReference { get; set; }
+        [StringLength(15)]
+        public string DvlaReference { get; set; }
         [Display(Name ="Active?")]
         public bool IsConfigurationActive { get; set; }
     }

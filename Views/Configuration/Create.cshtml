@@ -77,6 +77,14 @@
             @Html.ValidationMessageFor(model => model.MaxRentalHours, "", new { @class = "text-danger" })
         </div>
     </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(model => model.DvlaReference, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DvlaReference, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DvlaReference, "", new { @class = "text-danger" })
+        </div>
+    </div>
 
 
     <div class="form-group">

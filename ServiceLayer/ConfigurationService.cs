@@ -88,6 +88,7 @@ namespace EIRLSSAssignment1.ServiceLayer
             configToUpdate.MinRentalHours = configuration.MinRentalHours;
             configToUpdate.MaxRentalHours = configuration.MaxRentalHours;
             configToUpdate.LateReturnEligibility = configuration.LateReturnEligibility;
+            configToUpdate.DvlaReference = configToUpdate.DvlaReference;
 
             _configurationRepository.Update(configToUpdate);
             _configurationRepository.Save();
@@ -131,7 +132,7 @@ namespace EIRLSSAssignment1.ServiceLayer
 
         public void DisableActiveConfiguration()
         {
-            Configuration activeConfiguration = _configurationRepository.GetConfigurations().Where(c => c.IsConfigurationActive == true).SingleOrDefault();
+            Configuration activeConfiguration = _configurationRepository.GetConfigurations().SingleOrDefault(c => c.IsConfigurationActive == true);
 
             if (activeConfiguration != null)
             {
