@@ -31,6 +31,9 @@ namespace EIRLSSAssignment1.Models
         [Required]
         [Display(Name = "Maximum Rental Period (Hours)")]
         public int MaxRentalHours { get; set; }
+        [Required]
+        [Display(Name = "DVLA 15 Digit Reference")]
+        public int DvlaReference { get; set; }
         [Display(Name ="Active?")]
         public bool IsConfigurationActive { get; set; }
     }

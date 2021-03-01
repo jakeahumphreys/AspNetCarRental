@@ -1,0 +1,68 @@
+﻿@model EIRLSSAssignment1.Models.ViewModels.BookingCreateViewModel
+
+@{
+    ViewBag.Title = "ConfirmBooking";
+}
+
+<h2>ConfirmBooking</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.booking.UserId)
+        @Html.HiddenFor(model => model.booking.VehicleId)
+        
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Confirm your booking</h4>
+            <p>You're a step away from reserving your booking with us, take the time to review the details below. Something not right? You can @Html.ActionLink("Start Again", "Create").</p>
+            <hr>
+            <p class="mb-0">Your booking will start on @Model.booking.BookingStart.Date.ToShortDateString() at @Model.booking.BookingStart.TimeOfDay .</p>
+            <p class="mb-0">Your booking will finish on @Model.booking.BookingFinish.Date.ToShortDateString() at @Model.booking.BookingFinish.TimeOfDay .</p>
+            @if (Model.booking.IsLateReturn == true)
+            {
+                <p class="mb-0">You have selected late return for this booking.</p>
+            }
+            <br/>
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Booking Cost</h4>
+                <p>We're cheaper than Afford rent-a-car by 5%!</p>
+                <hr>
+                <p class="mb-0">&pound; @Model.booking.BookingCost</p>
+            </div>
+        </div>
+
+        <div style="display: none;">
+            <dl><dd>
+                    @Html.EditorFor(model => model.booking.BookingCost)
+                </dd>
+                <dd>
+                    @Html.EditorFor(model => model.booking.IsLateReturn)
+                </dd>
+                <dd>
+                    @Html.EditorFor(model => model.booking.BookingFinish)
+                </dd>
+                <dd>
+                    @Html.EditorFor(model => model.booking.BookingStart)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.booking.OptionalExtras)
+                </dt>
+                <dd>
+                    @Html.EditorFor(model => model.booking.OptionalExtras)
+                </dd>
+                </dl>
+            
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Confirm Reservation" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+

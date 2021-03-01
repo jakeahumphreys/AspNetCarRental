@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
@@ -12,6 +15,8 @@ using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.RepeatLogic.Objects;
 using Microsoft.AspNet.Identity;
 using EIRLSSAssignment1.Customisations;
+using HtmlAgilityPack;
+using Microsoft.Owin.Security.Facebook;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
@@ -19,6 +24,7 @@ namespace EIRLSSAssignment1.ServiceLayer
     {
         private BookingRepository _bookingRepository;
         private VehicleRepository _vehicleRepository;
+        private VehicleTypeRepository _vehicleTypeRepository;
         private OptionalExtraRepository _optionalExtraRepository;
         private ExtensionRequestRepository _extensionRequestRepository;
         private ApplicationDbContext appDbContext = new ApplicationDbContext();
@@ -29,6 +35,7 @@ namespace EIRLSSAssignment1.ServiceLayer
             ApplicationDbContext context = new ApplicationDbContext();
             _bookingRepository = new BookingRepository(context);
             _vehicleRepository = new VehicleRepository(context);
+            _vehicleTypeRepository = new VehicleTypeRepository(context);
             _optionalExtraRepository = new OptionalExtraRepository(context);
             _extensionRequestRepository = new ExtensionRequestRepository(new ApplicationDbContext());
 
@@ -126,6 +133,8 @@ namespace EIRLSSAssignment1.ServiceLayer
             }
         }
 
+
+
         public ServiceResponse CreateAction(BookingCreateViewModel bookingVM)
         {
             var httpContext = HttpContext.Current;
@@ -180,20 +189,48 @@ namespace EIRLSSAssignment1.ServiceLayer
                 }
 
                 //Calculate the booking cost.
-                bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
+                //bookingVM.booking.BookingCost = CalculateBookingCost(bookingVM.booking.BookingStart, bookingVM.booking.BookingFinish, bookingVM.booking.VehicleId);
 
                 //Save booking
-                _bookingRepository.Insert(bookingVM.booking);
-                _bookingRepository.Save();
+                //_bookingRepository.Insert(bookingVM.booking);
+                //_bookingRepository.Save();
 
                 //Redirect to appropriate place.
-                return new ServiceResponse { Result = true };
+                return new ServiceResponse { Result = true, ServiceObject = bookingVM};
             }
             else
             {
                 //An error was recorded within the object, pass to viewbag for display and return view.
                 bookingVM.ErrorObj = errorObj;
                 return new ServiceResponse { Result = false, ServiceObject = bookingVM };
+            }
+
+        }
+
+        public BookingCreateViewModel ConfirmBookingCalculateCost(BookingCreateViewModel bookingViewModel)
+        {
+            if (bookingViewModel == null)
+            {
+                throw new ArgumentException("Booking was null");
+            }
+
+            var bookingCost = CalculateBookingCost(bookingViewModel.booking.BookingStart,
+                bookingViewModel.booking.BookingFinish, bookingViewModel.booking.VehicleId);
+            bookingViewModel.booking.BookingCost = bookingCost;
+            return bookingViewModel;
+        }
+
+        public ServiceResponse ConfirmBookingAction(BookingCreateViewModel bookingViewModel)
+        {
+            if (bookingViewModel != null)
+            {
+                _bookingRepository.Insert(bookingViewModel.booking);
+                _bookingRepository.Save();
+                return new ServiceResponse { Result = true };
+            }
+            else
+            {
+                return new ServiceResponse { Result = false};
             }
 
         }
@@ -596,10 +633,43 @@ namespace EIRLSSAssignment1.ServiceLayer
 
         private double CalculateBookingCost(DateTime startDate, DateTime endDate, int vehicleId)
         {
-            TimeSpan dateRange = endDate - startDate;
-            double rentalDays = dateRange.TotalDays;
+            //TimeSpan dateRange = endDate - startDate;
+            //double rentalDays = dateRange.TotalDays;
+            //double totalCost = vehicle.RentalCost * rentalDays;
             Vehicle vehicle = _vehicleRepository.GetVehicleById(vehicleId);
-            double totalCost = vehicle.RentalCost * rentalDays;
+            var vehicleType = _vehicleTypeRepository.GetVehicleTypeById(vehicle.VehicleTypeId).Value;
+            var requestVehicleType = 0;
+
+            switch (vehicleType)
+            {
+                case "Small Town Car":
+                    requestVehicleType = 1;
+                    break;
+                case "Small Family Hatchback":
+                    requestVehicleType = 2;
+                    break;
+                case "Large Family Saloon":
+                    requestVehicleType = 3;
+                    break;
+                case "Large Family Estate":
+                    requestVehicleType = 3;
+                    break;
+                case "Medium Van":
+                    requestVehicleType = 5;
+                    break;
+            }
+
+            var startDateString = startDate.ToString("dd-MM-yyyy");
+            var endDateString = endDate.ToString("dd-MM-yyyy");
+            var affordUrl =
+                $"https://www.affordrentacar.co.uk/booking/vehicle?SearchForm[sub_category]={requestVehicleType}&SearchForm[date_from]={startDateString}&SearchForm[date_from_time]={startDate.ToShortTimeString()}&SearchForm[date_return]={endDateString}&SearchForm[date_return_time]={endDate.ToShortTimeString()}";
+            var web = new HtmlWeb();
+            var doc = web.Load(affordUrl);
+            var nodes = doc.DocumentNode.SelectNodes("//span[@class='recommend-price']");
+            var nodeContent = Regex.Replace(nodes[0].InnerHtml, @"( |\t|\r|\n)+", string.Empty);
+            var totalCost = double.Parse(nodeContent, CultureInfo.InvariantCulture);
+            totalCost = totalCost - (totalCost * 0.05);
+           
             return Math.Round(totalCost, 2);
         }
 

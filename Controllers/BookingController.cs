@@ -1,7 +1,11 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Models.ViewModels;
 using EIRLSSAssignment1.ServiceLayer;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Facebook;
 
 namespace EIRLSSAssignment1.Controllers
 {
@@ -66,20 +70,50 @@ namespace EIRLSSAssignment1.Controllers
 
             if (response.Result == true)
             {
-                if (User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("Index", "Admin", null);
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home", null);
-                }
+                TempData["confirmBooking"] = response.ServiceObject;
+                return RedirectToAction("ConfirmBooking");
             }
             else
             {
                 return View(response.ServiceObject as BookingCreateViewModel);
             }
+        }
 
+        public ActionResult ConfirmBooking()
+        {
+            BookingCreateViewModel bookingViewModel = TempData["confirmBooking"] as BookingCreateViewModel;
+
+            try
+            {
+                return View(_bookingService.ConfirmBookingCalculateCost(bookingViewModel));
+            }
+            catch (ArgumentException ex)
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = ex.Message });
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [CustomAuthorize(Roles = "User, Admin")]
+        public ActionResult ConfirmBooking(BookingCreateViewModel bookingViewModel)
+        {
+            ServiceResponse response = _bookingService.ConfirmBookingAction(bookingViewModel);
+
+            if (response.Result == true)
+            {
+                return RedirectToAction("Success","Booking");
+            }
+            else
+            {
+                return RedirectToAction("Error", "Error", new { errorType = ErrorType.HTTP, message = "An error occurred." });
+            }
+        }
+
+        public ActionResult Success()
+        {
+            return View();
         }
 
         [CustomAuthorize(Roles = "User,Admin")]

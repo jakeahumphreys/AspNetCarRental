@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "Success";
+}
+
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Success!</h4>
+    <p>Your reservation has been made successfully. Please read the following information carefully, it contains important information about collection.</p>
+    <hr>
+    <p class="mb-0">When collection day arrives you'll need to bring your Driving License and a Supporting Document. We accept the following documents as proof of address:</p>
+    <ul>
+        <li>
+            Utility Bill
+        </li>
+        <li>
+            Council Tax Bill
+        </li>
+        <li>
+            Bank Statement
+        </li>
+    </ul>
+    <p>These documents must be issued in your name and dated no older than 3 months from the date of collection.</p>
+    <br/>
+    <p>Your reservation is <strong>subject to validation</strong> on the day of collection. Checks will be made to confirm the legitimacy of your supporting documents. This is 
+        standard policy, failure to pass these checks will result in the cancellation of your booking and your information will be transmitted to the relevant authorities.</p>
+    <br/>
+    <button class="btn btn-success" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Home")';return false;">I Understand</button>
+</div>
+
+
+

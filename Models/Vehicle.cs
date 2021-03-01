@@ -39,7 +39,7 @@ namespace EIRLSSAssignment1.Models
         {
             get
             {
-                return Make + " " + Model + " (" + VRM + ") " + "[" + CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol + RentalCost + " p.d]";
+                return Make + " " + Model + " (" + VRM + ") ";
             }
         }
 

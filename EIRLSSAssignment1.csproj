@@ -56,6 +56,9 @@
     <Reference Include="FoolproofValidation, Version=0.9.5851.39121, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Foolproof.0.9.4518\lib\net45\FoolproofValidation.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.11.30.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.11.30\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -218,6 +221,10 @@
     <Compile Include="Migrations\202101072346587_RemoveRemarks.cs" />
     <Compile Include="Migrations\202101072346587_RemoveRemarks.Designer.cs">
       <DependentUpon>202101072346587_RemoveRemarks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103011604332_AddBookingStatusToBooking.cs" />
+    <Compile Include="Migrations\202103011604332_AddBookingStatusToBooking.Designer.cs">
+      <DependentUpon>202103011604332_AddBookingStatusToBooking.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -571,6 +578,8 @@
     <Content Include="Views\Booking\Return.cshtml" />
     <Content Include="Views\ExtensionRequest\Create.cshtml" />
     <Content Include="Views\ExtensionRequest\Details.cshtml" />
+    <Content Include="Views\Booking\ConfirmBooking.cshtml" />
+    <Content Include="Views\Booking\Success.cshtml" />
     <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -664,6 +673,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101072346587_RemoveRemarks.resx">
       <DependentUpon>202101072346587_RemoveRemarks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103011604332_AddBookingStatusToBooking.resx">
+      <DependentUpon>202103011604332_AddBookingStatusToBooking.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

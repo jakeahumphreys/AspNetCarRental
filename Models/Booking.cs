@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using EIRLSSAssignment1.RepeatLogic;
 
 namespace EIRLSSAssignment1.Models
 {
@@ -36,6 +37,9 @@ namespace EIRLSSAssignment1.Models
         public DateTime? ReturnDate {get;set;}
         [Display(Name = "Cost of Booking")]
         public double BookingCost { get; set; }
+        [Display(Name = "Booking Status")]
+        [EnumDataType(typeof (BookingStatus))]
+        public BookingStatus BookingStatus { get; set; }
         [Display(Name = "Booking")]
         public string DisplayString
         {
