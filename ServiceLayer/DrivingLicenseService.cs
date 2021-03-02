@@ -14,8 +14,8 @@ namespace EIRLSSAssignment1.ServiceLayer
 {
     public class DrivingLicenseService
     {
-        private DrivingLicenseRepository _drivingLicenseRepository;
-        private ApplicationDbContext _applicationDbContext;
+        private readonly DrivingLicenseRepository _drivingLicenseRepository;
+        private readonly ApplicationDbContext _applicationDbContext;
 
         public DrivingLicenseService()
         {
@@ -61,33 +61,17 @@ namespace EIRLSSAssignment1.ServiceLayer
 
         public ServiceResponse CreationAction(DrivingLicenseViewModel drivingLicenseVM)
         {
-            if (drivingLicenseVM.ImageToUpload != null)
+
+            if (drivingLicenseVM == null)
             {
-                drivingLicenseVM.License.Image = convertImageToByteArray(drivingLicenseVM.ImageToUpload);
+                return new ServiceResponse { Result = false, ServiceObject = null };
+
             }
 
             _drivingLicenseRepository.Insert(drivingLicenseVM.License);
             _drivingLicenseRepository.Save();
 
-            if (drivingLicenseVM.License != null)
-            {
-                var user = _applicationDbContext.Users.Find(HttpContext.Current.User.Identity.GetUserId());
-                if (user != null)
-                {
-                    if (user.DrivingLicenseId != 0)
-                    {
-                        user.DrivingLicenseId = drivingLicenseVM.License.Id;
-                        _applicationDbContext.SaveChanges();
-                    }
-                }
-            }
-            else
-            {
-                return new ServiceResponse { Result = false, ServiceObject = drivingLicenseVM };
-            }
-
             return new ServiceResponse { Result = true, ServiceObject = null };
-
         }
 
         public DrivingLicenseViewModel EditView(int id)
@@ -109,9 +93,9 @@ namespace EIRLSSAssignment1.ServiceLayer
 
         public ServiceResponse EditAction(DrivingLicenseViewModel drivingLicenseVM)
         {
-            if (drivingLicenseVM.ImageToUpload != null)
+            if (drivingLicenseVM == null)
             {
-                drivingLicenseVM.License.Image = convertImageToByteArray(drivingLicenseVM.ImageToUpload);
+                return new ServiceResponse { Result = false, ServiceObject = null };
             }
 
             _drivingLicenseRepository.Update(drivingLicenseVM.License);
@@ -136,15 +120,7 @@ namespace EIRLSSAssignment1.ServiceLayer
 
         public ServiceResponse DeleteAction(int id)
         {
-            ApplicationUser user = _applicationDbContext.Users.Find(HttpContext.Current.User.Identity.GetUserId());
-
             DrivingLicense drivingLicense = _drivingLicenseRepository.GetDrivingLicenseById(id);
-
-            if (user.DrivingLicenseId == id)
-            {
-                user.DrivingLicenseId = null;
-                _applicationDbContext.SaveChanges();
-            }
 
             _drivingLicenseRepository.Delete(drivingLicense);
             _drivingLicenseRepository.Save();

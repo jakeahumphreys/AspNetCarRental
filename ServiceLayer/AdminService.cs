@@ -61,10 +61,5 @@ namespace EIRLSSAssignment1.ServiceLayer
 
             return adminVM;
         }
-
-        public IList<DrivingLicense> GetDrivingLicenses()
-        {
-            return _drivingLicenseRepository.GetDrivingLicenses();
-        }
     }
 }

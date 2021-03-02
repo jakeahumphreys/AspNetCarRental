@@ -192,33 +192,6 @@ namespace EIRLSSAssignment1.RepeatLogic
             }
         }
 
-        public bool userHasStoredLicense(string userId)
-        {
-            ApplicationUser user = _applicationDbContext.Users.Find(userId);
-
-            if(user.DrivingLicenseId != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool userHasStoredDocument(string userId)
-        {
-            ApplicationUser user = _applicationDbContext.Users.Find(userId);
-
-            if (user.SupportingDocumentId != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         public void HandleAutoTrust(string userId)
         {

@@ -9,14 +9,11 @@ namespace EIRLSSAssignment1.Models
     public class SupportingDocument
     {
         public int Id { get; set; }
-        [Required]
-        [Display(Name = "Document Type")]
-        public string DocumentType { get; set; }
-        [Required]
-        [Display(Name = "Date Recieved")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime DateRecieved { get; set; }
-        public byte[] Image { get; set; }
+        public string FamilyName { get; set; }
+        public string Forenames { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string AddressOfClaim { get; set; }
+        public DateTime DateOfClaim { get; set; }
+        public string InsurerCode { get; set; }
     }
 }

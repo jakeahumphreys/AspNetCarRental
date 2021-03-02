@@ -179,14 +179,12 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BookingController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
-    <Compile Include="Controllers\DrivingLicenseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ExtensionRequestController.cs" />
     <Compile Include="Controllers\FuelTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\OptionalExtraController.cs" />
-    <Compile Include="Controllers\SupportingDocumentController.cs" />
     <Compile Include="Controllers\VehicleController.cs" />
     <Compile Include="Controllers\VehicleTypeController.cs" />
     <Compile Include="Customisations\CustomAuthorize.cs" />
@@ -230,6 +228,10 @@
     <Compile Include="Migrations\202103012152185_AddDvlaReference.Designer.cs">
       <DependentUpon>202103012152185_AddDvlaReference.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103021734323_ConvertDocumentsToNewFormat.cs" />
+    <Compile Include="Migrations\202103021734323_ConvertDocumentsToNewFormat.Designer.cs">
+      <DependentUpon>202103021734323_ConvertDocumentsToNewFormat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -237,6 +239,7 @@
     <Compile Include="Models\BookingViewModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
+    <Compile Include="Models\DvlaImportedLicense.cs" />
     <Compile Include="Models\ViewModels\DrivingLicenseViewModel.cs" />
     <Compile Include="Models\enums\ExtensionStatus.cs" />
     <Compile Include="Models\ExtensionRequest.cs" />
@@ -245,7 +248,6 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OptionalExtra.cs" />
     <Compile Include="Models\SupportingDocument.cs" />
-    <Compile Include="Models\SupportingDocumentViewModel.cs" />
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\VehicleType.cs" />
     <Compile Include="Models\ViewModels\BookingViewModels.cs" />
@@ -263,6 +265,7 @@
     <Compile Include="ServiceLayer\DrivingLicenseService.cs" />
     <Compile Include="ServiceLayer\ExtensionRequestService.cs" />
     <Compile Include="ServiceLayer\FuelTypeService.cs" />
+    <Compile Include="ServiceLayer\ImportService.cs" />
     <Compile Include="ServiceLayer\OptionalExtraService.cs" />
     <Compile Include="ServiceLayer\ServiceResponse.cs" />
     <Compile Include="ServiceLayer\VehicleService.cs" />
@@ -631,16 +634,6 @@
     <Content Include="Views\Vehicle\Delete.cshtml" />
     <Content Include="Views\Vehicle\Details.cshtml" />
     <Content Include="Views\Vehicle\Edit.cshtml" />
-    <Content Include="Views\DrivingLicense\Create.cshtml" />
-    <Content Include="Views\DrivingLicense\Delete.cshtml" />
-    <Content Include="Views\DrivingLicense\Details.cshtml" />
-    <Content Include="Views\DrivingLicense\Edit.cshtml" />
-    <Content Include="Views\DrivingLicense\Index.cshtml" />
-    <Content Include="Views\SupportingDocument\Create.cshtml" />
-    <Content Include="Views\SupportingDocument\Delete.cshtml" />
-    <Content Include="Views\SupportingDocument\Details.cshtml" />
-    <Content Include="Views\SupportingDocument\Edit.cshtml" />
-    <Content Include="Views\SupportingDocument\Index.cshtml" />
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
@@ -683,6 +676,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103012152185_AddDvlaReference.resx">
       <DependentUpon>202103012152185_AddDvlaReference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103021734323_ConvertDocumentsToNewFormat.resx">
+      <DependentUpon>202103021734323_ConvertDocumentsToNewFormat.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -20,13 +20,5 @@ namespace EIRLSSAssignment1.Controllers
         {
             return View(_adminService.GetIndex());
         }
-
-
-
-        [CustomAuthorize(Roles = "Admin")]
-        public ActionResult DrivingLicenses()
-        {
-            return View(_adminService.GetDrivingLicenses());
-        }
     }
 }

@@ -5,9 +5,8 @@ using System.Web;
 
 namespace EIRLSSAssignment1.Models
 {
-    public class DrivingLicense
+    public class DvlaImportedLicense
     {
-        public int Id { get; set; }
         public string LicenseNumber { get; set; }
         public string FamilyName { get; set; }
         public string Forenames { get; set; }

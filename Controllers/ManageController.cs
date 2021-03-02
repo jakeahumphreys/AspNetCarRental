@@ -68,17 +68,6 @@ namespace EIRLSSAssignment1.Controllers
             var userId = User.Identity.GetUserId();
             var user = _applicationDbContext.Users.Find(userId);
 
-            if(user.DrivingLicenseId != 0)
-            {
-                ViewBag.licenseId = user.DrivingLicenseId;
-            }
-
-            if(user.SupportingDocumentId != 0)
-            {
-                ViewBag.supportingDocumentId = user.SupportingDocumentId;
-            }
-
-
             ViewBag.userId = userId;
             var model = new IndexViewModel
             {
@@ -86,10 +75,7 @@ namespace EIRLSSAssignment1.Controllers
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
-                HasDrivingLicense = HasDrivingLicense(),
-                HasSupportingDocument = HasSupportingDocument()
-                
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
             };
 
             return View(model);
@@ -379,26 +365,6 @@ namespace EIRLSSAssignment1.Controllers
             if (user != null)
             {
                 return user.PasswordHash != null;
-            }
-            return false;
-        }
-
-        private bool HasDrivingLicense()
-        {
-            var user = UserManager.FindById(User.Identity.GetUserId());
-            if(user != null)
-            {
-                return user.DrivingLicenseId != null;
-            }
-            return false;
-        }
-
-        private bool HasSupportingDocument()
-        {
-            var user = UserManager.FindById(User.Identity.GetUserId());
-            if (user != null)
-            {
-                return user.SupportingDocumentId != null;
             }
             return false;
         }

@@ -12,8 +12,6 @@ namespace EIRLSSAssignment1.Models
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
-        public bool HasDrivingLicense { get; set; }
-        public bool HasSupportingDocument { get; set; }
     }
 
     public class ManageLoginsViewModel

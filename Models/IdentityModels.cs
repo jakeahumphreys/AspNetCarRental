@@ -32,12 +32,7 @@ namespace EIRLSSAssignment1.Models
         public  bool IsBlackListed { get; set; }
         [Display(Name = "Trusted")]
         public bool IsTrustedCustomer { get; set; }
-        [Display(Name = "License Id")]
-        public int? DrivingLicenseId { get; set; }
-        public DrivingLicense DrivingLicense { get; set; }
-        [Display(Name = "Document Id")]
-        public int? SupportingDocumentId { get; set; }
-        public SupportingDocument SupportingDocument { get; set; }
+
 
         [Display(Name = "Account Locked Until")]
         [DataType(DataType.Date)]
