@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 
@@ -64,6 +65,18 @@ namespace EIRLSSAssignment1.Customisations
     {
         public ExtensionRequestNotFoundException(string message) : base(message) { }
     }
+
+    public class LicenseImportFileNotFound : Exception
+    {
+        public LicenseImportFileNotFound(string message) : base(message) { }
+    }
+
+    public class AbiImportFileNotFoundException : Exception
+    {
+        public AbiImportFileNotFoundException(string message) : base(message) { }
+    }
+
+
 
 
 }

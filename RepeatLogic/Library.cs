@@ -5,6 +5,7 @@ using System.Web;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.DAL;
 using System.Data.Entity;
+using System.IO;
 
 namespace EIRLSSAssignment1.RepeatLogic
 {
@@ -220,7 +221,22 @@ namespace EIRLSSAssignment1.RepeatLogic
                     } 
                 }
             }
+        }
 
+        private byte[] convertImageToByteArray(HttpPostedFileBase image)
+        {
+            byte[] imageByteArray = null;
+
+            if (image != null)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    image.InputStream.CopyTo(memoryStream);
+                    imageByteArray = memoryStream.GetBuffer();
+                }
+            }
+
+            return imageByteArray;
         }
     }
 }

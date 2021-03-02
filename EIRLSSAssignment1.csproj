@@ -202,11 +202,9 @@
     <Compile Include="DAL\IExtensionRequestRepository.cs" />
     <Compile Include="DAL\IFuelTypeRepository.cs" />
     <Compile Include="DAL\IOptionalExtraRepository.cs" />
-    <Compile Include="DAL\ISupportingDocumentRepository.cs" />
     <Compile Include="DAL\IVehicleRepository.cs" />
     <Compile Include="DAL\IVehicleTypeRepository.cs" />
     <Compile Include="DAL\OptionalExtraRepository.cs" />
-    <Compile Include="DAL\SupportingDocumentRepository.cs" />
     <Compile Include="DAL\VehicleRepository.cs" />
     <Compile Include="DAL\VehicleTypeRepository.cs" />
     <Compile Include="Global.asax.cs">
@@ -231,6 +229,10 @@
     <Compile Include="Migrations\202103021734323_ConvertDocumentsToNewFormat.cs" />
     <Compile Include="Migrations\202103021734323_ConvertDocumentsToNewFormat.Designer.cs">
       <DependentUpon>202103021734323_ConvertDocumentsToNewFormat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103021931431_removeSupportingDocuments.cs" />
+    <Compile Include="Migrations\202103021931431_removeSupportingDocuments.Designer.cs">
+      <DependentUpon>202103021931431_removeSupportingDocuments.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -262,10 +264,9 @@
     <Compile Include="ServiceLayer\AdminService.cs" />
     <Compile Include="ServiceLayer\BookingService.cs" />
     <Compile Include="ServiceLayer\ConfigurationService.cs" />
-    <Compile Include="ServiceLayer\DrivingLicenseService.cs" />
+    <Compile Include="ServiceLayer\DocumentValidationService.cs" />
     <Compile Include="ServiceLayer\ExtensionRequestService.cs" />
     <Compile Include="ServiceLayer\FuelTypeService.cs" />
-    <Compile Include="ServiceLayer\ImportService.cs" />
     <Compile Include="ServiceLayer\OptionalExtraService.cs" />
     <Compile Include="ServiceLayer\ServiceResponse.cs" />
     <Compile Include="ServiceLayer\VehicleService.cs" />
@@ -679,6 +680,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103021734323_ConvertDocumentsToNewFormat.resx">
       <DependentUpon>202103021734323_ConvertDocumentsToNewFormat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103021931431_removeSupportingDocuments.resx">
+      <DependentUpon>202103021931431_removeSupportingDocuments.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

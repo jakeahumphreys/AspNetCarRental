@@ -14,5 +14,6 @@ namespace EIRLSSAssignment1.DAL
         void Update(DrivingLicense DrivingLicense);
         void Delete(DrivingLicense DrivingLicense);
         void Save();
+        void Truncate();
     }
 }

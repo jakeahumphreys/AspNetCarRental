@@ -23,7 +23,7 @@ namespace EIRLSSAssignment1.DAL
 
         public DrivingLicense GetDrivingLicenseById(int id)
         {
-            return _context.DrivingLicenses.Where(x => x.Id == id).SingleOrDefault();
+            return _context.DrivingLicenses.SingleOrDefault(x => x.Id == id);
         }
 
         public void Insert(DrivingLicense DrivingLicense)
@@ -44,6 +44,11 @@ namespace EIRLSSAssignment1.DAL
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public void Truncate()
+        {
+            _context.Database.ExecuteSqlCommand("TRUNCATE TABLE [DrivingLicenses]");
         }
 
         private bool disposed = false;

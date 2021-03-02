@@ -6,7 +6,7 @@ using System.Web;
 
 namespace EIRLSSAssignment1.Models
 {
-    public class SupportingDocument
+    public class AbiFraudulentClaim
     {
         public int Id { get; set; }
         public string FamilyName { get; set; }

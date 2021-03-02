@@ -18,7 +18,6 @@ namespace EIRLSSAssignment1.ServiceLayer
         private BookingRepository _bookingRepository;
         private OptionalExtraRepository _optionalExtraRepository;
         private DrivingLicenseRepository _drivingLicenseRepository;
-        private SupportingDocumentRepository _supportingDocumentRepository;
         private ExtensionRequestRepository _extentionRepository;
 
         public AdminService()
@@ -31,7 +30,6 @@ namespace EIRLSSAssignment1.ServiceLayer
             _bookingRepository = new BookingRepository(new ApplicationDbContext());
             _optionalExtraRepository = new OptionalExtraRepository(new ApplicationDbContext());
             _drivingLicenseRepository = new DrivingLicenseRepository(new ApplicationDbContext());
-            _supportingDocumentRepository = new SupportingDocumentRepository(new ApplicationDbContext());
             _extentionRepository = new ExtensionRequestRepository(new ApplicationDbContext());
         }
 

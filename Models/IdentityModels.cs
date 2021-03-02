@@ -32,8 +32,6 @@ namespace EIRLSSAssignment1.Models
         public  bool IsBlackListed { get; set; }
         [Display(Name = "Trusted")]
         public bool IsTrustedCustomer { get; set; }
-
-
         [Display(Name = "Account Locked Until")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -62,7 +60,6 @@ namespace EIRLSSAssignment1.Models
         public DbSet<FuelType> FuelTypes { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<DrivingLicense> DrivingLicenses { get; set; }
-        public DbSet<SupportingDocument> SupportingDocuments { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
         public DbSet<ExtensionRequest> ExtensionRequests { get; set; }
 

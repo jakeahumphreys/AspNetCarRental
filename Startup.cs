@@ -1,4 +1,7 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.ServiceLayer;
+using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(EIRLSSAssignment1.Startup))]
