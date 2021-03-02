@@ -223,7 +223,7 @@ namespace EIRLSSAssignment1.RepeatLogic
             }
         }
 
-        private byte[] convertImageToByteArray(HttpPostedFileBase image)
+        public byte[] convertImageToByteArray(HttpPostedFileBase image)
         {
             byte[] imageByteArray = null;
 

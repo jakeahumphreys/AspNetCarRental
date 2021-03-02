@@ -178,6 +178,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BookingController.cs" />
+    <Compile Include="Controllers\CollectionController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ExtensionRequestController.cs" />
@@ -234,6 +235,10 @@
     <Compile Include="Migrations\202103021931431_removeSupportingDocuments.Designer.cs">
       <DependentUpon>202103021931431_removeSupportingDocuments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103022033057_AddImagesToBooking.cs" />
+    <Compile Include="Migrations\202103022033057_AddImagesToBooking.Designer.cs">
+      <DependentUpon>202103022033057_AddImagesToBooking.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -242,6 +247,7 @@
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
     <Compile Include="Models\DvlaImportedLicense.cs" />
+    <Compile Include="Models\ViewModels\CaptureLicenseViewModel.cs" />
     <Compile Include="Models\ViewModels\DrivingLicenseViewModel.cs" />
     <Compile Include="Models\enums\ExtensionStatus.cs" />
     <Compile Include="Models\ExtensionRequest.cs" />
@@ -253,6 +259,7 @@
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\VehicleType.cs" />
     <Compile Include="Models\ViewModels\BookingViewModels.cs" />
+    <Compile Include="Models\ViewModels\ValidationFailedViewModel.cs" />
     <Compile Include="Models\ViewModels\VehicleViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepeatLogic\BookingStatus.cs" />
@@ -261,6 +268,8 @@
     <Compile Include="RepeatLogic\Objects\ConflictingExtraItem.cs" />
     <Compile Include="RepeatLogic\Objects\BookingErrorObj.cs" />
     <Compile Include="RepeatLogic\Objects\EditBookingErrorObj.cs" />
+    <Compile Include="RepeatLogic\ResponseError.cs" />
+    <Compile Include="RepeatLogic\ValidationFailReason.cs" />
     <Compile Include="ServiceLayer\AdminService.cs" />
     <Compile Include="ServiceLayer\BookingService.cs" />
     <Compile Include="ServiceLayer\ConfigurationService.cs" />
@@ -582,12 +591,13 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Error\Error.cshtml" />
-    <Content Include="Views\Admin\DrivingLicenses.cshtml" />
     <Content Include="Views\Booking\Return.cshtml" />
     <Content Include="Views\ExtensionRequest\Create.cshtml" />
     <Content Include="Views\ExtensionRequest\Details.cshtml" />
     <Content Include="Views\Booking\ConfirmBooking.cshtml" />
     <Content Include="Views\Booking\Success.cshtml" />
+    <Content Include="Views\Collection\CaptureLicense.cshtml" />
+    <Content Include="Views\Collection\ValidationFailed.cshtml" />
     <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -683,6 +693,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103021931431_removeSupportingDocuments.resx">
       <DependentUpon>202103021931431_removeSupportingDocuments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103022033057_AddImagesToBooking.resx">
+      <DependentUpon>202103022033057_AddImagesToBooking.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -1,0 +1,41 @@
+﻿@using EIRLSSAssignment1.RepeatLogic
+@model EIRLSSAssignment1.Models.ViewModels.ValidationFailedViewModel
+
+@{
+    ViewBag.Title = "ValidationFailed";
+}
+
+
+@if (Model.failReason == ValidationFailReason.LicenseValidationFailed)
+{
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Driving License Flagged</h4>
+        <p>The Driving License details submitted for this booking have been flagged on the DVLA License Import as Suspended, Lost or Stolen.</p>
+        <hr>
+        <p class="mb-0">This booking has automatically been rejected. You should now perform the following calmly, without confronting the license holder:</p>
+        <ul>
+            <li>
+                <p>Retain the License provided by the license holder.</p>
+            </li>
+            <li>
+                <p>Inform the Police Service of the offence and turn over the document upon their arrival.</p>
+            </li>
+        </ul>
+        <p class="mb-0">The DVLA have automatically been informed of the attempted use of this license.</p>
+    </div>
+}
+@if (Model.failReason == ValidationFailReason.DocumentValidationFailed)
+{
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Customer Flagged</h4>
+        <p>The Customer has been flagged as appearing on the ABI Database, this means they may have a history of fraudulent insurance claims.</p>
+        <hr>
+        <p class="mb-0">This booking has automatically been rejected. You should now perform the following:</p>
+        <ul>
+            <li>
+                <p>Inform the individual that you are unable to confirm their booking as they have failed document validation.</p>
+            </li>
+        </ul>
+    </div>
+}
+

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EIRLSSAssignment1.RepeatLogic;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
@@ -54,7 +55,8 @@ namespace EIRLSSAssignment1.ServiceLayer
                 Users = applicationUsers,
                 Bookings = bookings,
                 OptionalExtras = optionalExtras,
-                ExtensionRequests = extensionRequests
+                ExtensionRequests = extensionRequests,
+                PendingCollections = bookings.Where(x=>x.BookingStatus == BookingStatus.Reserved).ToList()
             };
 
             return adminVM;

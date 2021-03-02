@@ -40,6 +40,10 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "Booking Status")]
         [EnumDataType(typeof (BookingStatus))]
         public BookingStatus BookingStatus { get; set; }
+        [Display(Name="Driving License")]
+        public byte[] DrivingLicenseImage { get; set; }
+        [Display(Name="Supporting Document")]
+        public byte[] SupportingDocumentImage { get; set; }
         [Display(Name = "Booking")]
         public string DisplayString
         {

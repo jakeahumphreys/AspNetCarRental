@@ -9,6 +9,7 @@ namespace EIRLSSAssignment1.Models
     public class AdminViewModel
     {
         public List<Booking> Bookings { get; set; }
+        public List<Booking> PendingCollections { get; set; }
         public List<Configuration> Configurations { get; set; }
         public List<ApplicationUser> Users { get; set; }
         public List<VehicleType> VehicleTypes { get; set; }
