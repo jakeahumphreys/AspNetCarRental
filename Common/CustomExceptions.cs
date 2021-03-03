@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web;
 
-namespace EIRLSSAssignment1.Customisations
+namespace EIRLSSAssignment1.Common
 {
     public class UserIsBlacklistedException : Exception
     {

@@ -14,102 +14,188 @@
 
 <div>
     <hr />
+    <div class="card mb-3">
+        <h5 class="card-header">Record Settings</h5>
+        <div class="card-body">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.IsConfigurationActive)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.IsConfigurationActive)
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <h5 class="card-header">Garage Settings</h5>
+        <div class="card-body">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.OpeningTime)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.OpeningTime)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.ClosingTime)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.ClosingTime)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.IsOpenForRentals)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.IsOpenForRentals)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.LateReturnEligibility)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.LateReturnEligibility)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.MinRentalHours)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.MinRentalHours)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.MaxRentalHours)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.MaxRentalHours)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    
+    <div class="card mb-3">
+        <h5 class="card-header">Integration Settings</h5>
+        <div class="card-body">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.DvlaReference)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DvlaReference)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DvlaImportUrl)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DvlaImportUrl)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.AbiImportUrl)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AbiImportUrl)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.PriceCheckUrl)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.PriceCheckUrl)
+                </dd>
+            </dl>
+            <br />
+            <strong class="col-md-4 text-black-50">Url Configuration</strong>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpShouldSendEmail)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SmtpShouldSendEmail)
+                </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpUrl)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SmtpUrl)
+                </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpPort)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SmtpPort)
+                </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpSenderEmail)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SmtpSenderEmail)
+                </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpSenderPassword)
+                </dt>
+
+                <dd>
+                    <p>[Not Visible]</p>
+                </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpShouldUseSsl)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SmtpShouldUseSsl)
+                </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpRecipientEmail)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SmtpRecipientEmail)
+                </dd>
+            </dl>
+        </div>
+    </div>
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+       
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+      
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OpeningTime)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.OpeningTime)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ClosingTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ClosingTime)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsOpenForRentals)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsOpenForRentals)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LateReturnEligibility)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LateReturnEligibility)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MinRentalHours)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MinRentalHours)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MaxRentalHours)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MaxRentalHours)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DvlaReference)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DvlaReference)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DvlaImportUrl)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DvlaImportUrl)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AbiImportUrl)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AbiImportUrl)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PriceCheckUrl)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PriceCheckUrl)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsConfigurationActive)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsConfigurationActive)
-        </dd>
 
     </dl>
 </div>

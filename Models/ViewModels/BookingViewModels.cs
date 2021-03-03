@@ -1,4 +1,4 @@
-﻿using EIRLSSAssignment1.RepeatLogic.Objects;
+﻿using EIRLSSAssignment1.Common.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

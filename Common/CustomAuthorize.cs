@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace EIRLSSAssignment1.Customisations
+namespace EIRLSSAssignment1.Common
 {
     public class CustomAuthorizeAttribute : AuthorizeAttribute
     {

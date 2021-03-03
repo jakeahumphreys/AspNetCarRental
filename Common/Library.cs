@@ -7,7 +7,7 @@ using EIRLSSAssignment1.DAL;
 using System.Data.Entity;
 using System.IO;
 
-namespace EIRLSSAssignment1.RepeatLogic
+namespace EIRLSSAssignment1.Common
 {
     public class Library
     {

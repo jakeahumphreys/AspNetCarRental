@@ -1,10 +1,9 @@
-﻿using EIRLSSAssignment1.Customisations;
+﻿using EIRLSSAssignment1.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
-using EIRLSSAssignment1.RepeatLogic;
 
 namespace EIRLSSAssignment1.Models
 {

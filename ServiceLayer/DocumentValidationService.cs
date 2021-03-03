@@ -10,7 +10,7 @@ using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using Microsoft.AspNet.Identity;
-using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.Common;
 using System.IO;
 using System.Linq.Expressions;
 using System.Net;
@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 using System.Web.UI;
 using EIRLSSAssignment1.DTO;
 using EIRLSSAssignment1.Models.ViewModels;
-using EIRLSSAssignment1.RepeatLogic;
+using EIRLSSAssignment1.Common;
 using Microsoft.Owin.Security.Facebook;
 using Newtonsoft.Json;
 

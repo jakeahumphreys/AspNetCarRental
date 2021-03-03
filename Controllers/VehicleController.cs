@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
-using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.Common;
 using EIRLSSAssignment1.ServiceLayer;
 using EIRLSSAssignment1.Models.ViewModels;
 

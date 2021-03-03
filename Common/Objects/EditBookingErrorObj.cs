@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace EIRLSSAssignment1.RepeatLogic.Objects
+namespace EIRLSSAssignment1.Common.Objects
 {
     public class EditBookingErrorObj
     {

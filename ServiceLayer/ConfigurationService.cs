@@ -8,16 +8,16 @@ using EIRLSSAssignment1.DAL;
 using EIRLSSAssignment1.Models;
 using EIRLSSAssignment1.Models.ViewModels;
 using EIRLSSAssignment1.Models.enums;
-using EIRLSSAssignment1.RepeatLogic;
-using EIRLSSAssignment1.RepeatLogic.Objects;
+using EIRLSSAssignment1.Common;
+using EIRLSSAssignment1.Common.Objects;
 using Microsoft.AspNet.Identity;
-using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.Common;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
     public class ConfigurationService
     {
-        private ConfigurationRepository _configurationRepository;
+        private readonly ConfigurationRepository _configurationRepository;
 
         public ConfigurationService()
         {
@@ -92,6 +92,13 @@ namespace EIRLSSAssignment1.ServiceLayer
             configToUpdate.DvlaImportUrl = configuration.DvlaImportUrl;
             configToUpdate.AbiImportUrl = configuration.AbiImportUrl;
             configToUpdate.PriceCheckUrl = configuration.PriceCheckUrl;
+            configToUpdate.SmtpShouldSendEmail = configuration.SmtpShouldSendEmail;
+            configToUpdate.SmtpUrl = configuration.SmtpUrl;
+            configToUpdate.SmtpPort = configuration.SmtpPort;
+            configToUpdate.SmtpSenderEmail = configuration.SmtpSenderEmail;
+            configToUpdate.SmtpSenderPassword = configuration.SmtpSenderPassword;
+            configToUpdate.SmtpShouldUseSsl = configuration.SmtpShouldUseSsl;
+            configToUpdate.SmtpRecipientEmail = configuration.SmtpRecipientEmail;
 
             _configurationRepository.Update(configToUpdate);
             _configurationRepository.Save();
