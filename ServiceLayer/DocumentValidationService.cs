@@ -15,11 +15,14 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.UI;
+using EIRLSSAssignment1.DTO;
 using EIRLSSAssignment1.Models.ViewModels;
 using EIRLSSAssignment1.RepeatLogic;
 using Microsoft.Owin.Security.Facebook;
+using Newtonsoft.Json;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
@@ -75,13 +78,55 @@ namespace EIRLSSAssignment1.ServiceLayer
 
         public bool CustomerAppearsOnDvlaImport(string licenseNumber)
         {
-            return false;
+            var webRequest = (HttpWebRequest) WebRequest.Create(_library.GetActiveConfiguration().DvlaImportUrl + $"?licenseNumber={licenseNumber}");
+            webRequest.Method = "GET";
+            webRequest.AllowAutoRedirect = false;
 
+            var response = (HttpWebResponse)webRequest.GetResponse();
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.Found:
+                    return true;
+                case HttpStatusCode.OK:
+                    return false;
+                default:
+                    return false;
+            }
         }
 
         public bool CustomerAppearsOnAbiImport(string familyName, string forenames, string address)
         {
-            return false;
+            var webRequest = (HttpWebRequest) WebRequest.Create(_library.GetActiveConfiguration().AbiImportUrl);
+            webRequest.Method = "POST";
+            webRequest.AllowAutoRedirect = false;
+            webRequest.ContentType = "application/json";
+            var abiRequest = new AbiRequest
+            {
+                FamilyName = familyName,
+                Forenames = forenames,
+                Address = address
+            };
+
+            var jsonString = JsonConvert.SerializeObject(abiRequest);
+
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                streamWriter.Write(jsonString);
+            }
+
+            var response = (HttpWebResponse)webRequest.GetResponse();
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.Found:
+                    return true;
+                case HttpStatusCode.OK:
+                    return false;
+                default:
+                    return false;
+            }
+
         }
 
 
