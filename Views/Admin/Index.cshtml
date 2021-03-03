@@ -1,4 +1,5 @@
 ﻿@using EIRLSSAssignment1.Models.enums;
+@using EIRLSSAssignment1.RepeatLogic
 @model EIRLSSAssignment1.Models.AdminViewModel
 @{
     ViewBag.Title = "Admin Panel";
@@ -456,6 +457,9 @@
                                 <p>Flags</p>
                             </th>
                             <th>
+                                <p>Status</p>
+                            </th>
+                            <th>
                                 <p>Actions</p>
                             </th>
                         </tr>
@@ -476,6 +480,20 @@
                                     @Html.DisplayFor(modelItem => item.IsLateReturn)
                                 </td>
                                 <td>
+                                    @if (item.BookingStatus == BookingStatus.Reserved)
+                                    {
+                                        <span class="badge badge-warning">Reserved</span>
+                                    }
+                                    @if (item.BookingStatus == BookingStatus.Approved)
+                                    {
+                                        <span class="badge badge-success">Reserved</span>
+                                    }
+                                    @if (item.BookingStatus == BookingStatus.Rejected)
+                                    {
+                                        <span class="badge badge-danger">Rejected</span>
+                                    }
+                                </td>
+                                <td>
                                     @if (item.IsReturned == true)
                                     {
                                         <span class="badge badge-success">Returned</span>
@@ -492,9 +510,13 @@
                                     {
                                         <span class="badge badge-info">Upcoming</span>
                                     }
+                                    @if (item.BookingStatus == BookingStatus.Rejected)
+                                    {
+                                        <span class="badge badge-danger">Cancelled</span>
+                                    }
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Details", "Booking", new { id = item.Id })';return false;">Details</button>
+                                    <button class="btn btn-primary" onclick="location.href = '@Url.Action("CaptureLicense", "Collection", new { bookingId = item.Id })';return false;">Collect</button>
                                 </td>
                             </tr>
                         }

@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "Validation Complete";
+}
+
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Validation Complete</h4>
+    <p>The details provided by the customer are have been validated successfully, They can now collect the keys to the vehicle.</p>
+    <hr>
+    <p class="mb-0">Copies of their documents have been uploaded to the booking record.</p>
+    <button class="btn btn-success" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Admin")';return false;">Back to Admin</button>
+    <button class="btn btn-success" data-toggle="tooltip" title="Back" onclick="location.href='@Url.Action("Index","Home")';return false;">Back to Home</button>
+</div>
+

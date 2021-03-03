@@ -96,6 +96,26 @@ else
 
         @if (User.IsInRole("Admin"))
         {
+            if (Model.booking.DrivingLicenseImage != null)
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.booking.DrivingLicenseImage)
+                </dt>
+
+                <dd>
+                    <img src="data:image;base64,@System.Convert.ToBase64String(Model.booking.DrivingLicenseImage)" width="300" height="200" />
+                </dd>
+            }
+            if (Model.booking.SupportingDocumentImage != null)
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.booking.SupportingDocumentImage)
+                </dt>
+
+                <dd>
+                    <img src="data:image;base64,@System.Convert.ToBase64String(Model.booking.SupportingDocumentImage)" width="300" height="200" />
+                </dd>
+            }
             <dt>
                 @Html.DisplayNameFor(model => model.booking.Remarks)
             </dt>

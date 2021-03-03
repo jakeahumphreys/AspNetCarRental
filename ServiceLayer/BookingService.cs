@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -15,8 +16,10 @@ using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.RepeatLogic.Objects;
 using Microsoft.AspNet.Identity;
 using EIRLSSAssignment1.Customisations;
+using EIRLSSAssignment1.DTO;
 using HtmlAgilityPack;
 using Microsoft.Owin.Security.Facebook;
+using Newtonsoft.Json;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
@@ -633,42 +636,38 @@ namespace EIRLSSAssignment1.ServiceLayer
 
         private double CalculateBookingCost(DateTime startDate, DateTime endDate, int vehicleId)
         {
-            //TimeSpan dateRange = endDate - startDate;
-            //double rentalDays = dateRange.TotalDays;
-            //double totalCost = vehicle.RentalCost * rentalDays;
             Vehicle vehicle = _vehicleRepository.GetVehicleById(vehicleId);
             var vehicleType = _vehicleTypeRepository.GetVehicleTypeById(vehicle.VehicleTypeId).Value;
-            var requestVehicleType = 0;
 
-            switch (vehicleType)
+            var webRequest = (HttpWebRequest)WebRequest.Create(_library.GetActiveConfiguration().PriceCheckUrl);
+            webRequest.Method = "POST";
+            webRequest.AllowAutoRedirect = false;
+            webRequest.ContentType = "application/json";
+            var priceRequest = new PriceRequest
             {
-                case "Small Town Car":
-                    requestVehicleType = 1;
-                    break;
-                case "Small Family Hatchback":
-                    requestVehicleType = 2;
-                    break;
-                case "Large Family Saloon":
-                    requestVehicleType = 3;
-                    break;
-                case "Large Family Estate":
-                    requestVehicleType = 3;
-                    break;
-                case "Medium Van":
-                    requestVehicleType = 5;
-                    break;
+                VehicleType = vehicleType,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+
+            var jsonString = JsonConvert.SerializeObject(priceRequest);
+
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                streamWriter.Write(jsonString);
             }
 
-            var startDateString = startDate.ToString("dd-MM-yyyy");
-            var endDateString = endDate.ToString("dd-MM-yyyy");
-            var affordUrl =
-                $"https://www.affordrentacar.co.uk/booking/vehicle?SearchForm[sub_category]={requestVehicleType}&SearchForm[date_from]={startDateString}&SearchForm[date_from_time]={startDate.ToShortTimeString()}&SearchForm[date_return]={endDateString}&SearchForm[date_return_time]={endDate.ToShortTimeString()}";
-            var web = new HtmlWeb();
-            var doc = web.Load(affordUrl);
-            var nodes = doc.DocumentNode.SelectNodes("//span[@class='recommend-price']");
-            var nodeContent = Regex.Replace(nodes[0].InnerHtml, @"( |\t|\r|\n)+", string.Empty);
-            var totalCost = double.Parse(nodeContent, CultureInfo.InvariantCulture);
-            totalCost = totalCost - (totalCost * 0.05);
+            var response = (HttpWebResponse)webRequest.GetResponse();
+
+            PriceResponse priceResponse = null;
+
+            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            {
+                 priceResponse = JsonConvert.DeserializeObject<PriceResponse>(reader.ReadToEnd());
+            }
+           
+            var totalCost = priceResponse.Price - (priceResponse.Price * 0.05);
            
             return Math.Round(totalCost, 2);
         }
@@ -679,7 +678,7 @@ namespace EIRLSSAssignment1.ServiceLayer
 
             if (booking != null)
             {
-                foreach (var existingBooking in _bookingRepository.GetBookings().Where(x => x.VehicleId == booking.VehicleId && x.IsReturned == false && x.Id != booking.Id).ToList())
+                foreach (var existingBooking in _bookingRepository.GetBookings().Where(x => x.VehicleId == booking.VehicleId && x.IsReturned == false && x.Id != booking.Id && booking.BookingStatus != BookingStatus.Reserved && booking.BookingStatus != BookingStatus.Reserved).ToList())
                 {
                     if (existingBooking != null)
                     {
@@ -706,7 +705,7 @@ namespace EIRLSSAssignment1.ServiceLayer
                 foreach (var extraId in bookingVM.SelectedExtraIds)
                 {
                     OptionalExtra optionalExtra = _optionalExtraRepository.GetOptionalExtraById(extraId);
-                    List<Booking> bookingsWithSelectedExtra = _bookingRepository.GetBookings().Where(x => x.OptionalExtras.Contains(optionalExtra) && x.IsReturned == false).ToList();
+                    List<Booking> bookingsWithSelectedExtra = _bookingRepository.GetBookings().Where(x => x.OptionalExtras.Contains(optionalExtra) && x.IsReturned == false && x.BookingStatus != BookingStatus.Reserved && x.BookingStatus != BookingStatus.Reserved).ToList();
 
                     foreach (var bookingWithSelectedExtra in bookingsWithSelectedExtra)
                     {

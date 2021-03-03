@@ -210,6 +210,8 @@
     <Compile Include="DAL\VehicleRepository.cs" />
     <Compile Include="DAL\VehicleTypeRepository.cs" />
     <Compile Include="DTO\AbiRequest.cs" />
+    <Compile Include="DTO\PriceRequest.cs" />
+    <Compile Include="DTO\PriceResponse.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -257,6 +259,7 @@
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DrivingLicense.cs" />
     <Compile Include="Models\DvlaImportedLicense.cs" />
+    <Compile Include="Models\ViewModels\CaptureDocumentViewModel.cs" />
     <Compile Include="Models\ViewModels\CaptureLicenseViewModel.cs" />
     <Compile Include="Models\ViewModels\DrivingLicenseViewModel.cs" />
     <Compile Include="Models\enums\ExtensionStatus.cs" />
@@ -608,6 +611,8 @@
     <Content Include="Views\Booking\Success.cshtml" />
     <Content Include="Views\Collection\CaptureLicense.cshtml" />
     <Content Include="Views\Collection\ValidationFailed.cshtml" />
+    <Content Include="Views\Collection\CaptureDocument.cshtml" />
+    <Content Include="Views\Collection\Complete.cshtml" />
     <None Include="Views\Shared\EditorTemplates\httpPostedFileBase.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

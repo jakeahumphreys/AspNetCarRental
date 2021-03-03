@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EIRLSSAssignment1.Customisations;
 using EIRLSSAssignment1.Models.ViewModels;
 using EIRLSSAssignment1.RepeatLogic;
 using EIRLSSAssignment1.ServiceLayer;
@@ -37,14 +38,59 @@ namespace EIRLSSAssignment1.Controllers
 
             if (result.Result == true)
             {
-                RedirectToAction(null);
+                return RedirectToAction("CaptureDocument", "Collection", new {bookingId = captureDlViewModel.BookingId});
             }
             else
             {
-                return null;
-            }
+                if (result.ResponseError == ResponseError.NullParameter)
+                {
+                    return RedirectToAction("Error", "Error", new { errorType = ErrorType.System, message = "Driving License model was null" });
+                }
 
-            return View(captureDlViewModel);
+                if (result.ResponseError == ResponseError.EntityNotFound)
+                {
+                    return RedirectToAction("Error", "Error", new { errorType = ErrorType.System, message = "The booking was not found during license validation." });
+                }
+
+                return RedirectToAction("ValidationFailed", "Collection", new { failureReason = ValidationFailReason.LicenseValidationFailed});
+
+            }
+        }
+
+        public ActionResult CaptureDocument(int bookingId)
+        {
+            var captureDocViewModel = new CaptureDocumentViewModel
+            {
+                BookingId = bookingId
+            };
+
+            return View(captureDocViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CaptureDocument(CaptureDocumentViewModel captureDocViewModel)
+        {
+            var result = _documentValidationService.CaptureSupportingDocument(captureDocViewModel);
+
+            if (result.Result == true)
+            {
+                return RedirectToAction("Complete", "Collection");
+            }
+            else
+            {
+                if (result.ResponseError == ResponseError.NullParameter)
+                {
+                    return RedirectToAction("Error", "Error", new { errorType = ErrorType.System, message = "Driving License model was null" });
+                }
+
+                if (result.ResponseError == ResponseError.EntityNotFound)
+                {
+                    return RedirectToAction("Error", "Error", new { errorType = ErrorType.System, message = "The booking was not found during license validation." });
+                }
+
+                return RedirectToAction("ValidationFailed", "Collection", new { failureReason = ValidationFailReason.DocumentValidationFailed });
+            }
         }
 
 
@@ -56,6 +102,11 @@ namespace EIRLSSAssignment1.Controllers
             };
 
             return View(validationViewModel);
+        }
+
+        public ActionResult Complete()
+        {
+            return View();
         }
     }
 }

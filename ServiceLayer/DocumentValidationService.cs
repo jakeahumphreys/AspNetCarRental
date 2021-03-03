@@ -64,16 +64,42 @@ namespace EIRLSSAssignment1.ServiceLayer
             }
 
             booking.DrivingLicenseImage = _library.convertImageToByteArray(captureLicenseViewModel.LicenseImage);
-
             _bookingRepository.Update(booking);
             _bookingRepository.Save();
 
             return new ServiceResponse {Result = true};
         }
 
-        public ServiceResponse CaptureSupportingDocument()
+        public ServiceResponse CaptureSupportingDocument(CaptureDocumentViewModel captureDocViewModel)
         {
-            return null;
+            if (captureDocViewModel == null)
+            {
+                return new ServiceResponse { Result = false, ResponseError = ResponseError.NullParameter };
+            }
+
+            var booking = _bookingRepository.GetBookingById(captureDocViewModel.BookingId);
+
+            if (booking == null)
+            {
+                return new ServiceResponse { Result = false, ResponseError = ResponseError.EntityNotFound };
+            }
+
+            if (CustomerAppearsOnAbiImport(captureDocViewModel.SupportingDocument.FamilyName,
+                captureDocViewModel.SupportingDocument.Forenames, captureDocViewModel.SupportingDocument.Address))
+            {
+                BlacklistUser(booking.UserId);
+                SetBookingStatus(BookingStatus.Rejected, booking);
+                return new ServiceResponse { Result = false, ResponseError = ResponseError.ValidationFailed };
+
+            }
+
+            booking.SupportingDocumentImage = _library.convertImageToByteArray(captureDocViewModel.DocumentImage);
+            booking.BookingStatus = BookingStatus.Approved;
+
+            _bookingRepository.Update(booking);
+            _bookingRepository.Save();
+
+            return new ServiceResponse { Result = true };
         }
 
         public bool CustomerAppearsOnDvlaImport(string licenseNumber)
@@ -103,8 +129,8 @@ namespace EIRLSSAssignment1.ServiceLayer
             webRequest.ContentType = "application/json";
             var abiRequest = new AbiRequest
             {
-                FamilyName = familyName,
-                Forenames = forenames,
+                FamilyName = familyName.ToUpper(),
+                Forenames = forenames.ToUpper(),
                 Address = address
             };
 
