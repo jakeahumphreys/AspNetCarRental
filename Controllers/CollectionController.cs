@@ -21,8 +21,6 @@ namespace EIRLSSAssignment1.Controllers
 
         public ActionResult CaptureLicense(int bookingId)
         {
-            _documentValidationService.ImportLicenses();
-
             var captureDlVieWModel = new CaptureLicenseViewModel
             {
                 BookingId = bookingId

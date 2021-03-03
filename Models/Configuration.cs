@@ -35,6 +35,12 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "DVLA 15 Digit Reference")]
         [StringLength(15)]
         public string DvlaReference { get; set; }
+        [Display(Name = "DVLA Import URL")]
+        public string DvlaImportUrl { get; set; }
+        [Display(Name = "ABI Import URL")]
+        public string AbiImportUrl { get; set; }
+        [Display(Name = "Price Check URL")]
+        public string PriceCheckUrl { get; set; }
         [Display(Name ="Active?")]
         public bool IsConfigurationActive { get; set; }
     }

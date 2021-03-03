@@ -88,7 +88,10 @@ namespace EIRLSSAssignment1.ServiceLayer
             configToUpdate.MinRentalHours = configuration.MinRentalHours;
             configToUpdate.MaxRentalHours = configuration.MaxRentalHours;
             configToUpdate.LateReturnEligibility = configuration.LateReturnEligibility;
-            configToUpdate.DvlaReference = configToUpdate.DvlaReference;
+            configToUpdate.DvlaReference = configuration.DvlaReference;
+            configToUpdate.DvlaImportUrl = configuration.DvlaImportUrl;
+            configToUpdate.AbiImportUrl = configuration.AbiImportUrl;
+            configToUpdate.PriceCheckUrl = configuration.PriceCheckUrl;
 
             _configurationRepository.Update(configToUpdate);
             _configurationRepository.Save();

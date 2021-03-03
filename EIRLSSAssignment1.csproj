@@ -239,6 +239,14 @@
     <Compile Include="Migrations\202103022033057_AddImagesToBooking.Designer.cs">
       <DependentUpon>202103022033057_AddImagesToBooking.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202103030042470_AddUrlsToConfig.cs" />
+    <Compile Include="Migrations\202103030042470_AddUrlsToConfig.Designer.cs">
+      <DependentUpon>202103030042470_AddUrlsToConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103030045081_AddPriceCheckUrlToConfig.cs" />
+    <Compile Include="Migrations\202103030045081_AddPriceCheckUrlToConfig.Designer.cs">
+      <DependentUpon>202103030045081_AddPriceCheckUrlToConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -696,6 +704,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103022033057_AddImagesToBooking.resx">
       <DependentUpon>202103022033057_AddImagesToBooking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103030042470_AddUrlsToConfig.resx">
+      <DependentUpon>202103030042470_AddUrlsToConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103030045081_AddPriceCheckUrlToConfig.resx">
+      <DependentUpon>202103030045081_AddPriceCheckUrlToConfig.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
