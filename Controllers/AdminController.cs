@@ -1,4 +1,5 @@
-﻿using EIRLSSAssignment1.ServiceLayer;
+﻿using System;
+using EIRLSSAssignment1.ServiceLayer;
 using EIRLSSAssignment1.Common;
 using System.Web.Mvc;
 
@@ -19,6 +20,14 @@ namespace EIRLSSAssignment1.Controllers
         public ActionResult Index()
         {
             return View(_adminService.GetIndex());
+        }
+
+        [HttpPost]
+        public ActionResult SendTestEmail(string message)
+        {
+            EmailHelper emailHelper = new EmailHelper();
+            emailHelper.SendEmail(message);
+            return RedirectToAction("Index", "Admin");
         }
     }
 }

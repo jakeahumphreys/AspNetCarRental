@@ -11,17 +11,18 @@ using EIRLSSAssignment1.Models.enums;
 using EIRLSSAssignment1.Common;
 using EIRLSSAssignment1.Common.Objects;
 using Microsoft.AspNet.Identity;
-using EIRLSSAssignment1.Common;
 
 namespace EIRLSSAssignment1.ServiceLayer
 {
     public class ConfigurationService
     {
         private readonly ConfigurationRepository _configurationRepository;
+        private readonly Library _library;
 
         public ConfigurationService()
         {
             _configurationRepository = new ConfigurationRepository(new ApplicationDbContext());
+            _library = new Library();
         }
 
         public Configuration GetDetails(int id)
@@ -43,7 +44,7 @@ namespace EIRLSSAssignment1.ServiceLayer
 
             configuration.IsConfigurationActive = true;
 
-            DisableActiveConfiguration();
+            DisableActiveConfiguration(configuration.Id);
 
             _configurationRepository.Insert(configuration);
             _configurationRepository.Save();
@@ -75,7 +76,7 @@ namespace EIRLSSAssignment1.ServiceLayer
 
             if (configuration.IsConfigurationActive == true)
             {
-                DisableActiveConfiguration();
+                DisableActiveConfiguration(configuration.Id);
             }
 
             Configuration configToUpdate = _configurationRepository.GetConfigurationById(configuration.Id);
@@ -95,10 +96,11 @@ namespace EIRLSSAssignment1.ServiceLayer
             configToUpdate.SmtpShouldSendEmail = configuration.SmtpShouldSendEmail;
             configToUpdate.SmtpUrl = configuration.SmtpUrl;
             configToUpdate.SmtpPort = configuration.SmtpPort;
-            configToUpdate.SmtpSenderEmail = configuration.SmtpSenderEmail;
+            configToUpdate.SmtpSenderUsername = configuration.SmtpSenderUsername;
             configToUpdate.SmtpSenderPassword = configuration.SmtpSenderPassword;
             configToUpdate.SmtpShouldUseSsl = configuration.SmtpShouldUseSsl;
             configToUpdate.SmtpRecipientEmail = configuration.SmtpRecipientEmail;
+            configToUpdate.SmtpEmailFrom = configuration.SmtpEmailFrom;
 
             _configurationRepository.Update(configToUpdate);
             _configurationRepository.Save();
@@ -140,16 +142,20 @@ namespace EIRLSSAssignment1.ServiceLayer
             _configurationRepository.Dispose();
         }
 
-        public void DisableActiveConfiguration()
+        public void DisableActiveConfiguration(int currentConfigId)
         {
-            Configuration activeConfiguration = _configurationRepository.GetConfigurations().SingleOrDefault(c => c.IsConfigurationActive == true);
-
-            if (activeConfiguration != null)
+            if (currentConfigId != _library.GetActiveConfiguration().Id)
             {
-                activeConfiguration.IsConfigurationActive = false;
-                _configurationRepository.Update(activeConfiguration);
-                _configurationRepository.Save();
+                Configuration activeConfiguration = _configurationRepository.GetConfigurations().SingleOrDefault(c => c.IsConfigurationActive == true);
+
+                if (activeConfiguration != null)
+                {
+                    activeConfiguration.IsConfigurationActive = false;
+                    _configurationRepository.Update(activeConfiguration);
+                    _configurationRepository.Save();
+                }
             }
+            
         }
 
     }

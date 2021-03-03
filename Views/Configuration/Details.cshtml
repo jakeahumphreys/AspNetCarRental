@@ -157,11 +157,19 @@
                 </dd>
                 
                 <dt>
-                    @Html.DisplayNameFor(model => model.SmtpSenderEmail)
+                    @Html.DisplayNameFor(model => model.SmtpEmailFrom)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.SmtpSenderEmail)
+                    @Html.DisplayFor(model => model.SmtpEmailFrom)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.SmtpSenderUsername)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SmtpSenderUsername)
                 </dd>
                 
                 <dt>
@@ -169,7 +177,7 @@
                 </dt>
 
                 <dd>
-                    <p>[Not Visible]</p>
+                    @Html.DisplayFor(model => model.SmtpSenderPassword)
                 </dd>
                 
                 <dt>

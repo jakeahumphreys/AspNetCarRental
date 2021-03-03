@@ -56,9 +56,12 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "SMTP Port")]
         public int SmtpPort { get; set; }
         [RequiredIfTrue("SmtpShouldSendEmail")]
+        [Display(Name = "SMTP Email From")]
         [DataType(DataType.EmailAddress)]
-        [Display(Name = "SMTP Sender Email")]
-        public string SmtpSenderEmail { get; set; }
+        public string SmtpEmailFrom { get; set; }
+        [RequiredIfTrue("SmtpShouldSendEmail")]
+        [Display(Name = "SMTP Sender Username")]
+        public string SmtpSenderUsername { get; set; }
         [RequiredIfTrue("SmtpShouldSendEmail")]
         [DataType(DataType.Password)]
         [Display(Name = "SMTP Sender Password")]
@@ -67,7 +70,6 @@ namespace EIRLSSAssignment1.Models
         [Display(Name = "Use SSL")]
         public bool SmtpShouldUseSsl { get; set; }
         [RequiredIfTrue("SmtpShouldSendEmail")]
-        [DataType(DataType.EmailAddress)]
         [Display(Name = "SMTP Recipient Email")]
         public string SmtpRecipientEmail { get; set; }
 

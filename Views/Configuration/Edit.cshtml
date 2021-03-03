@@ -161,17 +161,25 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.SmtpSenderEmail, htmlAttributes: new { @class = "control-label col-md-4" })
+                    @Html.LabelFor(model => model.SmtpEmailFrom, htmlAttributes: new { @class = "control-label col-md-4" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.SmtpSenderEmail, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.SmtpSenderEmail, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.SmtpEmailFrom, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SmtpEmailFrom, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SmtpSenderUsername, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.SmtpSenderUsername, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SmtpSenderUsername, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(model => model.SmtpSenderPassword, htmlAttributes: new { @class = "control-label col-md-4" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.SmtpSenderPassword, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.SmtpSenderPassword, new { htmlAttributes = new { @class = "form-control", @Value=Model.SmtpSenderPassword} })
                         @Html.ValidationMessageFor(model => model.SmtpSenderPassword, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -188,7 +196,7 @@
                     @Html.LabelFor(model => model.SmtpRecipientEmail, htmlAttributes: new { @class = "control-label col-md-4" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.SmtpRecipientEmail, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.SmtpSenderEmail, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.SmtpRecipientEmail, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
@@ -197,7 +205,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10 mt-3">
-                <input type="submit" value="Create" class="btn btn-success" />
+                <input type="submit" value="Edit" class="btn btn-success" />
             </div>
         </div>
     </div>

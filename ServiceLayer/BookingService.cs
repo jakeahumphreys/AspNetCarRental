@@ -15,7 +15,6 @@ using EIRLSSAssignment1.Models.enums;
 using EIRLSSAssignment1.Common;
 using EIRLSSAssignment1.Common.Objects;
 using Microsoft.AspNet.Identity;
-using EIRLSSAssignment1.Common;
 using EIRLSSAssignment1.DTO;
 using HtmlAgilityPack;
 using Microsoft.Owin.Security.Facebook;

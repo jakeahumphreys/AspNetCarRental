@@ -148,10 +148,18 @@
             </div>
             
             <div class="form-group">
-                @Html.LabelFor(model => model.SmtpSenderEmail, htmlAttributes: new { @class = "control-label col-md-4" })
+                @Html.LabelFor(model => model.SmtpEmailFrom, htmlAttributes: new { @class = "control-label col-md-4" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.SmtpSenderEmail, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.SmtpSenderEmail, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.SmtpEmailFrom, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.SmtpEmailFrom, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            
+            <div class="form-group">
+                @Html.LabelFor(model => model.SmtpSenderUsername, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.SmtpSenderUsername, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.SmtpSenderUsername, "", new { @class = "text-danger" })
                 </div>
             </div>
             
@@ -175,7 +183,7 @@
                 @Html.LabelFor(model => model.SmtpRecipientEmail, htmlAttributes: new { @class = "control-label col-md-4" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.SmtpRecipientEmail, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.SmtpSenderEmail, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.SmtpRecipientEmail, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
