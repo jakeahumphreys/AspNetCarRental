@@ -31,6 +31,7 @@ namespace EIRLSSAssignment1.ServiceLayer
         private readonly BookingRepository _bookingRepository;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly Library _library;
+        private readonly EmailHelper _emailHelper;
 
         public DocumentValidationService()
         {
@@ -38,6 +39,7 @@ namespace EIRLSSAssignment1.ServiceLayer
             _bookingRepository = new BookingRepository(new ApplicationDbContext());
             _library = new Library();
             _applicationDbContext = new ApplicationDbContext();
+            _emailHelper = new EmailHelper();
         }
 
         public ServiceResponse CaptureDrivingLicense(CaptureLicenseViewModel captureLicenseViewModel)
@@ -58,7 +60,10 @@ namespace EIRLSSAssignment1.ServiceLayer
             {
                 BlacklistUser(booking.UserId);
                 SetBookingStatus(BookingStatus.Rejected, booking);
-
+                var dvlaString = _library.GetActiveConfiguration().DvlaReference;
+                var mailString =
+                    $"An attempted use of a flagged license ({captureLicenseViewModel.License.LicenseNumber}) occurred at Banger Co Car Rental (Reference {dvlaString}) on {DateTime.Now.ToShortDateString()} at {DateTime.Now.ToShortTimeString()}.";
+                _emailHelper.SendEmail(mailString);
                 return new ServiceResponse {Result = false, ResponseError = ResponseError.ValidationFailed};
             }
 
