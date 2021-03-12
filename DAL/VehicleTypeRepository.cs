@@ -23,7 +23,7 @@ namespace EIRLSSAssignment1.DAL
 
         public VehicleType GetVehicleTypeById(int id)
         {
-            return _context.VehicleTypes.Where(x => x.Id == id).SingleOrDefault();
+            return _context.VehicleTypes.SingleOrDefault(x => x.Id == id);
         }
 
         public void Insert(VehicleType VehicleType)
